@@ -67,4 +67,77 @@ class Norma(models.Model):
         verbose_name_plural='Normas'
         db_table='norma'
 
+class Pacientes(models.Model):
+    rut = models.CharField(max_length = 10)
+    nombre = models.CharField(max_length=30)
+    apellidoPaterno = models.CharField(max_length=30)
+    apellidoMaterno = models.CharField(max_length=30)
+    sexo = models.IntegerField()
+    edad = models.IntegerField()
+    fechaCarga = models.DateField()
+    ultimaCama = models.IntegerField()
+    diasEstancia = models.IntegerField()
+    servicio= models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    previsionDesc = models.CharField(max_length=30)
+    codigoPlanSalud = models.CharField(max_length=10)
+    planSaludDesc = models.CharField(max_length=10)
+    fechaIngreso = models.DateField()
+
+    class Meta:
+        verbose_name='Paciente'
+        verbose_name_plural='Pacientes'
+        db_table='paciente'
+
+class ReporteMensual(models.Model):
+    fecha = models.DateField()
+    condP = models.FloatField()
+    servicio = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    emaf = models.FloatField()
+    iema = models.FloatField()
+    peso = models.FloatField()
+    emafInliers = models.FloatField()
+    iemaInliers = models.FloatField()
+    outliers = models.FloatField()
+    pInt = models.FloatField()
+    pExt = models.FloatField()
+
+    class Meta:
+        verbose_name='ReporteMensual'
+        verbose_name_plural='ReportesMensuales'
+        db_table='reporteMensual'
+
+class Pendientes(models.Model):
+    nombrePendiente = models.CharField(max_length=30)
+    servicio = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name='Pendiente'
+        verbose_name_plural='Pendientes'
+        db_table='pendiente'
+
+class Resumen(models.Model):
+    cama = models.IntegerField()
+    rut = models.ForeignKey(Pacientes, null=True, on_delete=models.CASCADE)
+    nombrePaciente = models.CharField(max_length=30)
+    estancia = models.IntegerField()
+    diagnostico1 = models.CharField(max_length=30)
+    diagnostico2 = models.CharField(max_length=30)
+    ir_grd = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    emNorma = models.IntegerField()
+    pcSuperior = models.IntegerField()
+    pesoGRD = models.FloatField()
+    pago = models.FloatField()
+
+    class Meta:
+        verbose_name='Resumen'
+        verbose_name_plural='Resumenes'
+        db_table='resumen'
+
+
+
+
+
+
+
+
 
