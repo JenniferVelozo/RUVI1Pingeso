@@ -5,7 +5,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Login=()=>{
     const paperStyle={padding :20,height:'70vh',width:280, margin:"20px auto"}
-    const avatarStyle={backgroundColor:'#1bbd7e'}
+    const avatarStyle={backgroundColor:'#005588'}
     return(
         <Grid container spacing={0}>
           <Paper elevation={10} style={paperStyle}>
@@ -14,10 +14,10 @@ const Login=()=>{
                 <h2>Login frontend RUVI1</h2>
             </Grid>
 
-            <TextField id="" label="nombre de usuario" value={'ingrese usuario'} margin="normal" fullWidth required />
-            <TextField id="" label="contraseña" value={'ingrese contraseña'} margin="normal" fullWidth required />
+            <TextField label="nombre de usuario" placeholder="nombre de usuario" margin="normal" fullWidth required />
+            <TextField label="contraseña" placeholder="contraseña" margin="normal" fullWidth required />
 
-            <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />}   >
+            <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" >
                 Ingresar
             </Button>
         
