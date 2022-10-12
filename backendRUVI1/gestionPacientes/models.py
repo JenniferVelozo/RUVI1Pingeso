@@ -107,17 +107,17 @@ class Pendientes(models.Model):
         db_table='pendiente'
 
 class Resumen(models.Model):
-    cama = models.IntegerField()
+    cama = models.CharField(max_length=10,null=True)
     rut = models.CharField(max_length=30,null=True)
-    nombrePaciente = models.CharField(max_length=30)
-    estancia = models.IntegerField()
-    diagnostico1 = models.CharField(max_length=250)
-    diagnostico2 = models.CharField(max_length=250)
-    ir_grd = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
-    emNorma = models.IntegerField()
-    pcSuperior = models.IntegerField()
-    pesoGRD = models.FloatField()
-    pago = models.FloatField()
+    nombrePaciente = models.CharField(max_length=200)
+    estancia = models.CharField(max_length=10,null=True)
+    diagnostico1 = models.CharField(max_length=250, null=True)
+    diagnostico2 = models.CharField(max_length=250, null=True)
+    ir_grd = models.CharField(null=True, max_length=10)
+    emNorma = models.IntegerField(null=True)
+    pcSuperior = models.IntegerField(null=True)
+    pesoGRD = models.FloatField(null=True)
+    pago = models.FloatField(null=True)
 
     class Meta:
         verbose_name='Resumen'
