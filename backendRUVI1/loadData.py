@@ -71,8 +71,7 @@ if __name__=='__main__':
     print("poblando")
     poblar()
     pacientes = load_inicial()
-    Cie10.objects.get()
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    for i in range(len(pacientes)):
-        print(pacientes.iloc[i]['DiagnosticosEpisodio'])
+    #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    #for i in range(len(pacientes)):
+    #    print(pacientes.iloc[i]['DiagnosticosEpisodio'])
 

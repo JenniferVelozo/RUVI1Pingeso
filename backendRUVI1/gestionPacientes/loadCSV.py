@@ -9,19 +9,30 @@ from gestionPacientes.dbConnection import conectar_db, close_session_db
 def load_CIE10_GRD(archivo):
     conn = conectar_db()
     print(conn)
-    cie10 = pd.read_excel(archivo, sheet_name='CIE10 MOD')
-    listaID = arange(1,cie10.shape[0]+1,1).tolist()
-    cie10 = cie10.assign(id=listaID)
+    cie10Bruto = pd.read_excel(archivo, sheet_name='CIE10 MOD')
+    listaID = arange(1,cie10Bruto.shape[0]+1,1).tolist()
+    cie10=pd.DataFrame()
+    cie10=cie10.assign(#id=listaID,
+                        codigo=cie10Bruto["CODIGO"],
+                        diagnostico=cie10Bruto["DIAGNOSTICO"],
+                        sev=cie10Bruto["SEV"],
+                        grd=cie10Bruto["GRD"])
     print(cie10)
-    cie10.to_sql("cie10", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
-    conn.execute('ALTER TABLE cie10 ADD PRIMARY KEY (id);')
+    cie10.to_sql("cie10", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
+    #conn.execute('ALTER TABLE cie10 ADD PRIMARY KEY (id);')
 
-    norma = pd.read_excel(archivo, sheet_name='NORMA')
-    listaID = arange(1,norma.shape[0]+1,1).tolist()
-    norma = norma.assign(id=listaID)
+    normaBruta = pd.read_excel(archivo, sheet_name='NORMA')
+    norma=pd.DataFrame()
+    listaID = arange(1,normaBruta.shape[0]+1,1).tolist()
+    norma= norma.assign(#id=listaID,
+                        ir_grd = normaBruta['IR-GRD CÓDIGO v2.3'],
+                        nombreGRD= normaBruta['NOMBRE GRUPO GRD'],
+                        emInlier = normaBruta['EM \n(inlier)'],
+                        pcSuperior = normaBruta['PC superior'],
+                        pesoGRD = normaBruta['Peso GRD'])
     print(norma)
-    norma.to_sql("norma", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
-    conn.execute('ALTER TABLE norma ADD PRIMARY KEY (id);')
+    norma.to_sql("norma", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
+    #conn.execute('ALTER TABLE norma ADD PRIMARY KEY (id);')
     conn.dispose()
     close_session_db(conn)
 
@@ -30,10 +41,12 @@ def load_prestaciones(archivo):
     conn = conectar_db()
     prestaciones = pd.read_excel(archivo, sheet_name='Prestaciones')
     listaID = arange(1,prestaciones.shape[0]+1,1).tolist()
-    prestaciones = prestaciones.assign(id=listaID)
+   # prestaciones = prestaciones.assign(id=listaID)
     print(prestaciones)
-    prestaciones.to_sql("pendiente", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
-    conn.execute('ALTER TABLE pendiente ADD PRIMARY KEY (id);')
+    prestaciones=prestaciones.rename(columns={"PRESTACIONES": "nombrePendiente",
+                                                "CAUSAS": "causa"})
+    prestaciones.to_sql("pendiente", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
+    #conn.execute('ALTER TABLE pendiente ADD PRIMARY KEY (id);')
     conn.dispose()
     close_session_db(conn)
 

@@ -44,7 +44,7 @@ class Usuarios(models.Model):
 
 class Cie10(models.Model):
     codigo = models.CharField(max_length = 7)
-    diagnostico = models.CharField(max_length = 50)
+    diagnostico = models.CharField(max_length = 250)
     grd = models.CharField(max_length = 10)
     sev = models.CharField(max_length = 3)
     class Meta:
@@ -55,13 +55,10 @@ class Cie10(models.Model):
 
 class Norma(models.Model):
     ir_grd = models.CharField(max_length = 10)
-    nombregrd = models.CharField(max_length = 50)
-    numaltash = models.SmallIntegerField() # creo, preguntar
-    sumaestancia = models.IntegerField( )
-    eminlier = models.FloatField()
-    pcsuperior = models.SmallIntegerField()
-    pesogrd = models.FloatField()
-    preciofonasa = models.FloatField()
+    nombreGRD = models.CharField(max_length = 150)
+    emInlier = models.FloatField()
+    pcSuperior = models.SmallIntegerField()
+    pesoGRD = models.FloatField()
     class Meta:
         verbose_name='Norma'
         verbose_name_plural='Normas'
@@ -72,17 +69,12 @@ class Pacientes(models.Model):
     nombre = models.CharField(max_length=30)
     apellidoPaterno = models.CharField(max_length=30)
     apellidoMaterno = models.CharField(max_length=30)
-    sexo = models.IntegerField()
-    edad = models.IntegerField()
     fechaCarga = models.DateField()
     ultimaCama = models.IntegerField()
     diasEstancia = models.IntegerField()
     servicio= models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
-    previsionDesc = models.CharField(max_length=30)
-    codigoPlanSalud = models.CharField(max_length=10)
-    planSaludDesc = models.CharField(max_length=10)
     fechaIngreso = models.DateField()
-
+    diagnosticos= models.CharField(max_length=250, null=True)
     class Meta:
         verbose_name='Paciente'
         verbose_name_plural='Pacientes'
@@ -108,8 +100,7 @@ class ReporteMensual(models.Model):
 
 class Pendientes(models.Model):
     nombrePendiente = models.CharField(max_length=30)
-    servicio = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
-
+    causa = models.CharField(max_length=40, null=True)
     class Meta:
         verbose_name='Pendiente'
         verbose_name_plural='Pendientes'
@@ -120,8 +111,8 @@ class Resumen(models.Model):
     rut = models.CharField(max_length=30,null=True)
     nombrePaciente = models.CharField(max_length=30)
     estancia = models.IntegerField()
-    diagnostico1 = models.CharField(max_length=30)
-    diagnostico2 = models.CharField(max_length=30)
+    diagnostico1 = models.CharField(max_length=250)
+    diagnostico2 = models.CharField(max_length=250)
     ir_grd = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     emNorma = models.IntegerField()
     pcSuperior = models.IntegerField()
