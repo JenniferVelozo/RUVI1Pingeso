@@ -21,7 +21,7 @@ def leerDf():
 
     archivo = path+'\PACIENTES.xlsx'
     pacientes= pd.read_excel(archivo, sheet_name='NUEVO FORMATO BD')
-
+    print(pacientes)
     # Se recorre el dataframe de los pacientes
     for i in range(len(pacientes)):
         diagnosticos = pacientes.iloc[i]['DiagnosticosEpisodio']  
@@ -44,6 +44,7 @@ def leerDf():
             grd_diagnostico1 = diagnostico1_pd['GRD'].to_frame(name='GRD')
             sev_diagnostico1 = diagnostico1_pd['SEV'].to_frame(name = 'SEV')
             nombre_diagnostico1 = diagnostico1_pd['DIAGNOSTICO'].to_frame(name='DIAGNOSTICO')
+            
 
             if grd_diagnostico1.size != 0:
                 diagnostico_uno = nombre_diagnostico1['DIAGNOSTICO'].values[0]
@@ -95,7 +96,7 @@ def leerDf():
 
 
             if str(pacientes.iloc[i]['UltimaCama']) != 'nan':
-                ult_cama = pacientes.iloc[i]['UltimaCama']
+                ult_cama = str(pacientes.iloc[i]['UltimaCama'])
                 ult_cama = ult_cama[0:9]
             else:
                 ult_cama = ""
@@ -110,11 +111,13 @@ def leerDf():
             # Ahora se busca el código IR-GRD en la norma
             norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
 
-            codigo_norma = codigo_norma+'.0'
+            codigo_norma = codigo_norma
             print("Nuevo cod: ", codigo_norma)
             #print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
             condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma
+            print("condicion 2: ",condicion2)
             fila_norma = norma.loc[condicion2]
+            print(fila_norma)
             #print(fila_norma)
             pc_corte = 0
             peso_grd = 0

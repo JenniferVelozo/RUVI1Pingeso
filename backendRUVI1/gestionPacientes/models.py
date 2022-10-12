@@ -66,9 +66,9 @@ class Norma(models.Model):
 
 class Pacientes(models.Model):
     rut = models.CharField(max_length = 10)
-    nombre = models.CharField(max_length=30)
-    apellidoPaterno = models.CharField(max_length=30)
-    apellidoMaterno = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=75)
+    apellidoPaterno = models.CharField(max_length=75)
+    apellidoMaterno = models.CharField(max_length=75)
     fechaCarga = models.DateField()
     ultimaCama = models.IntegerField()
     diasEstancia = models.IntegerField()
@@ -112,7 +112,7 @@ class Resumen(models.Model):
     nombrePaciente = models.CharField(max_length=200)
     estancia = models.CharField(max_length=10,null=True)
     diagnostico1 = models.CharField(max_length=250, null=True)
-    diagnostico2 = models.CharField(max_length=250, null=True)
+    diagnostico2 = models.CharField(max_length=500, null=True)
     ir_grd = models.CharField(null=True, max_length=10)
     emNorma = models.IntegerField(null=True)
     pcSuperior = models.IntegerField(null=True)
