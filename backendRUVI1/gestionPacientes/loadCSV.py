@@ -3,7 +3,7 @@ import pandas as pd
 from numpy import arange
 from sqlalchemy import create_engine
 import sqlalchemy as sqlalchemy
-from gestionPacientes.dbConnection import conectar_db
+from gestionPacientes.dbConnection import conectar_db, close_session_db
 
 
 def load_CIE10_GRD(archivo):
@@ -23,6 +23,7 @@ def load_CIE10_GRD(archivo):
     norma.to_sql("norma", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     conn.execute('ALTER TABLE norma ADD PRIMARY KEY (id);')
     conn.dispose()
+    close_session_db(conn)
 
 
 def load_prestaciones(archivo):
@@ -34,7 +35,19 @@ def load_prestaciones(archivo):
     prestaciones.to_sql("pendiente", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     conn.execute('ALTER TABLE pendiente ADD PRIMARY KEY (id);')
     conn.dispose()
+    close_session_db(conn)
 
+def load_pacientes(archivo):
+    conn = conectar_db()
+    pacientes = pd.read_excel(archivo, sheet_name='NUEVO FORMATO BD')
+    listaID = arange(1,pacientes.shape[0]+1,1).tolist()
+    pacientes = pacientes.assign(id=listaID)
+    print(pacientes)
+    pacientes.to_sql("paciente", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
+    conn.execute('ALTER TABLE paciente ADD PRIMARY KEY (id);')
+    conn.dispose()
+    close_session_db(conn)
+    return pacientes
 
 def load_inicial():
     print("Aquí leemos los archivos CIE 10 y Norma y los almacenamos en la DB")
@@ -42,11 +55,21 @@ def load_inicial():
     archivo = path+'\CIE10-GRD.xlsm'
     print(archivo)
     load_CIE10_GRD(archivo)
+    
 
     path = os.path.dirname(os.path.realpath(__file__))
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     print(archivo)
     load_prestaciones(archivo)
 
+    path = os.path.dirname(os.path.realpath(__file__))
+    archivo = path+'\PACIENTES.xlsx'
+    load_pacientes(archivo)
+
+
 if __name__=='__main__':
-    load_inicial()
+    pacientes = load_inicial()
+    
+    
+
+

@@ -117,7 +117,7 @@ class Pendientes(models.Model):
 
 class Resumen(models.Model):
     cama = models.IntegerField()
-    rut = models.ForeignKey(Pacientes, null=True, on_delete=models.CASCADE)
+    rut = models.CharField(max_length=30,null=True)
     nombrePaciente = models.CharField(max_length=30)
     estancia = models.IntegerField()
     diagnostico1 = models.CharField(max_length=30)
