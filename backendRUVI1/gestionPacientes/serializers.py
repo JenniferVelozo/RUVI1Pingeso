@@ -14,5 +14,10 @@ class ServicioSerializer(serializers.ModelSerializer):
 
 class RolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Servicio
+        model = Roles
+        fields = '__all__'
+
+class ResumenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resumen
         fields = '__all__'

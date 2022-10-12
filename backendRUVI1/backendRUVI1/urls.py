@@ -25,6 +25,7 @@ router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'servicios', ServicioViewSet)
 router.register(r'rol', RolViewSet)
+router.register(r'resumen', ResumenViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [

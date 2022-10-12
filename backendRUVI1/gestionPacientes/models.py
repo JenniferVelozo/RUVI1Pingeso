@@ -117,7 +117,6 @@ class Resumen(models.Model):
     emNorma = models.IntegerField(null=True)
     pcSuperior = models.IntegerField(null=True)
     pesoGRD = models.FloatField(null=True)
-    pago = models.FloatField(null=True)
 
     class Meta:
         verbose_name='Resumen'

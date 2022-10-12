@@ -30,3 +30,7 @@ class ServicioViewSet(viewsets.ModelViewSet):
 class RolViewSet(viewsets.ModelViewSet):
     serializer_class = RolSerializer
     queryset = Roles.objects.all()
+
+class ResumenViewSet(viewsets.ModelViewSet):
+    serializer_class = ResumenSerializer
+    queryset = Resumen.objects.all()

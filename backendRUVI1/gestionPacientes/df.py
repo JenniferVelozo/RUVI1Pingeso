@@ -96,6 +96,7 @@ def leerDf():
 
             if str(pacientes.iloc[i]['UltimaCama']) != 'nan':
                 ult_cama = pacientes.iloc[i]['UltimaCama']
+                ult_cama = ult_cama[0:9]
             else:
                 ult_cama = ""
             
@@ -137,8 +138,7 @@ def leerDf():
 
 
             rut = pacientes.iloc[i]['RUNPaciente']
-            nombre = pacientes.iloc[i]['NombrePaciente']+" "+pacientes.iloc[i]['ApellidoPaterno']+" "+pacientes.iloc[i]['ApellidoMaterno']
-            estancia = pacientes.iloc[i]['DíasEstada']
+            nombre = str(pacientes.iloc[i]['NombrePaciente'])+" "+str(pacientes.iloc[i]['ApellidoPaterno'])+" "+str(pacientes.iloc[i]['ApellidoMaterno'])
             resumen = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)[0]
 
             
