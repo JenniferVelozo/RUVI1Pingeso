@@ -1,5 +1,7 @@
+
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from django.core import serializers
 from gestionPacientes.models import *
 
@@ -7,16 +9,18 @@ from .serializers import *
 from django.http import HttpResponse
 
 # Create your views here.
-def usuarios(request):
-    data = Usuarios.objects.all()
-    print(data)
-
-    data1 = serializers.serialize('json', data)
-    print(data1)
-
-
-    return HttpResponse(data1, content_type='application/json')
-
+@api_view(['POST'])
+def comprobar(request):
+    print(request.data)
+    user=request.data
+    data = Usuarios.objects.get(nickname=user['nickname'])
+    if data.password==user['password']:
+        #return HttpResponse(data, content_type='application/json')
+        user=[{'entra': 'SI'}]
+        return HttpResponse(user, content_type='application/json')
+    user=[{'entra': 'NO'}]
+    return HttpResponse(user, content_type='application/json')
+    
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
