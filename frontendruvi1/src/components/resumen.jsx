@@ -89,13 +89,13 @@ function ShowTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getResumen().data
+            {listResumen
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((resumen) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={resumen.code}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value = resumen[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {column.format && typeof value === 'number'
@@ -113,7 +113,7 @@ function ShowTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={listResumen.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
