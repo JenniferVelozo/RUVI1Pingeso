@@ -9,6 +9,11 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 const Home =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
+
+    const navigateResumen = () => {
+        window.location.href = '/resumen';
+    }
+
     return(
         <div classname="home">
             <div className='App d-flex justify-content-center align-items-center'>
@@ -31,7 +36,7 @@ const Home =()=>{
                     <Grid align='center'>
                         <Avatar style={avatarStyle}><AccessAlarmIcon/></Avatar>
                         <h5>Pendientes</h5>
-                        <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                        <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" onClick={navigateResumen}></Button>
                     </Grid>
                 </Paper>
             </Grid>

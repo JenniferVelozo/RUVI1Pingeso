@@ -6,6 +6,7 @@ import Register from './components/register';
 import Resumen from './components/resumen';
 import Lala from './components/lala';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import BasicSelect from './components/lala';
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
               <Route path='/home' element={<Home/>} />
               <Route path='/register' element={<Register/>} />
               <Route path='/resumen' element={<Resumen/>} />
-              <Route path='/lala' element={<Lala/>} />
+              <Route path='/lala' element={<BasicSelect/>} />
           </Routes>
         </div>
       </Router>

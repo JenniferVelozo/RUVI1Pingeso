@@ -4,10 +4,39 @@ import Logo from "./Logo.js";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import { Component, useState, useEffect} from 'react';
+import axios from 'axios';
 
-const Register=()=>{
+function Register(){
     const paperStyle={padding :20,height:'80vh',width:260, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#005588', width:60,height:60}
+
+    const [evento, setEvento] = React.useState('');
+    const handleChange = (event) => {setEvento(event.target.value);};
+
+    const [ listRoles, setListRoles ] = useState([])
+    const [ listServicios, setListServicios ] = useState([])
+
+    useEffect(() => {
+        getRoles() 
+    },[])
+
+    useEffect(() => {
+        getServicios() 
+    },[])
+
+    const getRoles = async() => {
+        const { data } = await axios.get('http://localhost:8000/rol/')
+        setListRoles(data)
+        console.log(data)
+    }
+
+    const getServicios = async() => {
+        const { data } = await axios.get('http://localhost:8000/servicios/')
+        setListServicios(data)
+        console.log(data)
+    }
+
     return(
         <div className='register'>
             <div className='App d-flex justify-content-center align-items-center'>
@@ -26,19 +55,19 @@ const Register=()=>{
 
                     <FormControl margin="normal" fullWidth required>
                         <InputLabel id="rol">Rol</InputLabel>
-                        <Select labelId="rol" id="rol" label="Rol" >
-                            <MenuItem value={1}>rol ejemplo 1</MenuItem>
-                            <MenuItem value={2}>rol ejemplo 2</MenuItem>
-                            <MenuItem value={3}>rol ejemplo 3</MenuItem>
+                        <Select labelId="rol" id="rol" label="Rol" onChange={handleChange} >
+                        { listRoles.map(roles => (
+                            <MenuItem value={roles.id}>{roles.nombre}</MenuItem>
+                        ))}
                         </Select>
                     </FormControl>
 
                     <FormControl margin="normal" fullWidth required>
                         <InputLabel id="servicio">Servicio</InputLabel>
-                        <Select labelId="servicio" id="servicio" label="Servicio" >
-                            <MenuItem value={1}>servicio ejemplo 1</MenuItem>
-                            <MenuItem value={2}>servicio ejemplo 2</MenuItem>
-                            <MenuItem value={3}>servicio ejemplo 3</MenuItem>
+                        <Select labelId="servicio" id="servicio" label="Servicio" onChange={handleChange} >
+                        { listServicios.map(servicios => (
+                            <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
+                        ))}
                         </Select>
                     </FormControl>
 
