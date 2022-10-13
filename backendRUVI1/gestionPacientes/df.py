@@ -127,7 +127,7 @@ def leerDf():
             else:
                 pc_corte = fila_norma['PC superior'].values[0]
                 peso_grd = fila_norma['Peso GRD'].values[0]
-                em_norma = fila_norma['EM \n(inlier)'].values[0]
+                em_norma = float(fila_norma['EM \n(inlier)'].values[0])
 
 
                 

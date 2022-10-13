@@ -37,7 +37,8 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <Box sx={{ display: 'flex' }}>
+    <AppBar component='nav'>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
          <Logo/>
@@ -163,6 +164,7 @@ const ResponsiveAppBar = () => {
         </Toolbar>
       </Container>
     </AppBar>
+    </Box>
   );
 };
 export default ResponsiveAppBar;

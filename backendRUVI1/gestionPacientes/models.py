@@ -114,7 +114,7 @@ class Resumen(models.Model):
     diagnostico1 = models.CharField(max_length=250, null=True)
     diagnostico2 = models.CharField(max_length=500, null=True)
     ir_grd = models.CharField(null=True, max_length=10)
-    emNorma = models.IntegerField(null=True)
+    emNorma = models.FloatField(null=True)
     pcSuperior = models.IntegerField(null=True)
     pesoGRD = models.FloatField(null=True)
 
