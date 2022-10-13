@@ -5,11 +5,15 @@ import { Container, Paper, TextField,Button, Stack, Box, Table, TableBody, Table
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { Component, useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
+import { darken, lighten } from '@mui/material/styles';
+
+
 
 
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
-  { field: 'cama', headerName: 'Cama', width: 55},
+  { field: 'criterio', headerName: 'Criterio', width: 80},
+  { field: 'cama', headerName: 'Cama', width: 70},
   { field: 'rut', headerName: 'Rut', width: 100},
   { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
   { field: 'estancia', headerName: 'Estancia', width: 80 },
@@ -21,6 +25,7 @@ const columns = [
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
   { field: 'pendiente', headerName: 'Pendiente', width: 100 },
   { field: 'editar', headerName: 'Editar', width: 100 },
+  
 ];
 
 function createData(id, cama, rut, nombrePaciente, estancia, diagnostico1, diagnostico2, ir_grd, emNorma, pcSuperior, pesoGRD) {
@@ -46,6 +51,9 @@ function ShowTable() {
           if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
           }
+          if (data[i].pcSuperior !== 0){
+          data[i].criterio = (data[i].estancia/data[i].pcSuperior);
+          }
        }
         setListResumen(data)
         console.log(data)
@@ -53,7 +61,34 @@ function ShowTable() {
 
 
   return (
+    <Box
+      sx={{
+        height: 300,
+        width: '100%',
+        '& .cold': {
+          backgroundColor: '#c9ffb8',
+          color: '#1a3e72',
+        },
+        '& .mediumcold': {
+          backgroundColor: '#b9d5ff91',
+          color: '#1a3e72',
+        },
+        '& .hot': {
+          backgroundColor: '#ff3838',
+          color: '#1a3e72',
+        },
+        '& .mediumhot': {
+          backgroundColor: '#ff943975',
+          color: '#1a3e72',
+        },
+      }}
+    >
       <DataGrid
+        getCellClassName={(params) => {
+        if (params.field !== 'criterio' || params.value == null) {
+          return '';
+        }
+        return params.value >= 1.5 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
         autoHeight
         autoWidth
         rows={listResumen}
@@ -67,6 +102,7 @@ function ShowTable() {
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
       />
+      </Box>
   );
 }
 
