@@ -3,10 +3,7 @@ from cmath import nan
 import os
 import pandas as pd
 
-
 from gestionPacientes.models import Resumen
-
-
 
 def leerDf():
     path = os.path.dirname(os.path.realpath(__file__))
@@ -120,8 +117,6 @@ def leerDf():
         print("El código norma es: ", codigo_norma)
         print("El largo código norma es: ", len(codigo_norma))
         
-        
-
         # Ahora se busca el código IR-GRD en la norma
         norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
 
@@ -145,8 +140,6 @@ def leerDf():
         print(" El puntaje de corte es: ",pc_corte)
         print(" El peso grd es : ", peso_grd)
         print(" El EM es: ", em_norma)
-        #fila_norma = fila_norma[:].to_frame(name='Peso GRD')
-        #print(fila_norma)
 
         a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
 
