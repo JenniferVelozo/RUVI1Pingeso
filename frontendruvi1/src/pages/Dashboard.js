@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { setUserInfo, unsetUserInfo } from '../features/userSlice';
 const Dashboard = () => {
   const handleLogout = () => {
-    dispatch(unsetUserInfo({ name: "", email: "" }))
+    dispatch(unsetUserInfo({ name: "", nickname: "" }))
     dispatch(unSetUserToken({ access_token: null }))
     removeToken()
     navigate('/login')
@@ -18,17 +18,23 @@ const Dashboard = () => {
   const dispatch = useDispatch()
   const { access_token } = getToken()
   const { data, isSuccess } = useGetLoggedUserQuery(access_token)
+  console.log(data)
+  console.log(isSuccess)
 
   const [userData, setUserData] = useState({
-    email: "",
+    nickname: "",
     name: ""
   })
 
   // Store User Data in Local State
   useEffect(() => {
+    console.log("entra aquí")
+    console.log(data)
+    console.log(isSuccess)
     if (data && isSuccess) {
+      console.log("entra aquí2")
       setUserData({
-        email: data.email,
+        nickname: data.nickname,
         name: data.name,
       })
     }
@@ -39,7 +45,7 @@ const Dashboard = () => {
     if (data && isSuccess) {
       console.log("entra")
       dispatch(setUserInfo({
-        email: data.email,
+        nickname: data.nickname,
         name: data.name
       }))
     }
@@ -50,9 +56,8 @@ const Dashboard = () => {
     <Grid container>
       <Grid item sm={4} sx={{ backgroundColor: 'gray', p: 5, color: 'white' }}>
         <h1>Dashboard</h1>
-        <Typography variant='h5'>Email aaaa: {userData.email}</Typography>
-        <Typography variant='h6'>Name: {userData.name}</Typography>
-        <Button variant='contained' color='warning' size='large' onClick={handleLogout} sx={{ mt: 8 }}>Logout</Button>
+        <Typography variant='h5'>Nickname: {userData.nickname}</Typography>
+        <Button variant='contained' color='warning' size='large' onClick={handleLogout} sx={{ mt: 8 }}>Cerrar sesión</Button>
       </Grid>
       <Grid item sm={8}>
         <ChangePassword />
