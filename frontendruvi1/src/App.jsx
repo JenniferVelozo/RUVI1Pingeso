@@ -7,6 +7,7 @@ import Resumen from './components/resumen';
 import Lala from './components/lala';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import BasicSelect from './components/lala';
+import Config from './components/config';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
               <Route path='/register' element={<Register/>} />
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
+              <Route path='/config' element={<Config/>} />
           </Routes>
         </div>
       </Router>
