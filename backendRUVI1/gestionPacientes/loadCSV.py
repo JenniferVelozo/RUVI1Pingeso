@@ -3,8 +3,9 @@ import pandas as pd
 from numpy import arange
 from sqlalchemy import create_engine
 import sqlalchemy as sqlalchemy
-from gestionPacientes.dbConnection import conectar_db, close_session_db
 
+from gestionPacientes.dbConnection import conectar_db, close_session_db
+from datetime import date
 
 def load_CIE10_GRD(archivo):
     conn = conectar_db()
@@ -23,7 +24,6 @@ def load_CIE10_GRD(archivo):
 
     normaBruta = pd.read_excel(archivo, sheet_name='NORMA')
     norma=pd.DataFrame()
-    listaID = arange(1,normaBruta.shape[0]+1,1).tolist()
     norma= norma.assign(#id=listaID,
                         ir_grd = normaBruta['IR-GRD CÓDIGO v2.3'],
                         nombreGRD= normaBruta['NOMBRE GRUPO GRD'],
@@ -40,7 +40,6 @@ def load_CIE10_GRD(archivo):
 def load_prestaciones(archivo):
     conn = conectar_db()
     prestaciones = pd.read_excel(archivo, sheet_name='Prestaciones')
-    listaID = arange(1,prestaciones.shape[0]+1,1).tolist()
    # prestaciones = prestaciones.assign(id=listaID)
     print(prestaciones)
     prestaciones=prestaciones.rename(columns={"PRESTACIONES": "nombrePendiente",
@@ -52,12 +51,24 @@ def load_prestaciones(archivo):
 
 def load_pacientes(archivo):
     conn = conectar_db()
-    pacientes = pd.read_excel(archivo, sheet_name='NUEVO FORMATO BD')
-    listaID = arange(1,pacientes.shape[0]+1,1).tolist()
-    pacientes = pacientes.assign(id=listaID)
+    pacientesBruto = pd.read_excel(archivo, sheet_name='DEFINITIVO')
+    pacientes=pd.DataFrame()
+    fecha= date.today()
+    pacientes= pacientes.assign(rut = pacientesBruto['RUNPaciente'],
+                        nombre = pacientesBruto['NombrePaciente'],
+                        apellidoPaterno = pacientesBruto['ApellidoPaterno'],
+                        apellidoMaterno = pacientesBruto['ApellidoMaterno'],
+                        fechaCarga = str(fecha.year)+'/'+str(fecha.month)+'/'+str(fecha.day),
+                        ultimaCama = pacientesBruto['UltimaCama'],
+                        diasEstancia = pacientesBruto['DíasEstada'],
+                        servicio= pacientesBruto['UltimoServicioClínico_Desc'], 
+                        fechaIngreso = pacientesBruto['FechaEpisodio'],
+                        diagnosticoPricipal= pacientesBruto['DiagnosticoPrincipal'],
+                        diagnosticoSecundario= pacientesBruto['ListaDiagnosticosEpisodio'])
+    
     print(pacientes)
-    pacientes.to_sql("paciente", con=conn, if_exists="replace", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
-    conn.execute('ALTER TABLE paciente ADD PRIMARY KEY (id);')
+    
+    pacientes.to_sql("paciente", con=conn, if_exists="append", index=False)
     conn.dispose()
     close_session_db(conn)
     return pacientes
