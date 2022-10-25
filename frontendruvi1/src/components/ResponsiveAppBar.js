@@ -13,9 +13,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Logo from "./Logo.js";
+import ModalPopup from "./ModalPopup";
+import Link from '@mui/material/Link';
 
 const pages = ['Menú', 'Añadir usuario'];
-const settings = ['Cuenta', 'Cerrar sesión'];
+const settings = ['Configuración', 'Cerrar sesión'];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -117,13 +119,7 @@ const ResponsiveAppBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
+              <ModalPopup/>
             ))}
           </Box>
 
@@ -154,7 +150,7 @@ const ResponsiveAppBar = () => {
                   {setting == 'Cerrar sesión' ? (
                     <Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography>
                   ) : (
-                    <Typography textAlign="center">{setting}</Typography>
+                    <Link href="/config" underline="hover"><Typography textAlign="center">{setting}</Typography></Link>
                   )}
                   
                 </MenuItem>

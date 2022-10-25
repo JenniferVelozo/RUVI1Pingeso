@@ -67,16 +67,17 @@ class Norma(models.Model):
         db_table='norma'
 
 class Pacientes(models.Model):
-    rut = models.CharField(max_length = 10)
-    nombre = models.CharField(max_length=75)
-    apellidoPaterno = models.CharField(max_length=75)
-    apellidoMaterno = models.CharField(max_length=75)
-    fechaCarga = models.DateField()
-    ultimaCama = models.IntegerField()
-    diasEstancia = models.IntegerField()
-    servicio= models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
-    fechaIngreso = models.DateField()
-    diagnosticos= models.CharField(max_length=250, null=True)
+    rut = models.CharField(max_length = 10, null=True)
+    nombre = models.CharField(max_length=75, null=True)
+    apellidoPaterno = models.CharField(max_length=75, null=True)
+    apellidoMaterno = models.CharField(max_length=75, null=True)
+    fechaCarga = models.DateField(null=True)
+    ultimaCama = models.CharField(max_length=75,null=True)
+    diasEstancia = models.IntegerField(null=True)
+    servicio= models.CharField(max_length=100, null=True)
+    fechaIngreso = models.DateField(null=True)
+    diagnosticoPricipal= models.CharField(max_length=250, null=True)
+    diagnosticoSecundario= models.CharField(max_length=250, null=True)
     class Meta:
         verbose_name='Paciente'
         verbose_name_plural='Pacientes'

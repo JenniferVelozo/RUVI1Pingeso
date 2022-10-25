@@ -1,5 +1,6 @@
 import React from 'react';
 
+<<<<<<< HEAD
 //import Login from './components/login';
 //import Home from './components/home';
 //import Register from './components/register';
@@ -7,6 +8,16 @@ import React from 'react';
 //import Lala from './components/lala';
 //import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 //import BasicSelect from './components/lala';
+=======
+import Login from './components/login';
+import Home from './components/home';
+import Register from './components/register';
+import Resumen from './components/resumen';
+import Lala from './components/lala';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import BasicSelect from './components/lala';
+import Config from './components/config';
+>>>>>>> main
 
 
 /* Intento de login */
@@ -55,7 +66,11 @@ function App() {
               <Route path='/register' element={<Register/>} />
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
+<<<<<<< HEAD
               
+=======
+              <Route path='/config' element={<Config/>} />
+>>>>>>> main
           </Routes>
         </div>
       </Router>

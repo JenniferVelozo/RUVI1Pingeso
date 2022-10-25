@@ -3,7 +3,7 @@ from cmath import nan
 import os
 import pandas as pd
 
-from gestionPacientes.models import Resumen
+from gestionPacientes.models import Resumen, Pacientes
 
 def leerDf():
     path = os.path.dirname(os.path.realpath(__file__))
@@ -13,12 +13,12 @@ def leerDf():
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.xlsx'
-    pacientes= pd.read_excel(archivo, sheet_name='NUEVO FORMATO BD')
+    pacientes= pd.read_excel(archivo, sheet_name='DEFINITIVO')
     print(pacientes)
 
     # Se recorre el dataframe de los pacientes
     for i in range(len(pacientes)):
-        diagnosticos = pacientes.iloc[i]['DiagnosticosEpisodio']  
+        
 
         # Si el paciente no tiene rut, se deja como string vacío 
         if str(pacientes.iloc[i]['RUNPaciente']) == 'nan':
@@ -49,11 +49,12 @@ def leerDf():
         
         #grd = 0
         #sev = 0
-
-        if str(diagnosticos) != 'nan':
-            diagnosticos = diagnosticos.split(',')
-            diagnostico1 = diagnosticos[0]
-            diagnostico2 = diagnosticos[1:len(diagnosticos)]
+        diagnostico1 = pacientes.iloc[i]['DiagnosticoPrincipal']  
+        if str(diagnostico1) != 'nan':
+            #diagnosticos = pacientes.iloc[i]['DiagnosticosEpisodio']  
+            #diagnosticos = diagnosticos.split(',')
+            #diagnostico1 = pacientes.iloc[i]['DiagnosticoPrincipal']  
+            diagnostico2 = pacientes.iloc[i]['ListaDiagnosticosEpisodio']  
             
             # Aquí busca el código del diagnóstico en el CIE10
             condicion = cie10.loc[:, 'CODIGO'] == diagnostico1
@@ -142,7 +143,6 @@ def leerDf():
         print(" El EM es: ", em_norma)
 
         a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
-
         print(a.save())
 
 if __name__=='__main__':
