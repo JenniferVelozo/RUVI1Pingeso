@@ -142,7 +142,11 @@ def leerDf():
         print(" El peso grd es : ", peso_grd)
         print(" El EM es: ", em_norma)
 
-        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
+        criterio = NULL
+        if em_norma!=0:
+            criterio=int(dias_estada)/float(em_norma)
+        
+        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, criterio=criterio, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
         print(a.save())
 
 if __name__=='__main__':
