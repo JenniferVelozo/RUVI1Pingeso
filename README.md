@@ -11,3 +11,17 @@ python manage.py check gestionPacientes
 python manage.oy makemigrations  -> esto crea los archivos en la carpeta migrations. Luego de ejecutar este comando aparece un nro, como 0001_initial.py
 python manage.py sqlmigrate gestionPacientes 0001  (el nro que se menciona arriba)
 python manage.py migrate  (se migra todo a la base de datos)
+
+Clonación git desde 0:
+
+En la carpeta back:
+
+python manage.py migrate --run-syncdb
+python loadData.py
+python load_dataframes.py
+levantar back --> python manage.py runserver
+
+En la carpeta front:
+
+npm i react
+levantar front --> npm start
