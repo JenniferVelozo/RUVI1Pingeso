@@ -114,6 +114,7 @@ class Resumen(models.Model):
     rut = models.CharField(max_length=30,null=True)
     nombrePaciente = models.CharField(max_length=200)
     estancia = models.CharField(max_length=10,null=True)
+    criterio =models.FloatField(null=True)
     diagnostico1 = models.CharField(max_length=250, null=True)
     diagnostico2 = models.CharField(max_length=500, null=True)
     ir_grd = models.CharField(null=True, max_length=10)
