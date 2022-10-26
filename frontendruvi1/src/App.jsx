@@ -1,23 +1,15 @@
 import React from 'react';
 
-<<<<<<< HEAD
-//import Login from './components/login';
-//import Home from './components/home';
-//import Register from './components/register';
-//import Resumen from './components/resumen';
-//import Lala from './components/lala';
-//import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-//import BasicSelect from './components/lala';
-=======
+
 import Login from './components/login';
-import Home from './components/home';
+//import Home from './components/home';
 import Register from './components/register';
 import Resumen from './components/resumen';
-import Lala from './components/lala';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+//import Lala from './components/lala';
+import { BrowserRouter as Router,  Link } from 'react-router-dom';
 import BasicSelect from './components/lala';
 import Config from './components/config';
->>>>>>> main
+
 
 
 /* Intento de login */
@@ -30,8 +22,10 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import { useSelector } from "react-redux";
+import UserLogin from './pages/auth/UserLogin';
+import Registration from './pages/auth/Registration';
 
-
+/*
 function App() {
   const { access_token } = useSelector(state => state.auth)
   return (
@@ -40,7 +34,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="login" element={!access_token ? <LoginReg /> : <Navigate to="/dashboard" />} />
+            <Route path="login" element={!access_token ? <UserLogin /> : <Navigate to="/dashboard" />} />
+            <Route path="register" element={<Registration />} />
             <Route path="sendpasswordresetemail" element={<SendPasswordResetEmail />} />
             <Route path="api/user/reset/:id/:token" element={<ResetPassword />} />
           </Route>
@@ -51,30 +46,26 @@ function App() {
     </>
   );
 }
+*/
 
 
-/*
------ LO QUE ESTABA ANTES ----------- 
+//----- LO QUE ESTABA ANTES ----------- 
 function App() {
-  
+  const { access_token } = useSelector(state => state.auth)
   return (
     <Router>
         <div>
           <Routes>
-              <Route exact path='/' element={<Login/>} />
+              <Route path='/' element={!access_token ? <UserLogin /> : <Navigate to="/dashboard" />} />
               <Route path='/home' element={<Home/>} />
-              <Route path='/register' element={<Register/>} />
+              <Route path='/register' element={<Registration/>} />
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
-<<<<<<< HEAD
-              
-=======
               <Route path='/config' element={<Config/>} />
->>>>>>> main
           </Routes>
         </div>
       </Router>
   );
-}*/
+}
 
 export default App;

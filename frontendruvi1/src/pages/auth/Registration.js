@@ -1,10 +1,44 @@
-import { TextField, FormControlLabel, Checkbox, Button, Box, Alert, Typography } from '@mui/material';
+import { Avatar, Paper, TextField, FormControlLabel, FormControl, InputLabel, Checkbox, Button, Box, Grid, Alert, Typography, MenuItem, Select} from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from '../../services/userAuthApi'
 import { storeToken } from '../../services/LocalStorageService';
+import ResponsiveAppBar from '../../components/ResponsiveAppBar';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import React from 'react';
+import { Component, useEffect} from 'react';
+import axios from 'axios';
 
 const Registration = () => {
+  const paperStyle={padding :30,height:'100vh',width:260, margin:"40px auto"}
+  const avatarStyle={backgroundColor:'#005588', width:60,height:60}
+
+  const [evento, setEvento] = React.useState('');
+  const handleChange = (event) => {setEvento(event.target.value);};
+
+  const [ listRoles, setListRoles ] = useState([])
+  const [ listServicios, setListServicios ] = useState([])
+
+  useEffect(() => {
+    getRoles() 
+  },[])
+
+  useEffect(() => {
+      getServicios() 
+  },[])
+
+  const getRoles = async() => {
+    const { data } = await axios.get('http://localhost:8000/rol/')
+    setListRoles(data)
+    console.log(data)
+  }
+
+  const getServicios = async() => {
+      const { data } = await axios.get('http://localhost:8000/servicios/')
+      setListServicios(data)
+      console.log(data)
+  }
+
   const [server_error, setServerError] = useState({})
   const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation()
@@ -37,6 +71,15 @@ const Registration = () => {
   }
   return <>
     {}
+    <div className='register'> 
+      <div className='App d-flex justify-content-center align-items-center'>
+        <ResponsiveAppBar/>
+      </div>
+    <Grid container spacing={0}> 
+    <Paper elevation={10} style={paperStyle}>
+    <Grid align='center'>
+        <Avatar style={avatarStyle}><PersonAddAltIcon/></Avatar>
+    </Grid>
     <Box component='form' noValidate sx={{ mt: 1 }} id='registration-form' onSubmit={handleSubmit}>
     
       <TextField margin='normal' required fullWidth id='nickname' name='nickname' label='Nickname' />
@@ -51,10 +94,25 @@ const Registration = () => {
       <TextField margin='normal' required fullWidth id='rut' name='rut' label='Rut' />
       {server_error.rut ? <Typography style={{ fontSize: 12, color: 'red', paddingLeft: 10 }}>{server_error.rut[0]}</Typography> : ""}
 
-      <TextField margin='normal' required fullWidth id='servicio' name='servicio' label='Servicio' />
+      <FormControl margin="normal" fullWidth required>
+                        <InputLabel id="servicio">Servicio</InputLabel>
+                        <Select labelId="servicio" id="servicio" label="Servicio" onChange={handleChange} >
+                        { listServicios.map(servicios => (
+                            <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
+                        ))}
+                        </Select>
+                    </FormControl>
       {server_error.servicio ? <Typography style={{ fontSize: 12, color: 'red', paddingLeft: 10 }}>{server_error.servicio[0]}</Typography> : ""}
-
-      <TextField margin='normal' required fullWidth id='rol' name='rol' label='Rol' />
+      
+      <FormControl margin="normal" fullWidth required>
+                        <InputLabel id="rol">Rol</InputLabel>
+                        <Select labelId="rol" id="rol" label="Rol" onChange={handleChange} >
+                        { listRoles.map(roles => (
+                            <MenuItem value={roles.id}>{roles.nombre}</MenuItem>
+                        ))}
+                        </Select>
+                    </FormControl>
+      
       {server_error.rol ? <Typography style={{ fontSize: 12, color: 'red', paddingLeft: 10 }}>{server_error.rol[0]}</Typography> : ""}
 
       <TextField margin='normal' required fullWidth id='password' name='password' label='Contraseña' type='password' />
@@ -68,7 +126,14 @@ const Registration = () => {
       </Box>
       {server_error.non_field_errors ? <Alert severity='error'>{server_error.non_field_errors[0]}</Alert> : ''}
     </Box>
+    </Paper>
+    </Grid>
+    </div>
   </>;
 };
 
 export default Registration;
+
+
+
+

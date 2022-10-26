@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar";
 
 const Layout = () => {
   return <>
-    <CssBaseline />
-    <Navbar />
+
+
     <Outlet />
   </>;
 };
