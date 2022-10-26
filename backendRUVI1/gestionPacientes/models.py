@@ -179,8 +179,8 @@ class User(AbstractBaseUser):
     nickname = models.CharField(max_length = 20, unique = True)
     password = models.CharField(max_length = 100)
     rut = models.CharField(max_length = 20)
-    servicio= models.CharField(max_length = 20)
-    rol = models.CharField(max_length = 20)
+    servicio= models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Roles, null=True, on_delete=models.CASCADE)
     class Meta:
         verbose_name='User'
         verbose_name_plural='Users'

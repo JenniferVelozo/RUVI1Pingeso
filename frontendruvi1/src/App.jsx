@@ -56,12 +56,13 @@ function App() {
     <Router>
         <div>
           <Routes>
-              <Route path='/' element={!access_token ? <UserLogin /> : <Navigate to="/dashboard" />} />
+              <Route path='/login' element={!access_token ? <UserLogin /> : <Navigate to="/dashboard" />} />
               <Route path='/home' element={<Home/>} />
               <Route path='/register' element={<Registration/>} />
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
               <Route path='/config' element={<Config/>} />
+              <Route path="/dashboard" element={access_token ? <Dashboard /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </Router>

@@ -9,12 +9,21 @@ import React from 'react';
 import { Component, useEffect} from 'react';
 import axios from 'axios';
 
+const valor1="";
 const Registration = () => {
   const paperStyle={padding :30,height:'100vh',width:260, margin:"40px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
 
-  const [evento, setEvento] = React.useState('');
-  const handleChange = (event) => {setEvento(event.target.value);};
+  const [evento1, setEvento] = React.useState('');
+  
+  const handleChange1 = (event) => {setEvento(event.target.value);
+  };
+
+  const [evento2, setEvento2] = React.useState('');
+  const handleChange2 = (event2) => {setEvento2(event2.target.value);
+  };
+
+  
 
   const [ listRoles, setListRoles ] = useState([])
   const [ listServicios, setListServicios ] = useState([])
@@ -42,18 +51,28 @@ const Registration = () => {
   const [server_error, setServerError] = useState({})
   const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation()
+  
+
   const handleSubmit = async (e) => {
+    
+
     e.preventDefault();
     const data = new FormData(e.currentTarget);
+
+    console.log("aaaaa1")
+    console.log(evento1)
+    console.log("aaaaa2")
+    console.log(evento2)
     const actualData = {
       nickname: data.get('nickname'),
       nombre: data.get('nombre'),
       apellido: data.get('apellido'),
       rut: data.get('rut'),
-      servicio: data.get('servicio'),
-      rol: data.get('rol'),
+      servicio: evento1,
+      rol: evento2,
       password: data.get('password'),
       password2: data.get('password2'),
+      
     }
     const res = await registerUser(actualData)
     if (res.error) {
@@ -96,23 +115,25 @@ const Registration = () => {
 
       <FormControl margin="normal" fullWidth required>
                         <InputLabel id="servicio">Servicio</InputLabel>
-                        <Select labelId="servicio" id="servicio" label="Servicio" onChange={handleChange} >
+                        <Select labelId="servicio" id="servicio" label="Servicio" onChange={handleChange1} >
                         { listServicios.map(servicios => (
                             <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
                         ))}
                         </Select>
                     </FormControl>
+      
       {server_error.servicio ? <Typography style={{ fontSize: 12, color: 'red', paddingLeft: 10 }}>{server_error.servicio[0]}</Typography> : ""}
       
       <FormControl margin="normal" fullWidth required>
                         <InputLabel id="rol">Rol</InputLabel>
-                        <Select labelId="rol" id="rol" label="Rol" onChange={handleChange} >
+                        <Select labelId="rol" id="rol" label="Rol" onChange={handleChange2} >
                         { listRoles.map(roles => (
                             <MenuItem value={roles.id}>{roles.nombre}</MenuItem>
                         ))}
-                        </Select>
+                        </Select> 
+                    
                     </FormControl>
-      
+                    
       {server_error.rol ? <Typography style={{ fontSize: 12, color: 'red', paddingLeft: 10 }}>{server_error.rol[0]}</Typography> : ""}
 
       <TextField margin='normal' required fullWidth id='password' name='password' label='Contraseña' type='password' />
