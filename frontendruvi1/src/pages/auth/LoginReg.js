@@ -31,7 +31,7 @@ const LoginReg = () => {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={value} textColor='secondary' indicatorColor='secondary' onChange={handleChange}>
                 <Tab label='Iniciar sesión' sx={{ textTransform: 'none', fontWeight: 'bold' }}></Tab>
-                
+                <Tab label='Registrar usuario' sx={{ textTransform: 'none', fontWeight: 'bold' }}></Tab>
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>

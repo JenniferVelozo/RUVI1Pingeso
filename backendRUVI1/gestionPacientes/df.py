@@ -16,7 +16,7 @@ def leerDf():
     archivo = path+'\PACIENTES.xlsx'
     pacientes= pd.read_excel(archivo, sheet_name='DEFINITIVO')
     print(pacientes)
-
+    print(norma["IR-GRD CÓDIGO v2.3"])
     # Se recorre el dataframe de los pacientes
     for i in range(len(pacientes)):
         
@@ -120,12 +120,13 @@ def leerDf():
         print("El largo código norma es: ", len(codigo_norma))
         
         # Ahora se busca el código IR-GRD en la norma
-        norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
 
         print("Nuevo cod: ", codigo_norma)
-        #print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
-        condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma
-        #print("condicion 2: ",condicion2)
+        norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
+        print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
+        print(type(norma.loc[:,'IR-GRD CÓDIGO v2.3']))
+        condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma+'.0'
+        print("condicion 2: ",condicion2)
         fila_norma = norma.loc[condicion2]
         print(fila_norma)
         #print(fila_norma)
@@ -135,6 +136,7 @@ def leerDf():
         if fila_norma.size == 0:
             print("No tiene NORMA")
         else:
+            print("TIENE NORMA -------------------------------------------------------------------------")
             pc_corte = fila_norma['PC superior'].values[0]
             peso_grd = fila_norma['Peso GRD'].values[0]
             em_norma = fila_norma['EM \n(inlier)'].values[0]
@@ -145,11 +147,14 @@ def leerDf():
 
         criterio = NULL
         if pc_corte!=0:
-            criterio=int(dias_estada)/float(pc_corte)
-
+            criterio=float(dias_estada)/float(pc_corte)
+        
+        print("Dias de estada: ", dias_estada)
+        print("Puntaje de corte: ", pc_corte)
+        print("Valor criterio: ", criterio)
         servicio=pacientes.iloc[i]['UltimoServicioClínico_Desc']
         
-        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio=servicio, cama = ult_cama, estancia = dias_estada, criterio=criterio, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
+        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio=servicio, cama = ult_cama, estancia = dias_estada, criterio=float(criterio), diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
         print(a.save())
 
 if __name__=='__main__':
