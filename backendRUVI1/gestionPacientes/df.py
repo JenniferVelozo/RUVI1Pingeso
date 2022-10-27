@@ -2,6 +2,7 @@ from asyncio.windows_events import NULL
 from cmath import nan
 import os
 import pandas as pd
+#from backendRUVI1.gestionPacientes.models import Servicio
 
 from gestionPacientes.models import Resumen, Pacientes
 
@@ -145,8 +146,10 @@ def leerDf():
         criterio = NULL
         if pc_corte!=0:
             criterio=int(dias_estada)/float(pc_corte)
+
+        servicio=pacientes.iloc[i]['UltimoServicioClínico_Desc']
         
-        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, cama = ult_cama, estancia = dias_estada, criterio=criterio, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
+        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio=servicio, cama = ult_cama, estancia = dias_estada, criterio=criterio, diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
         print(a.save())
 
 if __name__=='__main__':
