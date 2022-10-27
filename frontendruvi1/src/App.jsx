@@ -9,6 +9,7 @@ import Resumen from './components/resumen';
 import { BrowserRouter as Router,  Link } from 'react-router-dom';
 import BasicSelect from './components/lala';
 import Config from './components/config';
+import Update from './components/update';
 
 
 
@@ -62,6 +63,7 @@ function App() {
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
               <Route path='/config' element={<Config/>} />
+              <Route path='/update' element={<Update/>} />
               <Route path="/dashboard" element={access_token ? <Dashboard /> : <Navigate to="/login" />} />
           </Routes>
         </div>
