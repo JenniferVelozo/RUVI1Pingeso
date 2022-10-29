@@ -29,7 +29,7 @@ const Update = () => {
                 border: `2px dashed ${defaultTheme.palette.primary.main}`,
                 color: defaultTheme.palette.primary.main,
                 height:'20vh',
-                width:220,
+                width:520,
               },
             },
           ],
@@ -37,8 +37,47 @@ const Update = () => {
       },
     });
 
-    
-    /////////
+    ///// SECCION SUBIDA ARCHIVO
+
+    const [file, setFile] = useState()
+
+    const handleInputChange = (event) => {
+      console.log(event.target.files)
+      setFile(event.target.files[0]);
+    };
+
+    const handleSubmit = (event) => {
+
+      event.preventDefault();
+      const url = 'http://localhost:3000/upload/';
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', file.name);
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      };
+
+      axios.post(url, formData, config).then((response) => {
+        console.log(response.data);
+      });
+
+      /*
+      let formData = new FormData()
+      formData.append('file', File)
+
+      event.preventDefault();
+      axios.post('http://localhost:5000/upload/', formData) 
+          .then((event) => {
+            console.log('success')
+          })
+          .catch((event) => {
+            console.log('error', event)
+          })
+          */
+    };
+    ///////// FIN SECCION SUBIDA ARCHIVO
 
 
     return (
@@ -53,19 +92,24 @@ const Update = () => {
                     <h3>Seleccione el archivo que desea subir </h3>
                 </Grid>
 
+                <form onSubmit={handleSubmit}>
                 <Box textAlign='center'>
                     <ThemeProvider theme={theme}>
-                        <Button variant="dashed" sx={{ m: 2 }} >
+                        <Button variant="dashed" sx={{ m: 2 }} component="label" >
                             aqui deberia colocar el archivo y/o visualizarse
+                            <input type="file" name="file" onChange={handleInputChange} />
                         </Button>
                     </ThemeProvider>
                 </Box>
 
+
                 <Box textAlign='center'>
-                    <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" >
+                    <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" type='submit' >
                         Subir
                     </Button>
                 </Box>
+
+                </form>
         
             </Paper>
         </Grid>
