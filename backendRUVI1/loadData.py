@@ -55,7 +55,14 @@ def poblar():
         roladmin.permisos.add(Permisos.objects.get(nombre=nombrePermiso))
 
     #servicios
-    servicios=['Unidad de gestion de pacientes']
+    servicios=['Unidad de gestion de pacientes', 
+    'Unidad de Emergencia HEGC', '(UTI)Unidad de Tratamiento Intermedio HEGC', 'Recuperación de Pabellón HPINO', 
+    'UCI Adulto HPINO', 'UHT Medicina HPINO', 'Hospitalizacion Domiciliaria HPINO', 'Psiquiatría Hospital de Día HPINO', 
+    'Area Medico Quirúrgica HPINO', 'UCI Neonatología HPINO', 'Pensionado HPINO', 
+    'Neonatología Hospitalizado HPINO', 'Unidad de Cuidados Medios HPINO', 'Medicina Agudo HPINO', 
+    'Psiquiatría Corta Estadía HPINO', 'Obstetricia y GO HPINO 2°Piso', 'Pediatría Indiferenciado HPINO', 
+    'Hospitalizacion Urgencia Adulto HPINO', 'Obstetricia y Ginecologia 1°Piso', 'Recuperación Pabellón Oftalmologia HPINO']
+
     for nombreservicio in servicios:
         servicio = Servicio.objects.get_or_create(nombre = nombreservicio)[0]
         servicio.save()
@@ -67,10 +74,12 @@ def poblar():
     usuario.rol=Roles.objects.get(nombre='Administrador')
     usuario.save()
 
+    
+
 if __name__=='__main__':
     print("poblando")
     poblar()
-    pacientes = load_inicial()
+    load_inicial()
     #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     #for i in range(len(pacientes)):
     #    print(pacientes.iloc[i]['DiagnosticosEpisodio'])

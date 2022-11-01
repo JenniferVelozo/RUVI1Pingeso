@@ -1,9 +1,12 @@
+from asyncio.windows_events import NULL
 import os
 import pandas as pd
 from numpy import arange
 from sqlalchemy import create_engine
 import sqlalchemy as sqlalchemy
 
+
+from gestionPacientes.models import *
 from gestionPacientes.dbConnection import conectar_db, close_session_db
 from datetime import date
 
@@ -34,7 +37,7 @@ def load_CIE10_GRD(archivo):
     norma.to_sql("norma", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE norma ADD PRIMARY KEY (id);')
     conn.dispose()
-    close_session_db(conn)
+    #close_session_db(conn)
 
 
 def load_prestaciones(archivo):
@@ -47,7 +50,7 @@ def load_prestaciones(archivo):
     prestaciones.to_sql("pendiente", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE pendiente ADD PRIMARY KEY (id);')
     conn.dispose()
-    close_session_db(conn)
+    #close_session_db(conn)
 
 def load_pacientes(archivo):
     conn = conectar_db()
@@ -61,14 +64,26 @@ def load_pacientes(archivo):
                         fechaCarga = str(fecha.year)+'/'+str(fecha.month)+'/'+str(fecha.day),
                         ultimaCama = pacientesBruto['UltimaCama'],
                         diasEstancia = pacientesBruto['DíasEstada'],
-                        servicio= pacientesBruto['UltimoServicioClínico_Desc'], 
+                        nombreServicio= pacientesBruto['UltimoServicioClínico_Desc'], 
                         fechaIngreso = pacientesBruto['FechaEpisodio'],
                         diagnosticoPricipal= pacientesBruto['DiagnosticoPrincipal'],
                         diagnosticoSecundario= pacientesBruto['ListaDiagnosticosEpisodio'])
     
     print(pacientes)
-    
+    id_servicios=[]
+    for i in range(len(pacientes)):
+        s=pacientes.iloc[i]['nombreServicio']
+        if s!= NULL:
+            servicio=Servicio.objects.get(nombre=s)
+            id_servicios.append(servicio.id)
+        else:
+            id_servicios.append(NULL)
+
+    pacientes=pacientes.assign(servicio_id=id_servicios)
+    pacientes=pacientes.drop(['nombreServicio'], axis=1)
     pacientes.to_sql("paciente", con=conn, if_exists="append", index=False)
+
+
     conn.dispose()
     close_session_db(conn)
     return pacientes

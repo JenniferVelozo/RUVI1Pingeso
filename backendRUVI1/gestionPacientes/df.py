@@ -1,7 +1,9 @@
 from asyncio.windows_events import NULL
 from cmath import nan
 import os
+
 import pandas as pd
+from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio
 
 from gestionPacientes.models import Resumen, Pacientes
@@ -125,7 +127,7 @@ def leerDf():
         norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
         print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
         print(type(norma.loc[:,'IR-GRD CÓDIGO v2.3']))
-        condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma+'.0'
+        condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma
         print("condicion 2: ",condicion2)
         fila_norma = norma.loc[condicion2]
         print(fila_norma)
@@ -152,9 +154,14 @@ def leerDf():
         print("Dias de estada: ", dias_estada)
         print("Puntaje de corte: ", pc_corte)
         print("Valor criterio: ", criterio)
-        servicio=pacientes.iloc[i]['UltimoServicioClínico_Desc']
-        
-        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio=servicio, cama = ult_cama, estancia = dias_estada, criterio=float(criterio), diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd)
+
+
+        nombreServicio=pacientes.iloc[i]['UltimoServicioClínico_Desc']
+        id_servicios=NULL
+        if nombreServicio!= NULL:
+            servicio=Servicio.objects.get(nombre=nombreServicio)
+            id_servicios=servicio.id
+        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio_id=id_servicios, nombreServicio=nombreServicio, cama = ult_cama, estancia = dias_estada, criterio=float(criterio), diagnostico1 = diagnostico_uno, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd, flag_diag=False)
         print(a.save())
 
 if __name__=='__main__':

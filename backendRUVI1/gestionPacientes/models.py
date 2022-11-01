@@ -1,6 +1,9 @@
 from enum import unique
+from pickle import TRUE
 from django.db import models
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser
+
+
 
 # Create your models here.
 
@@ -74,7 +77,7 @@ class Pacientes(models.Model):
     fechaCarga = models.DateField(null=True)
     ultimaCama = models.CharField(max_length=75,null=True)
     diasEstancia = models.IntegerField(null=True)
-    servicio= models.CharField(max_length=100, null=True)
+    servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     fechaIngreso = models.DateField(null=True)
     diagnosticoPricipal= models.CharField(max_length=250, null=True)
     diagnosticoSecundario= models.CharField(max_length=250, null=True)
@@ -121,8 +124,9 @@ class Resumen(models.Model):
     emNorma = models.FloatField(null=True)
     pcSuperior = models.IntegerField(null=True)
     pesoGRD = models.FloatField(null=True)
-    servicio=models.CharField(max_length=75, null=True)
-
+    nombreServicio=models.CharField(max_length=75, null=True)
+    servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    flag_diag=models.BooleanField(null=True)
     class Meta:
         verbose_name='Resumen'
         verbose_name_plural='Resumenes'
