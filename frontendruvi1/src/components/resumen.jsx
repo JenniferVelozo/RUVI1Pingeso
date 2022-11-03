@@ -5,7 +5,8 @@ import { Container, Paper, TextField,Button, Stack, Box, Table, TableBody, Table
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { Component, useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
-import { darken, lighten } from '@mui/material/styles';
+import DownloadIcon from '@mui/icons-material/Download';
+import Fab from '@mui/material/Fab';
 
 
 
@@ -116,7 +117,11 @@ const Resumen = () => {
           <Box sx={{ width: '95%', p: 9}}>
             <ShowTable/>
          </Box>
-
+         <Box const style = {{position: 'fixed', bottom: 0, right: 0, margin: 20}}>
+              <Fab variant="extended" color="primary">
+                  Exportar a XLS <DownloadIcon />
+              </Fab>
+          </Box>
         </div>
     )
 }
