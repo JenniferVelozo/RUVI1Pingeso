@@ -25,6 +25,11 @@ class ResumenSerializer(serializers.ModelSerializer):
         model = Resumen
         fields = '__all__'
 
+class ResumenFilterServiceSerializerAgrupar(serializers.ModelSerializer):
+    class Meta:
+      model = Resumen
+      fields = ['cama', 'rut', 'nombrePaciente', 'estancia', 'criterio', 'diagnostico1', 'diagnostico2', 'ir_grd', 'emNorma', 'pcSuperior', 'pesoGRD', 'nombreServicio', 'servicio', 'flag_diag']
+      
 #---------------- INTENTO DE LOGIN -------------------
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

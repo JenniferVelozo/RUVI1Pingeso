@@ -20,7 +20,7 @@ from gestionPacientes.views import  *
 
 
 from rest_framework.routers import DefaultRouter
-from gestionPacientes.views import *
+from gestionPacientes.views import UsuarioViewSet, ServicioViewSet, RolViewSet, ResumenViewSet
 
 
 router = DefaultRouter()

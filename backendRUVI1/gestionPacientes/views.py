@@ -8,6 +8,8 @@ from gestionPacientes.models import *
 from .serializers import *
 from django.http import HttpResponse
 
+from rest_framework import filters
+from rest_framework import status, mixins, generics, viewsets
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -45,10 +47,17 @@ class RolViewSet(viewsets.ModelViewSet):
     serializer_class = RolSerializer
     queryset = Roles.objects.all()
 
+# --- INTENTO DE FILTRO ---
+from django_filters.rest_framework import DjangoFilterBackend
 class ResumenViewSet(viewsets.ModelViewSet):
-    serializer_class = ResumenSerializer
+    '''serializer_class = ResumenSerializer
     queryset = Resumen.objects.all()
-
+    filter_backends = [filters.SearchFilter]
+    search_fields=['=servicio__id']'''
+    queryset = Resumen.objects.all()
+    serializer_class = ResumenSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['servicio__id', 'rut']
 
 #----------------INTENTO DE LOGIN --------------------
 
