@@ -73,12 +73,14 @@ def load_pacientes(archivo):
     id_servicios=[]
     for i in range(len(pacientes)):
         s=pacientes.iloc[i]['nombreServicio']
-        if s!= NULL:
+        print(s)
+        
+        if s!= None:
             servicio=Servicio.objects.get(nombre=s)
             id_servicios.append(servicio.id)
         else:
-            id_servicios.append(NULL)
-
+            id_servicios.append("")
+        
     pacientes=pacientes.assign(servicio_id=id_servicios)
     pacientes=pacientes.drop(['nombreServicio'], axis=1)
     pacientes.to_sql("paciente", con=conn, if_exists="append", index=False)

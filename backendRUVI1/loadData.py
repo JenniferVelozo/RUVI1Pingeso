@@ -80,7 +80,4 @@ if __name__=='__main__':
     print("poblando")
     poblar()
     load_inicial()
-    #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    #for i in range(len(pacientes)):
-    #    print(pacientes.iloc[i]['DiagnosticosEpisodio'])
 
