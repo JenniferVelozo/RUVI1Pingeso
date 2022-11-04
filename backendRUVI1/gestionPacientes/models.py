@@ -74,7 +74,7 @@ class Pacientes(models.Model):
     nombre = models.CharField(max_length=75, null=True)
     apellidoPaterno = models.CharField(max_length=75, null=True)
     apellidoMaterno = models.CharField(max_length=75, null=True)
-    fechaCarga = models.DateField(null=True)
+    fechaCarga = models.DateField(auto_now_add=True)
     ultimaCama = models.CharField(max_length=75,null=True)
     diasEstancia = models.IntegerField(null=True)
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
@@ -133,7 +133,14 @@ class Resumen(models.Model):
         db_table='resumen'
 
 
+class Historico(models.Model):
 
+    fecha=models.DateField(auto_now_add=True)
+    resumen=models.JSONField(null=True)
+    class Meta:
+        verbose_name='Historico'
+        verbose_name_plural='Historicos'
+        db_table='historico'
 
 
 #----------- INTENTO DE LOGIN --------------------

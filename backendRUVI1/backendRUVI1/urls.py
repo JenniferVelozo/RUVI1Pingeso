@@ -20,7 +20,7 @@ from gestionPacientes.views import  *
 
 
 from rest_framework.routers import DefaultRouter
-from gestionPacientes.views import UsuarioViewSet, ServicioViewSet, RolViewSet, ResumenViewSet
+from gestionPacientes.views import *
 
 
 router = DefaultRouter()
@@ -28,6 +28,7 @@ router.register(r'usuarios', UsuarioViewSet)
 router.register(r'servicios', ServicioViewSet)
 router.register(r'rol', RolViewSet)
 router.register(r'resumen', ResumenViewSet)
+router.register(r'historico', HistoricoViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [

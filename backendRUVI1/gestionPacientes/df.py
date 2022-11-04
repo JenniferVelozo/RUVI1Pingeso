@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 from cmath import nan
+import json
 import os
 
 import pandas as pd
@@ -25,6 +26,7 @@ def leerDf():
     print(norma["IR-GRD CÓDIGO v2.3"])
 
     # Se recorre el dataframe de los pacientes
+    jsonRes=[]
     for i in range(len(pacientes)):
         
 
@@ -326,7 +328,29 @@ def leerDf():
         print("Diag 2 final", diag2_final)
         a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio_id=id_servicios, nombreServicio=nombreServicio, cama = ult_cama, estancia = dias_estada, criterio=float(criterio), diagnostico1 = diagnostico_uno, diagnostico2= diag2_final, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd, flag_diag=False)
         print(a.save())
+        aux={}
         
-
+        aux["rut"]= rut
+        aux["nombrePaciente"]= nombre 
+        aux["servicio_id"]=id_servicios 
+        aux["nombreServicio"]=nombreServicio
+        aux["cama"] = ult_cama
+        aux["estancia"] = int(dias_estada) 
+        aux["criterio"]=float(criterio)
+        aux["diagnostico1"]= diagnostico_uno
+        aux["diagnostico2"]= diag2_final
+        aux["ir_grd"] = grd
+        aux["emNorma"]= float(em_norma)
+        aux["pcSuperior"]= int(pc_corte)
+        aux["pesoGRD"] = float(peso_grd)
+        aux["flag_diag"]=False
+        #aux=json.dumps(aux)
+        jsonRes.append(aux)
+    
+    jsonRes2={"pacientes": jsonRes}
+    print(jsonRes)
+    b ,created = Historico.objects.get_or_create(resumen=jsonRes)
+    print(b.save())
+    
 if __name__=='__main__':
     leerDf()

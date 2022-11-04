@@ -59,6 +59,13 @@ class ResumenViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['servicio__id', 'rut']
 
+
+class HistoricoViewSet(viewsets.ModelViewSet):
+    queryset = Historico.objects.all()
+    serializer_class = HistoricoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['fecha']
+
 #----------------INTENTO DE LOGIN --------------------
 
 # Generate Token Manually

@@ -25,6 +25,11 @@ class ResumenSerializer(serializers.ModelSerializer):
         model = Resumen
         fields = '__all__'
 
+class HistoricoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Historico
+        fields = '__all__'
+
 class ResumenFilterServiceSerializerAgrupar(serializers.ModelSerializer):
     class Meta:
       model = Resumen
