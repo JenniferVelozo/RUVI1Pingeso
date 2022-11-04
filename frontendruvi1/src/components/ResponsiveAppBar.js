@@ -8,7 +8,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
@@ -16,10 +15,34 @@ import Logo from "./Logo.js";
 import ModalPopup from "./ModalPopup";
 import Link from '@mui/material/Link';
 
+
+
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { unSetUserToken } from '../features/authSlice';
+import { getToken, removeToken } from '../services/LocalStorageService';
+import { useGetLoggedUserQuery } from '../services/userAuthApi';
+import { unsetUserInfo } from '../features/userSlice';
 const pages = ['Menú', 'Añadir usuario'];
 const settings = ['Configuración', 'Cerrar sesión'];
 
 const ResponsiveAppBar = () => {
+
+  const handleLogout = () => {
+    dispatch(unsetUserInfo({ name: "", nickname: "" }))
+    dispatch(unSetUserToken({ access_token: null }))
+    removeToken()
+    navigate('/login')
+  }
+  
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { access_token } = getToken()
+  const { data, isSuccess } = useGetLoggedUserQuery(access_token)
+  console.log(data)
+  console.log(isSuccess)
+
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -48,7 +71,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/home"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -60,6 +83,7 @@ const ResponsiveAppBar = () => {
             }}
           >
             RUVI1
+
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -148,7 +172,8 @@ const ResponsiveAppBar = () => {
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   {setting == 'Cerrar sesión' ? (
-                    <Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography>
+                    <Link href="/home" onClick={handleLogout}><Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography></Link>
+
                   ) : (
                     <Link href="/config" underline="hover"><Typography textAlign="center">{setting}</Typography></Link>
                   )}

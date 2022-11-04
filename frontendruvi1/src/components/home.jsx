@@ -6,6 +6,7 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
 
+
 const Home =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
@@ -25,7 +26,7 @@ const Home =()=>{
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
                             <h5>Análisis de datos</h5>
-                            <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                         </Grid>
                     </Paper>
                 </Grid>
