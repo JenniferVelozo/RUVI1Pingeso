@@ -204,13 +204,6 @@ def leerDf():
         print(" El peso grd es : ", peso_grd)
         print(" El EM es: ", em_norma)
 
-        criterio = NULL
-        if pc_corte!=0:
-            criterio=float(dias_estada)/float(pc_corte)
-        
-        print("Dias de estada: ", dias_estada)
-        print("Puntaje de corte: ", pc_corte)
-        print("Valor criterio: ", criterio)
 
 
         '''
@@ -325,11 +318,35 @@ def leerDf():
             id_servicios=servicio.id
         
         
-        print("Diag 2 final", diag2_final)
-        a ,created = Resumen.objects.get_or_create(rut = rut, nombrePaciente = nombre, servicio_id=id_servicios, nombreServicio=nombreServicio, cama = ult_cama, estancia = dias_estada, criterio=float(criterio), diagnostico1 = diagnostico_uno, diagnostico2= diag2_final, ir_grd = grd, emNorma = em_norma, pcSuperior = pc_corte, pesoGRD = peso_grd, flag_diag=False)
-        print(a.save())
-        aux={}
+        #se busca el paciente en el resumen antiguo
+        try:
+            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre)
+        except Resumen.DoesNotExist:
+            pAntiguo=None
         
+        #si el paciente existe en el anterior y flag=true
+        flagCambios=False    
+        if pAntiguo!=None:
+            if pAntiguo.flag_diag:
+                diagnostico_uno=pAntiguo.diagnostico1
+                diag2_final=pAntiguo.diagnostico2
+                grd=pAntiguo.ir_grd
+                pc_corte=pAntiguo.pcSuperior
+                em_norma=pAntiguo.emNorma
+                peso_grd=pAntiguo.pesoGRD
+                flagCambios=True
+        
+        #calculo de critero
+        criterio = NULL
+        if pc_corte!=0:
+            criterio=float(dias_estada)/float(pc_corte)
+        
+        print("Dias de estada: ", dias_estada)
+        print("Puntaje de corte: ", pc_corte)
+        print("Valor criterio: ", criterio)
+
+        #se guarda en un json y se agrega a la lista.
+        aux={}
         aux["rut"]= rut
         aux["nombrePaciente"]= nombre 
         aux["servicio_id"]=id_servicios 
@@ -343,11 +360,19 @@ def leerDf():
         aux["emNorma"]= float(em_norma)
         aux["pcSuperior"]= int(pc_corte)
         aux["pesoGRD"] = float(peso_grd)
-        aux["flag_diag"]=False
-        #aux=json.dumps(aux)
+        aux["flag_diag"]=flagCambios
+        
         jsonRes.append(aux)
     
-    jsonRes2={"pacientes": jsonRes}
+
+    #Borra el resumen anterior
+    Resumen.objects.all().delete()
+    #guarda el resumen actual.
+    for paciente in jsonRes:
+        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico2= paciente["diagnostico2"], ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"])
+        print(a.save())
+
+    #guarda en tabla de historicos
     print(jsonRes)
     b ,created = Historico.objects.get_or_create(resumen=jsonRes)
     print(b.save())

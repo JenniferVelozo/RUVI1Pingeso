@@ -29,6 +29,7 @@ router.register(r'servicios', ServicioViewSet)
 router.register(r'rol', RolViewSet)
 router.register(r'resumen', ResumenViewSet)
 router.register(r'historico', HistoricoViewSet)
+router.register(r'historicoDates', HistoricoDatesViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [

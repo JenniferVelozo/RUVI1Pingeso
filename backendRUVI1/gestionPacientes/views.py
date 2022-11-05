@@ -66,6 +66,11 @@ class HistoricoViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['fecha']
 
+class HistoricoDatesViewSet(viewsets.ModelViewSet):
+    queryset = Historico.objects.values('fecha', 'id')
+    serializer_class = HistoricoDatesSerializer
+    
+
 #----------------INTENTO DE LOGIN --------------------
 
 # Generate Token Manually
