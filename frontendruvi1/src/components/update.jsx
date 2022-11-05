@@ -48,7 +48,7 @@ const Update = () => {
     const handleSubmit = (event) => {
 
       event.preventDefault();
-      const url = 'http://localhost:3000/upload/';
+      const url = 'http://localhost:8000/subir/';
       const formData = new FormData();
       formData.append('file', file);
       formData.append('fileName', file.name);
@@ -62,19 +62,6 @@ const Update = () => {
         console.log(response.data);
       });
 
-      /*
-      let formData = new FormData()
-      formData.append('file', File)
-
-      event.preventDefault();
-      axios.post('http://localhost:5000/upload/', formData) 
-          .then((event) => {
-            console.log('success')
-          })
-          .catch((event) => {
-            console.log('error', event)
-          })
-          */
     };
     ///////// FIN SECCION SUBIDA ARCHIVO
 

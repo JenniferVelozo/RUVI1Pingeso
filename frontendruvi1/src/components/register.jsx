@@ -1,6 +1,5 @@
 import React from 'react';
 import { Avatar, Paper, TextField, Button, Grid, Box, FormControl,InputLabel, Select, MenuItem } from '@mui/material';
-import Logo from "./Logo.js";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';

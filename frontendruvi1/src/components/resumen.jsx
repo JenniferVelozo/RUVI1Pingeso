@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box} from '@mui/material';
+import { Box, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
@@ -35,7 +35,7 @@ function ShowTable() {
 
   const [pageSize, setPageSize] = React.useState(10);
 
-  let baseURL = process.env.REACT_APP_API_URL //npm i dotenv
+  let baseURL = 'http://localhost:8000/resumen/' //npm i dotenv
 
   const [ listResumen, setListResumen ] = useState([])
 
@@ -56,6 +56,22 @@ function ShowTable() {
         setListResumen(data)
         console.log(data)
     }
+    
+
+    const [evento, setEvento] = React.useState('');
+    const handleChange = (event) => {setEvento(event.target.value);};
+
+    const [ listServicios, setListServicios ] = useState([])
+    const getServicios = async() => {
+        const { data } = await axios.get('http://localhost:8000/servicios/')
+        setListServicios(data)
+        console.log(data)
+    }
+
+    useEffect(() => {
+        getServicios() 
+    },[])
+  
 
 
   return (
@@ -81,6 +97,14 @@ function ShowTable() {
         },
       }}
     >
+      <FormControl margin="normal" required>
+          <InputLabel id="rol">Servicio</InputLabel>
+          <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
+                { listServicios.map(servicios => (
+                <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
+                ))}
+          </Select>
+      </FormControl>
       <DataGrid
         getCellClassName={(params) => {
         if (params.field !== 'criterio' || params.value == null) {
@@ -114,7 +138,7 @@ const Resumen = () => {
           <Box sx={{ width: '95%', p: 9}}>
             <ShowTable/>
          </Box>
-         <Box const style = {{position: 'fixed', bottom: 0, right: 0, margin: 20}}>
+         <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
               <Fab variant="extended" color="primary">
                   Exportar a XLS <DownloadIcon />
               </Fab>
