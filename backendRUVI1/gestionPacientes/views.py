@@ -4,9 +4,9 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from django.core import serializers
 from gestionPacientes.models import *
-
+from gestionPacientes.df import *
 from .serializers import *
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from rest_framework import filters
 from rest_framework import status, mixins, generics, viewsets
@@ -19,6 +19,34 @@ from django.contrib.auth import authenticate
 from gestionPacientes.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+import os
+from django import forms
+
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+
+@api_view(['POST'])
+def subir(request):
+    form = UploadFileForm(request.POST, request.FILES)
+    respuesta={"Response": "Archivo cargado correctamente. 204"}
+    respuesta2={"Response": "Archivo no cargado. 404"}
+    if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse(respuesta2, safe=False, status=status.HTTP_200_OK)
+
+
+def handle_uploaded_file(f):  
+    path = os.path.dirname(os.path.realpath(__file__))
+    path=path+'\\'
+    print(path)
+    with open(path + f.name , 'wb+') as destination:  
+      for chunk in f.chunks():  
+          destination.write(chunk)  
+    
+    leerDf()
 
 # Create your views here.
 @api_view(['POST'])
@@ -69,6 +97,10 @@ class HistoricoViewSet(viewsets.ModelViewSet):
 class HistoricoDatesViewSet(viewsets.ModelViewSet):
     queryset = Historico.objects.values('fecha', 'id')
     serializer_class = HistoricoDatesSerializer
+
+  
+
+
     
 
 #----------------INTENTO DE LOGIN --------------------

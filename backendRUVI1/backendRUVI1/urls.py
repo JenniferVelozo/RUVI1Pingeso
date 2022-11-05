@@ -35,5 +35,6 @@ urlpatterns = router.urls
 urlpatterns += [
     path('admin/', admin.site.urls),
     path('login/', comprobar),
-    path('api/user/', include('gestionPacientes.urls')) # parte del intento de login
+    path('api/user/', include('gestionPacientes.urls')), # parte del intento de login
+    path('subir/', subir)
 ]
