@@ -1,9 +1,9 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Container, Paper, TextField,Button, Stack, Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { Box} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
-import { Component, useState, useEffect} from 'react'
+import { useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
@@ -29,9 +29,6 @@ const columns = [
   
 ];
 
-function createData(id, cama, rut, nombrePaciente, estancia, diagnostico1, diagnostico2, ir_grd, emNorma, pcSuperior, pesoGRD) {
-  return { id, cama, rut, nombrePaciente, estancia, diagnostico1, diagnostico2, ir_grd, emNorma, pcSuperior, pesoGRD, pendiente: 'archivo.xls', editar: <TouchAppIcon/> };
-}
 
 
 function ShowTable() {

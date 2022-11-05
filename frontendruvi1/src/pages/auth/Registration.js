@@ -1,4 +1,4 @@
-import { Avatar, Paper, TextField, FormControlLabel, FormControl, InputLabel, Checkbox, Button, Box, Grid, Alert, Typography, MenuItem, Select} from '@mui/material';
+import { Avatar, Paper, TextField, FormControl, InputLabel, Button, Box, Grid, Alert, Typography, MenuItem, Select} from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterUserMutation } from '../../services/userAuthApi'
@@ -6,10 +6,9 @@ import { storeToken } from '../../services/LocalStorageService';
 import ResponsiveAppBar from '../../components/ResponsiveAppBar';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import React from 'react';
-import { Component, useEffect} from 'react';
+import { useEffect} from 'react';
 import axios from 'axios';
 
-const valor1="";
 const Registration = () => {
   const paperStyle={padding :30,height:'100vh',width:260, margin:"40px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
