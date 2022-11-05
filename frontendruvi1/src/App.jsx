@@ -27,8 +27,8 @@ function App() {
     <Router>
         <div>
           <Routes>
+              <Route path='/' element={!access_token ? <UserLogin /> : <Navigate to="/home" />} />
               <Route path='/login' element={!access_token ? <UserLogin /> : <Navigate to="/home" />} />
-              
               <Route path='/register' element={<Registration/>} />
               <Route path='/resumen' element={<Resumen/>} />
               <Route path='/lala' element={<BasicSelect/>} />
