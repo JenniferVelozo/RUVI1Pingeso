@@ -5,8 +5,9 @@ import django
 
 django.setup()
 
-from gestionPacientes.df import leerDf
+from gestionPacientes.df import *
 
 
 if __name__=='__main__':
     leerDf()
+    histo()

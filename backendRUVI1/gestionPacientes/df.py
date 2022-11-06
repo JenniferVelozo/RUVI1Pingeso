@@ -2,6 +2,7 @@ from asyncio.windows_events import NULL
 from cmath import nan
 import json
 import os
+from datetime import datetime
 
 import pandas as pd
 from gestionPacientes.models import *
@@ -320,7 +321,7 @@ def leerDf():
         
         #se busca el paciente en el resumen antiguo
         try:
-            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre, flag_diag=True)
+            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre)
         except Resumen.DoesNotExist:
             pAntiguo=None
         
@@ -374,8 +375,20 @@ def leerDf():
 
     #guarda en tabla de historicos
     print(jsonRes)
-    b ,created = Historico.objects.get_or_create(resumen=jsonRes)
+    now = datetime.now()
+    fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)
+    b ,created = Historico.objects.get_or_create(resumen=jsonRes, fecha=fecha)
     print(b.save())
     
+def histo():
+
+    ultimo=Historico.objects.all().last()
+    i=10
+    while i<30:
+        b ,created = Historico.objects.get_or_create(resumen=ultimo.resumen, fecha='2022-11-'+str(i))
+        print(b.save())
+        i=i+1
+
+
 if __name__=='__main__':
     leerDf()

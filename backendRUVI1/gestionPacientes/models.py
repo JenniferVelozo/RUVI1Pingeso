@@ -127,6 +127,7 @@ class Resumen(models.Model):
     nombreServicio=models.CharField(max_length=75, null=True)
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     flag_diag=models.BooleanField(null=True)
+    pendientes=models.ManyToManyField(Pendientes)
     class Meta:
         verbose_name='Resumen'
         verbose_name_plural='Resumenes'
@@ -135,7 +136,7 @@ class Resumen(models.Model):
 
 class Historico(models.Model):
 
-    fecha=models.DateField(auto_now_add=True)
+    fecha=models.DateField(null=True)
     resumen=models.JSONField(null=True)
     class Meta:
         verbose_name='Historico'
