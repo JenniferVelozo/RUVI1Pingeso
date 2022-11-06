@@ -50,15 +50,16 @@ const Update = () => {
       event.preventDefault();
       const url = 'http://localhost:8000/subir/';
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('fileName', file.name);
+      formData.append("file", file);
+      formData.append("name", file.name)
       const config = {
         headers: {
-          'content-type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data',
         },
       };
-
+      console.log(formData.file)
       axios.post(url, formData, config).then((response) => {
+        console.log(formData)
         console.log(response.data);
       });
 

@@ -320,7 +320,7 @@ def leerDf():
         
         #se busca el paciente en el resumen antiguo
         try:
-            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre)
+            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre, flag_diag=True)
         except Resumen.DoesNotExist:
             pAntiguo=None
         
