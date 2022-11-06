@@ -21,6 +21,7 @@ from gestionPacientes.views import  *
 
 from rest_framework.routers import DefaultRouter
 from gestionPacientes.views import *
+from exp_resumen import *
 
 
 router = DefaultRouter()
@@ -36,5 +37,6 @@ urlpatterns += [
     path('admin/', admin.site.urls),
     path('login/', comprobar),
     path('api/user/', include('gestionPacientes.urls')), # parte del intento de login
-    path('subir/', subir)
+    path('subir/', subir),
+    path('exportar/', resumen_to_excel)
 ]
