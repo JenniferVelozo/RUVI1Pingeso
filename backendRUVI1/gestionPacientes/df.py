@@ -113,9 +113,10 @@ def leerDf():
 
 
                 nombres_diags2.append(diagnostico_dos)
-                
+                diag2_final=""
                 for i in range(len(nombres_diags2)-1):
                     diag2_final = diag2_final + nombres_diags2[i] +", "
+                    print(diag2_final)
                 diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]
         print("Diagnóstico 2: ", diagnostico2)
         print("Nombres diag2: ", nombres_diags2)
