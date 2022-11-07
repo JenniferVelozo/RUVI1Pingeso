@@ -30,6 +30,11 @@ class HistoricoSerializer(serializers.ModelSerializer):
         model = Historico
         fields = '__all__'
 
+class PendienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pendientes
+        fields = '__all__'
+
 class HistoricoDatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Historico

@@ -128,6 +128,8 @@ class Resumen(models.Model):
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     flag_diag=models.BooleanField(null=True)
     pendientes=models.ManyToManyField(Pendientes)
+    flag_pend=models.BooleanField(null=True)
+    pendientesJson=models.JSONField(null=True)
     class Meta:
         verbose_name='Resumen'
         verbose_name_plural='Resumenes'

@@ -65,6 +65,27 @@ def comprobar(request):
     user=[{'entra': 'NO'}]
     return HttpResponse(user, content_type='application/json')
     
+@api_view(['POST'])
+def setPendientes(request):
+    print(request.data)
+    data=request.data
+    idPendientes=data["pendientes"]
+    idRes=data["id"]
+    pJson=[]
+    for idP in idPendientes:
+        r=Resumen.objects.get(id=idRes)
+        p=Pendientes.objects.get(id=idP)
+        pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
+        r.pendientes.add(p)
+    r.flag_pend=True
+    r.pendientesJson=pJson
+    
+    r.save()
+    #print(r.nombrePaciente)
+    #print(r.pendientes.all())
+    #print(r.flag_pend)
+    #print(r.pendientesJson)
+    return HttpResponse(data, content_type='application/json')
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
@@ -78,6 +99,10 @@ class ServicioViewSet(viewsets.ModelViewSet):
 class RolViewSet(viewsets.ModelViewSet):
     serializer_class = RolSerializer
     queryset = Roles.objects.all()
+
+class PendienteViewSet(viewsets.ModelViewSet):
+    serializer_class = PendienteSerializer
+    queryset = Pendientes.objects.all()
 
 # --- INTENTO DE FILTRO ---
 from django_filters.rest_framework import DjangoFilterBackend

@@ -75,9 +75,10 @@ def estiloExcel(nombre):
     set_width_to(sheet, "F", "G", width=84)
     set_width_to(sheet, "H", "K", width=10)
     set_width_to(sheet, "L", "L", width=40)
-    set_width_to(sheet, "M", "O", width=9)
+    set_width_to(sheet, "M", "P", width=9)
+    set_width_to(sheet, "Q", "Q", width=50)
 
-    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1"]
+    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1"]
     for encabezado in encabezados:
         celda = sheet[encabezado]
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
@@ -99,6 +100,8 @@ def resumen_to_excel(resumenJSON):
     nombreServicio=[] 
     servicio=[] 
     flag_diag =[]
+    flag_pend=[]
+    pendientesJson=[]
     for paciente in resumenJSON:
         cama.append(paciente['cama']) 
         rut.append(paciente['rut']) 
@@ -114,11 +117,14 @@ def resumen_to_excel(resumenJSON):
         nombreServicio.append(paciente['nombreServicio']) 
         servicio.append(paciente['servicio']) 
         flag_diag.append(paciente['flag_diag'])
+        flag_pend.append(paciente["flag_pend"])
+        pendientesJson.append(paciente["pendientesJson"])
 
     resumen= pd.DataFrame()
     resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
     diagnostico1=diagnostico1, diagnostico2=diagnostico2, ir_grd=ir_grd, emNorma=emNorma, 
-    pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag)
+    pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
+    flag_pend=flag_pend,pendientesJson=pendientesJson)
     
 
     nombreArchivo='Gestion de Pacientes.xlsx'
@@ -132,7 +138,7 @@ if __name__=='__main__':
     #ruta= resumen_to_excel()
     #print(ruta)
 
-    #dummy de prueba
+    #dummy de prueba con lo de la bd
     resumenQuery=Resumen.objects.all()
     resumen=[]
     for paciente in resumenQuery:
@@ -150,7 +156,9 @@ if __name__=='__main__':
         "pesoGRD": paciente.pesoGRD,
         "nombreServicio": paciente.nombreServicio,
         "servicio": paciente.servicio.id,
-        "flag_diag": paciente.flag_diag
+        "flag_diag": paciente.flag_diag,
+        "flag_pend": paciente.flag_pend,
+        "pendientesJson": paciente.pendientesJson
         }
         resumen.append(jsonAux)
     

@@ -327,6 +327,8 @@ def leerDf():
         
         #si el paciente existe en el anterior y flag=true
         flagCambios=False    
+        flagPend=False
+        pendJson=NULL
         if pAntiguo!=None:
             if pAntiguo.flag_diag:
                 diagnostico_uno=pAntiguo.diagnostico1
@@ -336,6 +338,10 @@ def leerDf():
                 em_norma=pAntiguo.emNorma
                 peso_grd=pAntiguo.pesoGRD
                 flagCambios=True
+            if pAntiguo.flag_pend:
+                flagPend=True
+                pendJson=pAntiguo.pendientesJson
+            print(flagPend)
         
         #calculo de critero
         criterio = NULL
@@ -362,7 +368,8 @@ def leerDf():
         aux["pcSuperior"]= int(pc_corte)
         aux["pesoGRD"] = float(peso_grd)
         aux["flag_diag"]=flagCambios
-        
+        aux["flag_pend"]=flagPend
+        aux["pendientesJson"]=pendJson
         jsonRes.append(aux)
     
 
@@ -370,7 +377,7 @@ def leerDf():
     Resumen.objects.all().delete()
     #guarda el resumen actual.
     for paciente in jsonRes:
-        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico2= paciente["diagnostico2"], ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"])
+        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico2= paciente["diagnostico2"], ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
         print(a.save())
 
     #guarda en tabla de historicos

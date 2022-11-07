@@ -28,6 +28,7 @@ router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'servicios', ServicioViewSet)
 router.register(r'rol', RolViewSet)
+router.register(r'pendientes', PendienteViewSet)
 router.register(r'resumen', ResumenViewSet)
 router.register(r'historico', HistoricoViewSet)
 router.register(r'historicoDates', HistoricoDatesViewSet)
@@ -38,5 +39,6 @@ urlpatterns += [
     path('login/', comprobar),
     path('api/user/', include('gestionPacientes.urls')), # parte del intento de login
     path('subir/', subir),
-    path('exportar/', resumen_to_excel)
+    path('exportar/', resumen_to_excel),
+    path('setPendientes/', setPendientes)
 ]
