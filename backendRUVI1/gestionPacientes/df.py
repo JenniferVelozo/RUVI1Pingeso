@@ -67,7 +67,7 @@ def leerDf():
         
         #grd = 0
         #sev = 0
-        diagnostico1 = pacientes.iloc[i]['DiagnosticoPrincipal'] 
+        diagnostico1Cod = pacientes.iloc[i]['DiagnosticoPrincipal'] 
         # print(diagnostico1)
 
         diagnostico2 = pacientes.iloc[i]['ListaDiagnosticosEpisodio']  
@@ -78,8 +78,10 @@ def leerDf():
 
         nombres_diags2 = []
         # print(type(nombres_diags2))
+        diagnostico2Cod=diagnostico2
         if str(diagnostico2) == 'nan':
             diagnostico2 = []
+            diagnostico2Cod=NULL
         else:
             diagnostico2 = str(diagnostico2).split(',')
             for diag in diagnostico2:
@@ -119,9 +121,9 @@ def leerDf():
         print("Nombres diag2: ", nombres_diags2)
         
         
-        if str(diagnostico1) != 'nan':
+        if str(diagnostico1Cod) != 'nan':
             # Aquí busca el código del diagnóstico en el CIE10
-            condicion = cie10.loc[:, 'CODIGO'] == diagnostico1
+            condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod
             diagnostico1_pd = cie10.loc[condicion]
 
             grd_diagnostico1 = diagnostico1_pd['GRD'].to_frame(name='GRD')
@@ -135,7 +137,7 @@ def leerDf():
             else:
                 print("No tiene GRD")
                 print("GRD CONFLICTO...")
-                condicion = cie10.loc[:, 'CODIGO'] == diagnostico1+'.0'
+                condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod+'.0'
                 diagnostico1_pd = cie10.loc[condicion]
                 grd_diagnostico1 = diagnostico1_pd['GRD'].to_frame(name='GRD')
                 sev_diagnostico1 = diagnostico1_pd['SEV'].to_frame(name = 'SEV')
@@ -147,6 +149,7 @@ def leerDf():
             diagnostico_uno = ""
             grd = ""
             sev = ""
+            diagnostico1Cod=NULL
 
         print("DIAGNÓSTICO 1: ", diagnostico_uno)
         print("GRD ANTES: ", grd)
@@ -332,7 +335,9 @@ def leerDf():
         if pAntiguo!=None:
             if pAntiguo.flag_diag:
                 diagnostico_uno=pAntiguo.diagnostico1
+                diagnostico1Cod=pAntiguo.diagnostico1Cod
                 diag2_final=pAntiguo.diagnostico2
+                diagnostico2Cod=pAntiguo.diagnostico2Cod
                 grd=pAntiguo.ir_grd
                 pc_corte=pAntiguo.pcSuperior
                 em_norma=pAntiguo.emNorma
@@ -362,7 +367,9 @@ def leerDf():
         aux["estancia"] = int(dias_estada) 
         aux["criterio"]=float(criterio)
         aux["diagnostico1"]= diagnostico_uno
+        aux["diagnostico1Cod"]=diagnostico1Cod
         aux["diagnostico2"]= diag2_final
+        aux["diagnostico2Cod"]=diagnostico2Cod
         aux["ir_grd"] = grd
         aux["emNorma"]= float(em_norma)
         aux["pcSuperior"]= int(pc_corte)
@@ -377,7 +384,7 @@ def leerDf():
     Resumen.objects.all().delete()
     #guarda el resumen actual.
     for paciente in jsonRes:
-        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico2= paciente["diagnostico2"], ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
+        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
         print(a.save())
 
     #guarda en tabla de historicos
