@@ -41,5 +41,6 @@ urlpatterns += [
     path('subir/', subir),
     path('exportar/', resumen_to_excel),
     path('setPendientes/', setPendientes),
-    path('setDiagnosticos/',setDiagnostico)
+    path('setDiagnosticos/',setDiagnostico),
+    path('historico/<fecha>/<id_servicio>/<id_pendiente>', filtarServicioPendiente)
 ]

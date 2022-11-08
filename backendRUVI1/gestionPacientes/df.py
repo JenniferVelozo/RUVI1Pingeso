@@ -332,7 +332,7 @@ def leerDf():
         #si el paciente existe en el anterior y flag=true
         flagCambios=False    
         flagPend=False
-        pendJson=NULL
+        pendJson= NULL
         if pAntiguo!=None:
             if pAntiguo.flag_diag:
                 diagnostico_uno=pAntiguo.diagnostico1

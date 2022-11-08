@@ -75,19 +75,55 @@ def setPendientes(request):
     for idP in idPendientes:
         r=Resumen.objects.get(id=idRes)
         p=Pendientes.objects.get(id=idP)
+
+        h = Historico.objects.get(id = idRes)
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)
+        h.pendientes.add(p)
     r.flag_pend=True
     r.pendientesJson=pJson
-    
+    h.pendientesJson=pJson
+    print(type(h.pendientesJson))
     r.save()
+    h.save()
     #print(r.nombrePaciente)
     #print(r.pendientes.all())
     #print(r.flag_pend)
     #print(r.pendientesJson)
     return HttpResponse(data, content_type='application/json')
 
+@api_view(['GET'])
+def filtarServicioPendiente(request, fecha, id_servicio, id_pendiente):
+    historico = Historico.objects.all()
+    print(type(list(historico)))
+    print(list(historico))
 
+    historico = list(historico)
+    # Primero filtramos por fecha
+    porFecha = []
+    print(type(historico[0]))
+    for e in historico:
+        print("MOSTRANDO FECHA: ", type(fecha))
+        print(type(e.fecha))
+        if str(e.fecha) == fecha:
+            print("entra")
+            porFecha.append(e)
+    
+    print(porFecha)
+    print(type(porFecha[0].fecha))
+    porServicio = []
+    for e in porFecha:
+        print(e.servicio.id)
+        if e.servicio.id == int(id_servicio):
+            porServicio.append(e)
+    
+    print("Mostrando filtrado por servicio")
+    print(porServicio)
+    print(porServicio[0])
+    for e in porServicio:
+        print(e.pendientesJson)
+   
+    print("Mostrando id_servicio: ", id_servicio)
 
 @api_view(['POST'])
 def setDiagnostico(request):
