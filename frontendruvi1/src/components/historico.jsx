@@ -1,15 +1,27 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
+import { Box, Select, MenuItem, FormControl, InputLabel, Grid} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
-import { useState, useEffect} from 'react';
+import { useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+//import Calendar from 'moedim';
+import BasicDatePicker from './BasicDatePicker';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import Servicio from './servicio';
 
-
-
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
@@ -25,8 +37,6 @@ const columns = [
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
   { field: 'pendiente', headerName: 'Pendiente', width: 100 },
-  { field: 'editar', headerName: 'Editar', width: 100 },
-  
 ];
 
 
@@ -58,20 +68,6 @@ function ShowTable() {
     }
     
 
-    const [evento, setEvento] = React.useState('');
-    const handleChange = (event) => {setEvento(event.target.value);};
-
-    const [ listServicios, setListServicios ] = useState([])
-    const getServicios = async() => {
-        const { data } = await axios.get('http://localhost:8000/servicios/')
-        setListServicios(data)
-        console.log(data)
-    }
-
-    useEffect(() => {
-        getServicios() 
-    },[])
-  
 
 
   return (
@@ -97,14 +93,6 @@ function ShowTable() {
         },
       }}
     >
-      <FormControl margin="normal" required>
-          <InputLabel id="rol">Servicio</InputLabel>
-          <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
-                { listServicios.map(servicios => (
-                <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
-                ))}
-          </Select>
-      </FormControl>
       <DataGrid
         getCellClassName={(params) => {
         if (params.field !== 'criterio' || params.value == null) {
@@ -129,22 +117,37 @@ function ShowTable() {
 }
 
 
-const Resumen = () => {
+
+const Historico = () => {
     return (
-        <div className='resumen' >
+        <div className='historico' >
           <Box sx={{ display: 'flex' }}>
                 <ResponsiveAppBar/>
           </Box>
-          <Box sx={{ width: '95%', p: 9}}>
+          <Box sx={{ width: '100%', p: 9}}>
+            <Grid container spacing={3}>
+                <Grid item xs>
+                <Servicio/>
+                </Grid>
+                <Grid item xs={6}>
+                <Item>Listar Por Servicio</Item>
+                </Grid>
+                <Grid item xs>
+                <BasicDatePicker/>
+                </Grid>
+            </Grid>
+            </Box>
+            <Box sx={{ width: '95%', p: 9}}>
             <ShowTable/>
-         </Box>
-         <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-              <Fab variant="extended" color="primary">
-                  Exportar a XLS <DownloadIcon />
-              </Fab>
-          </Box>
+            </Box>
+            <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
+                <Fab variant="extended" color="primary">
+                    Exportar a XLS <DownloadIcon />
+                </Fab>
+            </Box>
+
         </div>
     )
 }
 
-export default Resumen;
+export default Historico;
