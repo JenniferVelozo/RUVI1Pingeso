@@ -140,8 +140,26 @@ class Resumen(models.Model):
 
 class Historico(models.Model):
 
-    fecha=models.DateField(null=True)
-    resumen=models.JSONField(null=True)
+    fecha=models.DateField(null=True)#fecha en la que se carga el historico
+    cama = models.CharField(max_length=10,null=True)
+    rut = models.CharField(max_length=30,null=True)
+    nombrePaciente = models.CharField(max_length=200)
+    estancia = models.CharField(max_length=10,null=True)
+    criterio =models.FloatField(null=True)
+    diagnostico1 = models.CharField(max_length=250, null=True)
+    diagnostico1Cod=models.CharField(max_length=7, null=True)
+    diagnostico2 = models.CharField(max_length=500, null=True)
+    diagnostico2Cod=models.CharField(max_length=100, null=True)
+    ir_grd = models.CharField(null=True, max_length=10)
+    emNorma = models.FloatField(null=True)
+    pcSuperior = models.IntegerField(null=True)
+    pesoGRD = models.FloatField(null=True)
+    nombreServicio=models.CharField(max_length=75, null=True)
+    servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    flag_diag=models.BooleanField(null=True)
+    pendientes=models.ManyToManyField(Pendientes)
+    flag_pend=models.BooleanField(null=True)
+    pendientesJson=models.JSONField(null=True)
     class Meta:
         verbose_name='Historico'
         verbose_name_plural='Historicos'
