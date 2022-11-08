@@ -1,12 +1,14 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
+import { Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, Avatar, List, ListItem, ListItemAvatar, ListItemText, Button} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
+import PersonIcon from '@mui/icons-material/Person';
+import { blue } from '@mui/material/colors';
 
 
 
@@ -25,10 +27,85 @@ const columns = [
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
   { field: 'pendiente', headerName: 'Pendiente', width: 100 },
-  { field: 'editar', headerName: 'Editar', width: 100 },
+  { field: 'Editar', renderCell: (params) => {
+    return (
+      /*
+      <Fab 
+        color="primary" 
+        aria-label="add"
+        onClick={(event) => {
+          HandleEditClick(event, params.row.id);
+        }} >
+        <TouchAppIcon />
+      </Fab>
+      */
+      <ShowDialog/>
+    )
+  }}
   
 ];
 
+// DIALOG 
+
+function ShowDialog(props) {
+  const [open, setOpen] = React.useState(false);
+  const emails = ['username@gmail.com', 'user02@gmail.com'];
+
+  const [ listPendientes, setListPendientes ] = useState([])
+    const getPendientes = async() => {
+        const { data } = await axios.get('http://localhost:8000/pendientes/')
+        setListPendientes(data)
+        console.log(data)
+    }
+
+    useEffect(() => {
+        getPendientes() 
+    },[])
+
+  const handleListItemClick = (value) => {
+    //onClose(value);
+  };
+
+  return (
+    <div>
+      <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
+          <TouchAppIcon/>
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Seleccione pendientes</DialogTitle>
+        <List sx={{ pt: 0 }}>
+        {listPendientes.map((pendientes) => (
+          <ListItem button onClick={() => handleListItemClick(pendientes.nombrePendiente)} key={pendientes.nombrePendiente}>
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                <PersonIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={pendientes.nombrePendiente} />
+          </ListItem>
+        ))}
+      </List>
+      </Dialog>
+    </div>
+  );
+};
+
+const HandleEditClick = (event, id) => {
+  console.log(id);
+  const [open, setOpen] = React.useState(true);
+  return (
+    <div>
+    <Dialog open={true}>
+      <DialogTitle>Seleccione servicios</DialogTitle>
+      <DialogContent>
+        lala
+      </DialogContent>
+    </Dialog>
+    </div>
+  )
+}
+
+//END DIALOG
 
 
 function ShowTable() {
@@ -130,6 +207,11 @@ function ShowTable() {
 
 
 const Resumen = () => {
+
+    const handleExport = (event) => {
+        window.location.replace('/home');
+    }
+
     return (
         <div className='resumen' >
           <Box sx={{ display: 'flex' }}>
@@ -139,7 +221,7 @@ const Resumen = () => {
             <ShowTable/>
          </Box>
          <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-              <Fab variant="extended" color="primary">
+              <Fab variant="extended" color="primary" onClick={handleExport}>
                   Exportar a XLS <DownloadIcon />
               </Fab>
           </Box>
