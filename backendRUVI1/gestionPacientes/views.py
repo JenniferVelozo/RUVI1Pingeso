@@ -81,6 +81,7 @@ def setPendientes(request):
         r.pendientes.add(p)
         h.pendientes.add(p)
     r.flag_pend=True
+    h.flag_pend = True
     r.pendientesJson=pJson
     h.pendientesJson=pJson
     print(type(h.pendientesJson))
