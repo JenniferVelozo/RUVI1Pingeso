@@ -72,13 +72,16 @@ def estiloExcel(nombre):
     set_width_to(sheet, "C", "C", width=52)
     set_width_to(sheet, "D", "D", width=10)
     set_width_to(sheet, "E", "E", width=9)
-    set_width_to(sheet, "F", "G", width=84)
-    set_width_to(sheet, "H", "K", width=10)
-    set_width_to(sheet, "L", "L", width=40)
-    set_width_to(sheet, "M", "P", width=9)
-    set_width_to(sheet, "Q", "Q", width=50)
+    set_width_to(sheet, "F", "F", width=84)
+    set_width_to(sheet, "G", "G", width=18)
+    set_width_to(sheet, "H", "H", width=84)
+    set_width_to(sheet, "I", "I", width=27)
+    set_width_to(sheet, "J", "M", width=10)
+    set_width_to(sheet, "N", "N", width=40)
+    set_width_to(sheet, "O", "R", width=10)
+    set_width_to(sheet, "S", "S", width=50)
 
-    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1"]
+    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1"]
     for encabezado in encabezados:
         celda = sheet[encabezado]
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
@@ -93,6 +96,8 @@ def resumen_to_excel(resumenJSON):
     criterio=[] 
     diagnostico1=[] 
     diagnostico2 =[]
+    diagnostico1Cod=[] 
+    diagnostico2Cod =[]
     ir_grd=[] 
     emNorma=[] 
     pcSuperior=[] 
@@ -108,8 +113,10 @@ def resumen_to_excel(resumenJSON):
         nombrePaciente.append(paciente['nombrePaciente']) 
         estancia.append(paciente['estancia']) 
         criterio.append(paciente['criterio']) 
-        diagnostico1.append(paciente['diagnostico1']) 
+        diagnostico1.append(paciente['diagnostico1'])
+        diagnostico1Cod.append(paciente['diagnostico1Cod'])  
         diagnostico2.append(paciente['diagnostico2'])
+        diagnostico2Cod.append(paciente['diagnostico2Cod'])
         ir_grd.append(paciente['ir_grd']) 
         emNorma.append(paciente['emNorma']) 
         pcSuperior.append(paciente['pcSuperior']) 
@@ -122,7 +129,7 @@ def resumen_to_excel(resumenJSON):
 
     resumen= pd.DataFrame()
     resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
-    diagnostico1=diagnostico1, diagnostico2=diagnostico2, ir_grd=ir_grd, emNorma=emNorma, 
+    diagnostico1=diagnostico1, diagnostico1Cod=diagnostico1Cod, diagnostico2=diagnostico2, diagnostico2Cod=diagnostico2Cod, ir_grd=ir_grd, emNorma=emNorma, 
     pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
     flag_pend=flag_pend,pendientesJson=pendientesJson)
     
@@ -149,7 +156,9 @@ if __name__=='__main__':
         "estancia": paciente.estancia,
         "criterio": paciente.criterio,
         "diagnostico1": paciente.diagnostico1,
+        "diagnostico1Cod": paciente.diagnostico1Cod,
         "diagnostico2": paciente.diagnostico2,
+        "diagnostico2Cod": paciente.diagnostico2Cod,
         "ir_grd": paciente.ir_grd,
         "emNorma": paciente.emNorma,
         "pcSuperior": paciente.pcSuperior,
