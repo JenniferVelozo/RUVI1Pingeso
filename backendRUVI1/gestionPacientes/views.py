@@ -92,38 +92,86 @@ def setPendientes(request):
     #print(r.pendientesJson)
     return HttpResponse(data, content_type='application/json')
 
+def HistoricotoDictionary(historico):
+    if historico == None:
+        return None
+    
+    aux={}
+    aux["rut"]= historico.rut
+    aux["nombrePaciente"]= historico.nombrePaciente
+    aux["servicio_id"]=historico.servicio.id
+    aux["nombreServicio"]=historico.nombreServicio
+    aux["cama"] = historico.cama
+    aux["estancia"] = int(historico.estancia) 
+    aux["criterio"]=float(historico.criterio)
+    aux["diagnostico1"]= historico.diagnostico1
+    aux["diagnostico1Cod"]=historico.diagnostico1Cod
+    aux["diagnostico2"]= historico.diagnostico2
+    aux["diagnostico2Cod"]=historico.diagnostico2Cod
+    aux["ir_grd"] = historico.ir_grd
+    aux["emNorma"]= float(historico.emNorma)
+    aux["pcSuperior"]= int(historico.pcSuperior)
+    aux["pesoGRD"] = float(historico.pesoGRD)
+    aux["flag_diag"]=historico.flag_diag
+    aux["flag_pend"]=historico.flag_pend
+    aux["pendientesJson"]=historico.pendientesJson
+
+    #print(aux)
+    return aux
+
 @api_view(['GET'])
 def filtarServicioPendiente(request, fecha, id_servicio, id_pendiente):
+    
     historico = Historico.objects.all()
-    print(type(list(historico)))
-    print(list(historico))
+    
+    #print(type(historico))
+    #print(historico)
 
     historico = list(historico)
     # Primero filtramos por fecha
     porFecha = []
-    print(type(historico[0]))
+    #print(type(historico[0]))
     for e in historico:
-        print("MOSTRANDO FECHA: ", type(fecha))
-        print(type(e.fecha))
+        
+        #print("MOSTRANDO FECHA: ", type(fecha))
+        #print(type(e.fecha))
         if str(e.fecha) == fecha:
-            print("entra")
+            #print("entra")
             porFecha.append(e)
     
-    print(porFecha)
-    print(type(porFecha[0].fecha))
+    #print(porFecha)
+    #print(type(porFecha[0].fecha))
     porServicio = []
     for e in porFecha:
-        print(e.servicio.id)
+        #print(e.servicio.id)
         if e.servicio.id == int(id_servicio):
             porServicio.append(e)
     
-    print("Mostrando filtrado por servicio")
-    print(porServicio)
-    print(porServicio[0])
+    #print("Mostrando filtrado por servicio")
+    #print(porServicio)
+    #print(porServicio[0])
+
+    porPendiente = []
     for e in porServicio:
-        print(e.pendientesJson)
+        #print(e.pendientesJson)
+        for i in e.pendientesJson:
+            if i['id'] == int(id_pendiente):
+                #print("entra")
+                #print(i['id'])
+                porPendiente.append(e)
+
+
    
-    print("Mostrando id_servicio: ", id_servicio)
+    #print("Mostrando id_servicio: ", id_servicio)
+
+    listaFinal = []
+    for resumen in porPendiente:
+        #print(resumen)
+        listaFinal.append(HistoricotoDictionary(resumen))
+    
+    #print(listaFinal)
+    return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
+    
 
 @api_view(['POST'])
 def setDiagnostico(request):
