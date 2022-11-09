@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_fileuploadvalidation.middleware.FileUploadValidationMiddleware',
 ]
 
 ROOT_URLCONF = 'backendRUVI1.urls'
