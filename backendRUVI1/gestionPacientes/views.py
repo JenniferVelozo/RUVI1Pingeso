@@ -121,7 +121,7 @@ def HistoricotoDictionary(historico):
     return aux
 
 @api_view(['GET'])
-def filtarServicioPendiente(request, fecha, id_servicio, id_pendiente):
+def filtrarServicioPendiente(request, fecha, id_servicio, id_pendiente):
     
     historico = Historico.objects.all()
     
@@ -170,6 +170,54 @@ def filtarServicioPendiente(request, fecha, id_servicio, id_pendiente):
         #print(resumen)
         listaFinal.append(HistoricotoDictionary(resumen))
     
+    if id_pendiente == "":
+        print("entra")
+        listaPorServicio = []
+        for resumen in porServicio:
+            #print(resumen)
+            listaPorServicio.append(HistoricotoDictionary(resumen))
+            return JsonResponse(listaPorServicio, safe=False, json_dumps_params={'ensure_ascii':False})
+    #print(listaFinal)
+    return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
+
+
+@api_view(['GET'])
+def filtrarServicio(request, fecha, id_servicio):
+    
+    historico = Historico.objects.all()
+    
+    #print(type(historico))
+    #print(historico)
+
+    historico = list(historico)
+    # Primero filtramos por fecha
+    porFecha = []
+    #print(type(historico[0]))
+    for e in historico:
+        
+        #print("MOSTRANDO FECHA: ", type(fecha))
+        #print(type(e.fecha))
+        if str(e.fecha) == fecha:
+            #print("entra")
+            porFecha.append(e)
+    
+    #print(porFecha)
+    #print(type(porFecha[0].fecha))
+    porServicio = []
+    for e in porFecha:
+        #print(e.servicio.id)
+        if e.servicio.id == int(id_servicio):
+            porServicio.append(e)
+    
+    #print("Mostrando filtrado por servicio")
+    #print(porServicio)
+    #print(porServicio[0])
+
+    listaFinal = []
+    for resumen in porServicio:
+        #print(resumen)
+        listaFinal.append(HistoricotoDictionary(resumen))
+
     #print(listaFinal)
     return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
 
