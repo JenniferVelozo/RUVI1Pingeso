@@ -158,11 +158,12 @@ def filtrarServicioPendiente(request, fecha, id_servicio, id_pendiente):
     porPendiente = []
     for e in porServicio:
         #print(e.pendientesJson)
-        for i in e.pendientesJson:
-            if i['id'] == int(id_pendiente):
-                #print("entra")
-                #print(i['id'])
-                porPendiente.append(e)
+        if e.pendientesJson!=0:
+            for i in e.pendientesJson:
+                if i['id'] == int(id_pendiente):
+                    #print("entra")
+                    #print(i['id'])
+                    porPendiente.append(e)
 
 
    
