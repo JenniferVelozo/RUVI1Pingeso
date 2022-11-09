@@ -41,8 +41,8 @@ urlpatterns += [
     path('exportar/', resumen_to_excel),
     path('setPendientes/', setPendientes),
     path('setDiagnosticos/',setDiagnostico),
-    path('historico/<fecha>/<id_servicio>/<id_pendiente>', filtrarServicioPendiente),
-    path('historico/<fecha>/<id_servicio>', filtrarServicio),
+    path('historico/<fecha>/<nombreServicio>/<nombrePendiente>', filtrarServicioPendiente),
+    path('historico/<fecha>/<nombreServicio>', filtrarServicio),
     path('resumen/pendientes/<id_paciente>', filtrarPendientesPorPaciente),
     path('mensual/<year>/<mes>', reporteMensual)
 ]
