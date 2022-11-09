@@ -88,17 +88,18 @@ class Pacientes(models.Model):
 
 class ReporteMensual(models.Model):
     fecha = models.DateField()
-    condP = models.FloatField()
+    servicioNombre= models.CharField(max_length = 50, null=True)
     servicio = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
+    em=models.FloatField()
     emaf = models.FloatField()
     iema = models.FloatField()
     peso = models.FloatField()
-    emafInliers = models.FloatField()
-    iemaInliers = models.FloatField()
+    iemainliersMenor = models.FloatField()
+    iemainliersMayor = models.FloatField()
     outliers = models.FloatField()
     pInt = models.FloatField()
     pExt = models.FloatField()
-
+    condP = models.FloatField()
     class Meta:
         verbose_name='ReporteMensual'
         verbose_name_plural='ReportesMensuales'

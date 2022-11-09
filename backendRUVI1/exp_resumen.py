@@ -88,6 +88,7 @@ def estiloExcel(nombre):
     informe.save(nombre)
 
 #lo pide en formato json como entrada.
+
 def resumen_to_excel(resumenJSON):
     cama=[]
     rut=[]

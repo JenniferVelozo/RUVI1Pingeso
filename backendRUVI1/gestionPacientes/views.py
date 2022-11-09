@@ -7,7 +7,10 @@ from gestionPacientes.models import *
 from gestionPacientes.df import *
 from .serializers import *
 from django.http import HttpResponse, JsonResponse
-
+from openpyxl.utils.cell import get_column_interval
+from openpyxl.styles import Font, PatternFill, Alignment
+import openpyxl
+import json
 from rest_framework import filters
 from rest_framework import status, mixins, generics, viewsets
 
@@ -34,8 +37,8 @@ def subir(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-                handle_uploaded_file(request.FILES['file'])
-                return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
+            handle_uploaded_file(request.FILES['file'])
+            return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
     else:
         form = UploadFileForm()
     return JsonResponse(respuesta2, safe=False, status=status.HTTP_200_OK)
@@ -228,6 +231,31 @@ def filtrarPendientesPorPaciente(request, id_paciente):
     print(resumen)
     return JsonResponse(resumen.pendientesJson, safe=False, json_dumps_params={'ensure_ascii':False})
 
+
+@api_view(['GET'])
+def reporteMensual(request, year, mes):
+    
+    mensual=ReporteMensual.objects.filter(fecha__year=year, fecha__month=mes)
+
+    lista=[]
+    for m in mensual:
+        mJson={}
+        mJson["fecha"]=m.fecha
+        mJson["servicioNombre"]=m.servicioNombre
+        mJson["servicioId"]=m.servicio.id
+        mJson["em"]=m.em
+        mJson["emaf"]=m.emaf
+        mJson["iema"]=m.iema
+        mJson["peso"]=m.peso
+        mJson["iemaInliersMenor"]=m.iemainliersMenor
+        mJson["iemaInliersMayor"]=m.iemainliersMayor
+        mJson["outliers"]=m.outliers
+        mJson["pInt"]=m.pInt
+        mJson["pExt"]=m.pExt
+        mJson["condP"]=m.condP
+        lista.append(mJson)
+    return JsonResponse(lista, safe=False,  json_dumps_params={'ensure_ascii':False})
+
 @api_view(['POST'])
 def setDiagnostico(request):
     data=request.data
@@ -409,6 +437,95 @@ def setDiagnostico(request):
    
 
 
+# establece el tamaño de las celdas y los colores para que no se sobrepongan
+def estiloExcel(nombre):
+    informe = openpyxl.load_workbook(nombre)
+
+    sheet = informe.active 
+
+    def set_width_to(sheet, start, stop, width):
+        for col in get_column_interval(start, stop):
+            sheet.column_dimensions[col].width = width
+
+    set_width_to(sheet, "A", "A", width=5)
+    set_width_to(sheet, "B", "B", width=14)
+    set_width_to(sheet, "C", "C", width=52)
+    set_width_to(sheet, "D", "D", width=10)
+    set_width_to(sheet, "E", "E", width=9)
+    set_width_to(sheet, "F", "F", width=84)
+    set_width_to(sheet, "G", "G", width=18)
+    set_width_to(sheet, "H", "H", width=84)
+    set_width_to(sheet, "I", "I", width=27)
+    set_width_to(sheet, "J", "M", width=10)
+    set_width_to(sheet, "N", "N", width=40)
+    set_width_to(sheet, "O", "R", width=10)
+    set_width_to(sheet, "S", "S", width=50)
+
+    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1"]
+    for encabezado in encabezados:
+        celda = sheet[encabezado]
+        celda.fill =  PatternFill("solid", fgColor="D9D9D9")
+    informe.save(nombre)
+
+@api_view(['POST'])   
+def resumen_to_excel(request):
+    data=request.data
+    print(data)
+    resumenJSON=data["resumen"]
+    cama=[]
+    rut=[]
+    nombrePaciente=[] 
+    estancia=[] 
+    criterio=[] 
+    diagnostico1=[] 
+    diagnostico2 =[]
+    diagnostico1Cod=[] 
+    diagnostico2Cod =[]
+    ir_grd=[] 
+    emNorma=[] 
+    pcSuperior=[] 
+    pesoGRD=[] 
+    nombreServicio=[] 
+    servicio=[] 
+    flag_diag =[]
+    flag_pend=[]
+    pendientesJson=[]
+    for paciente in resumenJSON:
+        cama.append(paciente['cama']) 
+        rut.append(paciente['rut']) 
+        nombrePaciente.append(paciente['nombrePaciente']) 
+        estancia.append(paciente['estancia']) 
+        criterio.append(paciente['criterio']) 
+        diagnostico1.append(paciente['diagnostico1'])
+        diagnostico1Cod.append(paciente['diagnostico1Cod'])  
+        diagnostico2.append(paciente['diagnostico2'])
+        diagnostico2Cod.append(paciente['diagnostico2Cod'])
+        ir_grd.append(paciente['ir_grd']) 
+        emNorma.append(paciente['emNorma']) 
+        pcSuperior.append(paciente['pcSuperior']) 
+        pesoGRD.append(paciente['pesoGRD']) 
+        nombreServicio.append(paciente['nombreServicio']) 
+        servicio.append(paciente['servicio']) 
+        flag_diag.append(paciente['flag_diag'])
+        flag_pend.append(paciente["flag_pend"])
+        pendientesJson.append(paciente["pendientesJson"])
+
+    resumen= pd.DataFrame()
+    resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
+    diagnostico1=diagnostico1, diagnostico1Cod=diagnostico1Cod, diagnostico2=diagnostico2, diagnostico2Cod=diagnostico2Cod, ir_grd=ir_grd, emNorma=emNorma, 
+    pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
+    flag_pend=flag_pend,pendientesJson=pendientesJson)
+    
+
+    nombreArchivo='Gestion de Pacientes.xlsx'
+    nombreArchivoR='\Gestion de Pacientes.xlsx'
+    print(resumen)
+    resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
+    estiloExcel(nombreArchivo)
+    resp={}
+    resp["ruta"]=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
+    return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii':False})
+
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
@@ -445,6 +562,8 @@ class HistoricoViewSet(viewsets.ModelViewSet):
     serializer_class = HistoricoSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['fecha']
+
+
 
 class HistoricoDatesViewSet(viewsets.ModelViewSet):
     queryset = Historico.objects.values('fecha', 'id')

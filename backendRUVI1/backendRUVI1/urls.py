@@ -21,7 +21,6 @@ from gestionPacientes.views import  *
 
 from rest_framework.routers import DefaultRouter
 from gestionPacientes.views import *
-from exp_resumen import *
 
 
 router = DefaultRouter()
@@ -44,5 +43,6 @@ urlpatterns += [
     path('setDiagnosticos/',setDiagnostico),
     path('historico/<fecha>/<id_servicio>/<id_pendiente>', filtrarServicioPendiente),
     path('historico/<fecha>/<id_servicio>', filtrarServicio),
-    path('resumen/pendientes/<id_paciente>', filtrarPendientesPorPaciente)
+    path('resumen/pendientes/<id_paciente>', filtrarPendientesPorPaciente),
+    path('mensual/<year>/<mes>', reporteMensual)
 ]
