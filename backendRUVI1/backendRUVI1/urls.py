@@ -45,5 +45,4 @@ urlpatterns += [
     path('historico/<fecha>/<id_servicio>/<id_pendiente>', filtrarServicioPendiente),
     path('historico/<fecha>/<id_servicio>', filtrarServicio),
     path('resumen/pendientes/<id_paciente>', filtrarPendientesPorPaciente)
-
 ]
