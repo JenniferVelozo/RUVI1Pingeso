@@ -172,7 +172,13 @@ def filtarServicioPendiente(request, fecha, id_servicio, id_pendiente):
     
     #print(listaFinal)
     return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
-    
+
+@api_view(['GET'])
+def filtrarPendientesPorPaciente(request, id_paciente):
+    resumen = Resumen.objects.get(id=int(id_paciente))
+    print(resumen.pendientesJson)
+    print(resumen)
+    return JsonResponse(resumen.pendientesJson, safe=False, json_dumps_params={'ensure_ascii':False})
 
 @api_view(['POST'])
 def setDiagnostico(request):
@@ -383,7 +389,7 @@ class ResumenViewSet(viewsets.ModelViewSet):
     queryset = Resumen.objects.all()
     serializer_class = ResumenSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['servicio__id', 'rut']
+    filterset_fields = ['servicio__id', 'rut',]
 
 
 class HistoricoViewSet(viewsets.ModelViewSet):
