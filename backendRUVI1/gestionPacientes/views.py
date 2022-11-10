@@ -210,8 +210,11 @@ def filtrarServicio(request, fecha, nombreServicio):
     porServicio = []
     for e in porFecha:
         #print(e.servicio.id)
-        if e.servicio.nombre == nombreServicio:
+        if nombreServicio=="todos":
             porServicio.append(e)
+        else:   
+            if e.servicio.nombre == nombreServicio:
+                porServicio.append(e)
     
     #print("Mostrando filtrado por servicio")
     #print(porServicio)
