@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Paper, Button, Grid } from '@mui/material';
+import { Avatar, Paper, Button, Grid, Box } from '@mui/material';
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import FeedIcon from '@mui/icons-material/Feed';
 import PieChartIcon from '@mui/icons-material/PieChart';
@@ -20,8 +20,9 @@ const Home =()=>{
             <div className='App d-flex justify-content-center align-items-center'>
                 <ResponsiveAppBar/>
             </div>
-            <div>
-                <Grid container spacing={0}>
+            <Box align="center" sx={{ width: '100%', p: 7}}>
+            <Grid container spacing={3}>
+                    <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
@@ -30,9 +31,8 @@ const Home =()=>{
                         </Grid>
                     </Paper>
                 </Grid>
-            </div>
             
-            <Grid container spacing={0}>
+            <Grid item xs>
                 <Paper elevation={10} style={paperStyle}>
                     <Grid align='center'>
                         <Avatar style={avatarStyle}><AccessAlarmIcon/></Avatar>
@@ -42,7 +42,7 @@ const Home =()=>{
                 </Paper>
             </Grid>
 
-            <Grid container spacing={0}>
+            <Grid item xs>
                 <Paper elevation={10} style={paperStyle}>
                     <Grid align='center'>
                         <Avatar style={avatarStyle}><FeedIcon/></Avatar>
@@ -50,7 +50,9 @@ const Home =()=>{
                         <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                     </Grid>
                 </Paper>
+                </Grid>
             </Grid>
+            </Box>
 
         </div>
     );

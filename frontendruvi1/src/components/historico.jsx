@@ -1,23 +1,23 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel, Grid} from '@mui/material';
-import TouchAppIcon from '@mui/icons-material/TouchApp';
+import { Box, Select, MenuItem, FormControl, InputLabel, Grid, Button} from '@mui/material';
 import { useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-//import Calendar from 'moedim';
-import BasicDatePicker from './BasicDatePicker';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-import Servicio from './servicio';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {es} from 'date-fns/locale';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
+    ...theme.typography.header,
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -36,7 +36,6 @@ const columns = [
   { field: 'emNorma', headerName: 'EM Norma', width: 80},
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
-  { field: 'pendiente', headerName: 'Pendiente', width: 100 },
 ];
 
 
@@ -45,8 +44,66 @@ function ShowTable() {
 
   const [pageSize, setPageSize] = React.useState(10);
 
-  let baseURL = 'http://localhost:8000/resumen/' //npm i dotenv
+  const [value, setValue] = useState(new Date());
 
+  let URL = 'http://localhost:8000/historicoDates/';
+
+  const [ listFechas, setListFechas ] = useState([]);
+
+  useEffect(() => {
+    getFechas(); 
+  },[])
+
+  const getFechas = async() => {
+    const { data } = await axios.get(URL)
+    setListFechas(data)
+  }
+
+  function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+  
+  function disableNotHistorico(date) {
+    for (var i = 0; i < listFechas.length; i++){
+      var historico = new Date(addDays(listFechas[i].fecha,1));
+      if (historico.getDate() === date.getDate() && historico.getMonth() === date.getMonth() && historico.getFullYear() === date.getFullYear()){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const [evento, setEvento] = React.useState(1);
+  const handleChange = (event) => {setEvento(event.target.value);};
+
+
+
+
+  const [ listServicios, setListServicios ] = useState([{id:0,nombre:"todos",}])
+
+  const getServicios = async() => {
+      const { data } = await axios.get('http://localhost:8000/servicios/')
+      setListServicios(data)
+      console.log(data)
+  }
+
+  useEffect(() => {
+      getServicios() 
+  },[])
+
+  var dateOb = value.getDate();
+
+  if(dateOb < 10){
+    dateOb = "0" + dateOb;
+  }
+
+  console.log(evento)
+  console.log(listServicios)
+  let baseURL = 'http://localhost:8000/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre //npm i dotenv
+
+  console.log(baseURL)
   const [ listResumen, setListResumen ] = useState([])
 
     useEffect(() => {
@@ -59,8 +116,8 @@ function ShowTable() {
           if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
           }
-          if (data[i].pcSuperior !== 0){
-          data[i].criterio = (data[i].estancia/data[i].pcSuperior);
+          if (data[i].emNorma !== 0){
+          data[i].criterio = (data[i].estancia/data[i].emNorma);
           }
        }
         setListResumen(data)
@@ -71,24 +128,62 @@ function ShowTable() {
 
 
   return (
-    <Box
+    <div className='historico' >
+    <Box sx={{ display: 'flex' }}>
+          <ResponsiveAppBar/>
+    </Box>
+    <Box sx={{ width: '100%', p: 9}}>
+      <Grid container spacing={3}>
+          <Grid item xs>
+          <FormControl fullWidth required>
+            <InputLabel id="rol">Servicio</InputLabel>
+            <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={handleChange}>
+                  { listServicios.map(servicios => (
+                  <MenuItem value={servicios.id}>
+                    {servicios.nombre}
+                  </MenuItem>
+                  ))}
+            </Select>
+        </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+          <Item>Listar Por Servicio</Item>
+          </Grid>
+          <Grid item xs>
+          <LocalizationProvider adapterLocale={es} dateAdapter={AdapterDateFns} >
+            <DatePicker
+              label="Elegir fecha"
+              shouldDisableDate={disableNotHistorico}
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+                getResumen();
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+          </Grid>
+      </Grid>
+      </Box>
+      <Box sx={{ width: '95%', p: 9}}>
+      <Box
       sx={{
         height: 300,
         width: '100%',
         '& .cold': {
-          backgroundColor: '#c9ffb8',
+          backgroundColor: '#37c871',
           color: '#1a3e72',
         },
         '& .mediumcold': {
-          backgroundColor: '#b9d5ff91',
+          backgroundColor: '#ffcc00',
           color: '#1a3e72',
         },
         '& .hot': {
-          backgroundColor: '#ff3838',
-          color: '#1a3e72',
+          backgroundColor: '#0066ff',
+          color: '#000000',
         },
         '& .mediumhot': {
-          backgroundColor: '#ff943975',
+          backgroundColor: '#ff0000',
           color: '#1a3e72',
         },
       }}
@@ -101,6 +196,9 @@ function ShowTable() {
         return params.value >= 1.5 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
         autoHeight
         autoWidth
+        onChange={(newRows) => {
+          setValue(newRows);
+        }}
         rows={listResumen}
         columns={columns}
         pageSize={pageSize}
@@ -108,11 +206,19 @@ function ShowTable() {
         getRowHeight={() => 'auto'}
         rowsPerPageOptions={[10,25,100]}
         pagination
-        checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
       />
       </Box>
+      </Box>
+      <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
+          <Fab variant="extended" color="primary">
+              Exportar a XLS <DownloadIcon />
+          </Fab>
+      </Box>
+
+  </div>
+    
   );
 }
 
@@ -120,33 +226,7 @@ function ShowTable() {
 
 const Historico = () => {
     return (
-        <div className='historico' >
-          <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar/>
-          </Box>
-          <Box sx={{ width: '100%', p: 9}}>
-            <Grid container spacing={3}>
-                <Grid item xs>
-                <Servicio/>
-                </Grid>
-                <Grid item xs={6}>
-                <Item>Listar Por Servicio</Item>
-                </Grid>
-                <Grid item xs>
-                <BasicDatePicker/>
-                </Grid>
-            </Grid>
-            </Box>
-            <Box sx={{ width: '95%', p: 9}}>
-            <ShowTable/>
-            </Box>
-            <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-                <Fab variant="extended" color="primary">
-                    Exportar a XLS <DownloadIcon />
-                </Fab>
-            </Box>
-
-        </div>
+      <ShowTable/>
     )
 }
 

@@ -6,7 +6,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {es} from 'date-fns/locale';
 import { useState, useEffect} from 'react';
 import axios from 'axios';
-import Historico from './historico';
 
 
 

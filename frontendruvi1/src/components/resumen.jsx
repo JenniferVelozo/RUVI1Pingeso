@@ -126,8 +126,8 @@ function ShowTable() {
           if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
           }
-          if (data[i].pcSuperior !== 0){
-          data[i].criterio = (data[i].estancia/data[i].pcSuperior);
+          if (data[i].emNorma !== 0){
+          data[i].criterio = (data[i].estancia/data[i].emNorma);
           }
        }
         setListResumen(data)
@@ -157,19 +157,19 @@ function ShowTable() {
         height: 300,
         width: '100%',
         '& .cold': {
-          backgroundColor: '#c9ffb8',
+          backgroundColor: '#37c871',
           color: '#1a3e72',
         },
         '& .mediumcold': {
-          backgroundColor: '#b9d5ff91',
+          backgroundColor: '#ffcc00',
           color: '#1a3e72',
         },
         '& .hot': {
-          backgroundColor: '#ff3838',
-          color: '#1a3e72',
+          backgroundColor: '#0066ff',
+          color: '#000000',
         },
         '& .mediumhot': {
-          backgroundColor: '#ff943975',
+          backgroundColor: '#ff0000',
           color: '#1a3e72',
         },
       }}
@@ -187,7 +187,7 @@ function ShowTable() {
         if (params.field !== 'criterio' || params.value == null) {
           return '';
         }
-        return params.value >= 1.5 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
+        return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
         autoHeight
         autoWidth
         rows={listResumen}
@@ -197,7 +197,7 @@ function ShowTable() {
         getRowHeight={() => 'auto'}
         rowsPerPageOptions={[10,25,100]}
         pagination
-        checkboxSelection
+        //checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
       />

@@ -142,9 +142,6 @@ const ResponsiveAppBar = () => {
             RUVI1
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <ModalPopup/>
-            ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
