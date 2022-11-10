@@ -247,6 +247,7 @@ def reporteMensual(request, year, mes):
     lista=[]
     for m in mensual:
         mJson={}
+        mJson["id"]=m.id
         mJson["fecha"]=m.fecha
         mJson["servicioNombre"]=m.servicioNombre
         mJson["servicioId"]=m.servicio.id

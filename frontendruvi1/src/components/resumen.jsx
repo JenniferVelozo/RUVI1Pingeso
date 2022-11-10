@@ -1,14 +1,12 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, Avatar, List, ListItem, ListItemAvatar, ListItemText, Button} from '@mui/material';
+import { Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemAvatar, ListItemText, Button} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
-import PersonIcon from '@mui/icons-material/Person';
-import { blue } from '@mui/material/colors';
 
 
 
@@ -29,83 +27,135 @@ const columns = [
   { field: 'pendiente', headerName: 'Pendiente', width: 100 },
   { field: 'Editar', renderCell: (params) => {
     return (
-      /*
-      <Fab 
-        color="primary" 
-        aria-label="add"
-        onClick={(event) => {
-          HandleEditClick(event, params.row.id);
-        }} >
-        <TouchAppIcon />
-      </Fab>
-      */
-      <ShowDialog/>
+      <ShowDialog props={params}/>
     )
   }}
   
 ];
 
-// DIALOG 
+// INICIO CHECKBOXES PENDIENTES
 
-function ShowDialog(props) {
-  const [open, setOpen] = React.useState(false);
-  const emails = ['username@gmail.com', 'user02@gmail.com'];
+function CheckboxesPendientes(idProp, openProp) {
 
-  const [ listPendientes, setListPendientes ] = useState([])
-    const getPendientes = async() => {
-        const { data } = await axios.get('http://localhost:8000/pendientes/')
-        setListPendientes(data)
-        console.log(data)
-    }
-
-    useEffect(() => {
-        getPendientes() 
-    },[])
-
-  const handleListItemClick = (value) => {
-    //onClose(value);
+  const handleGuardar = async() => {
+      openProp = false;
+      const listaSalida = GenerarListaPendientes();
+      const json = {"id": idProp.props, "pendientes": listaSalida }
+      const {data} = await axios.post('http://localhost:8000/setPendientes/', json)
+      window.location.replace('/resumen');
   };
 
-  return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
-          <TouchAppIcon/>
-      </Button>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Seleccione pendientes</DialogTitle>
-        <List sx={{ pt: 0 }}>
-        {listPendientes.map((pendientes) => (
-          <ListItem button onClick={() => handleListItemClick(pendientes.nombrePendiente)} key={pendientes.nombrePendiente}>
-            <ListItemAvatar>
-              <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                <PersonIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={pendientes.nombrePendiente} />
-          </ListItem>
-        ))}
-      </List>
-      </Dialog>
-    </div>
-  );
+  //llamado pendientes
+  const [ listPendientes, setListPendientes ] = useState([])
+  const getPendientes = async() => {
+      const { data } = await axios.get('http://localhost:8000/pendientes/')
+      setListPendientes(data)
+  }
+
+  useEffect(() => {
+      getPendientes()
+  },[])
+
+  //fin llamado pendientes
+
+  //guardado de elecciones
+
+  const [state, setState] = React.useState({
+    
+  });
+
+  const handleChange = (event) => {
+      setState({
+      ...state,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const [checked, setChecked] = React.useState([0]);
+
+const handleToggle = (value) => () => {
+  const currentIndex = checked.indexOf(value);
+  const newChecked = [...checked];
+
+  if (currentIndex === -1) {
+    newChecked.push(value);
+  } else {
+    newChecked.splice(currentIndex, 1);
+  }
+
+  setChecked(newChecked);
 };
 
-const HandleEditClick = (event, id) => {
-  console.log(id);
-  const [open, setOpen] = React.useState(true);
-  return (
-    <div>
-    <Dialog open={true}>
-      <DialogTitle>Seleccione servicios</DialogTitle>
-      <DialogContent>
-        lala
-      </DialogContent>
-    </Dialog>
-    </div>
-  )
+function GenerarListaPendientes() {
+  const listaSalida = []
+  for (let i = 0; i < listPendientes.length; i++) {
+    if (checked.indexOf(listPendientes[i].id) !== -1) {
+      listaSalida.push(listPendientes[i].id)
+    }
+  }
+  console.log(listaSalida)
+  return listaSalida;
 }
 
-//END DIALOG
+return (
+  <Box sx={{ display: 'flex' }}>
+    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    
+      {listPendientes.map((pendientes) => {
+          const labelId = `checkbox-list-label-${pendientes.id}`;
+          return (
+            <ListItem
+              key={pendientes.id}
+              disablePadding
+            >
+              <ListItemButton role={undefined} onClick={handleToggle(pendientes.id)} dense>
+                <ListItemIcon>
+                  <Checkbox
+                    checked={checked.indexOf(pendientes.id) !== -1}
+                    tabIndex={-1}
+                    inputProps={{ 'aria-labelledby': labelId }}
+                    id = {pendientes.id}
+                    label={pendientes.id + ' ' + pendientes.nombrePendiente}
+                  />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={`${pendientes.id} ${pendientes.nombrePendiente}`} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      <GenerarListaPendientes/>
+      <Box textAlign='center'>
+          <Button variant="contained" color="primary" margin="normal" type='submit' onClick={handleGuardar}>
+              Guardar
+          </Button>
+      </Box>
+    </List>
+  </Box>
+);
+}
+
+// END CHECKBOXES PENDIENTES
+
+// DIALOG PENDIENTES
+
+function ShowDialog(props) {
+const [open, setOpen] = React.useState(false);
+
+return (
+  <div>
+    <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
+        <TouchAppIcon/>
+    </Button>
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>Seleccione pendientes</DialogTitle>
+      <CheckboxesPendientes props={props.props.row.id} openProp={open}/>
+      
+    </Dialog>
+  </div>
+);
+};
+
+//END DIALOG PENDIENTES
 
 
 function ShowTable() {
@@ -129,6 +179,16 @@ function ShowTable() {
           if (data[i].emNorma !== 0){
           data[i].criterio = (data[i].estancia/data[i].emNorma);
           }
+          let listPendienteString = ''
+          for (var j = 0; j < data[i].pendientesJson.length; j++) {
+            if (j < data[i].pendientesJson.length - 1) {
+              listPendienteString = data[i].pendientesJson[j].nombre + ', '
+            }
+            else{
+              listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
+            }
+          }
+          data[i].pendiente = listPendienteString
        }
         setListResumen(data)
         console.log(data)
@@ -174,7 +234,7 @@ function ShowTable() {
         },
       }}
     >
-      <FormControl margin="normal" required>
+      <FormControl margin="normal" required sx = {{ width:260 }}>
           <InputLabel id="rol">Servicio</InputLabel>
           <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
                 { listServicios.map(servicios => (

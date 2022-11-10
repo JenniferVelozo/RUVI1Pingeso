@@ -22,7 +22,7 @@ function ShowServicio() {
 
 
   return (
-      <FormControl fullWidth required>
+      <FormControl fullWidth required sx = {{ width:260 }}>
           <InputLabel id="rol">Servicio</InputLabel>
           <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
                 { listServicios.map(servicios => (
