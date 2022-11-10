@@ -101,6 +101,7 @@ def HistoricotoDictionary(historico):
         return None
     
     aux={}
+    aux["id"]=historico.id
     aux["rut"]= historico.rut
     aux["nombrePaciente"]= historico.nombrePaciente
     aux["servicio_id"]=historico.servicio.id
@@ -194,6 +195,7 @@ def filtrarServicio(request, fecha, nombreServicio):
     #print(historico)
 
     historico = list(historico)
+    print(historico)
     # Primero filtramos por fecha
     porFecha = []
     #print(type(historico[0]))
@@ -226,6 +228,7 @@ def filtrarServicio(request, fecha, nombreServicio):
         listaFinal.append(HistoricotoDictionary(resumen))
 
     #print(listaFinal)
+    print(listaFinal)
     return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
 
 @api_view(['GET'])
