@@ -1,11 +1,9 @@
 import React from 'react';
 import { Button, Grid} from '@mui/material';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
+import { Avatar, Paper } from '@mui/material';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Config =()=>{
     const avatarStyle={backgroundColor:'#005588'}
@@ -20,28 +18,70 @@ const Config =()=>{
             <div className='App d-flex justify-content-center align-items-center'>
                 <ResponsiveAppBar/>
             </div>
-            <Grid>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardMedia
-                    component="img"
-                    alt="green iguana"
-                    height="150"
-                    image="https://play-lh.googleusercontent.com/eqmvk0feztsrv-qFNIkb-K7MiDt9OSvfjRZ4-gLGgzrTjSJa09mLzhD8R5w5EQrF_al-"
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Gestionar BD CIE10
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Aquí puedes gestionar las bases de datos correspondientes a la norma CIE10
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">Share</Button>
-                    <Button size="small">Learn More</Button>
-                  </CardActions>
-                </Card>
+            <div style={{
+        position: 'absolute', left: '30%', top: '30%',
+        transform: 'translate(-20%, -20%)'
+      }}>
+        <Grid container spacing={8}>
+            <Grid item xs>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align='center'>
+                            <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                            <h5>Gestionar BD CIE10</h5>
+                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            <Grid item xs>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align='center'>
+                            <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                            <h5>Gestionar Usuarios</h5>
+                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                        </Grid>
+                    </Paper>
+                </Grid>
+              <Grid item xs>
+                  <Paper elevation={10} style={paperStyle}>
+                      <Grid align='center'>
+                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                          <h5>Configuración del Sistema</h5>
+                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                      </Grid>
+                  </Paper>
+              </Grid>
+              </Grid>
+            <Grid container spacing={8}>
+            <Grid item xs>
+                  <Paper elevation={10} style={paperStyle}>
+                      <Grid align='center'>
+                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                          <h5>Gestionar BD GRD</h5>
+                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                      </Grid>
+                  </Paper>
+              </Grid>
+              <Grid item xs>
+                  <Paper elevation={10} style={paperStyle}>
+                      <Grid align='center'>
+                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                          <h5>Gestionar tabla Pendientes</h5>
+                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                      </Grid>
+                  </Paper>
+              </Grid>
+              <Grid item xs>
+                  <Paper elevation={10} style={paperStyle}>
+                      <Grid align='center'>
+                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                          <h5>Información del Sistema</h5>
+                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                      </Grid>
+                  </Paper>
+              </Grid>
+              
             </Grid>
+            </div>
 
             </div>
 

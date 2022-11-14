@@ -20,7 +20,10 @@ const Home =()=>{
             <div className='App d-flex justify-content-center align-items-center'>
                 <ResponsiveAppBar/>
             </div>
-            <Box align="center" sx={{ width: '100%', p: 7}}>
+            <div style={{
+        position: 'absolute', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)'
+      }}>
             <Grid container spacing={3}>
                     <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
@@ -52,7 +55,7 @@ const Home =()=>{
                 </Paper>
                 </Grid>
             </Grid>
-            </Box>
+            </div>
 
         </div>
     );
