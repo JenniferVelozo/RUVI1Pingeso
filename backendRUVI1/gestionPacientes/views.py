@@ -78,7 +78,6 @@ def setPendientes(request):
     for idP in idPendientes:
         r=Resumen.objects.get(id=idRes)
         p=Pendientes.objects.get(id=idP)
-
         h = Historico.objects.get(id = idRes)
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)

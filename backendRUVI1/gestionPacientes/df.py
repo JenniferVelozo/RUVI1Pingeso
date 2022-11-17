@@ -79,6 +79,7 @@ def leerDf():
         nombres_diags2 = []
         # print(type(nombres_diags2))
         diagnostico2Cod=diagnostico2
+        diagnostico2Json=[]
         if str(diagnostico2) == 'nan':
             diagnostico2 = []
             diagnostico2Cod=NULL
@@ -91,12 +92,17 @@ def leerDf():
                 grd_diagnostico2 = diagnostico2_pd['GRD'].to_frame(name='GRD')
                 sev_diagnostico2 = diagnostico2_pd['SEV'].to_frame(name = 'SEV')
                 nombre_diagnostico2 = diagnostico2_pd['DIAGNOSTICO'].to_frame(name='DIAGNOSTICO')
-                
+                aux={}
+
                 if grd_diagnostico2.size != 0:
                     print("AAAAAAAAAAAAAAAAAAAAAAAAA")
                     diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                     grd = str(grd_diagnostico2['GRD'].values[0])
                     sev = str(sev_diagnostico2['SEV'].values[0])
+                    aux['codigo']=str(diag)
+                    aux['nombre']=str(diagnostico_dos)
+                    
+                    diagnostico2Json.append(aux)
                 
                 else:
                     print("No tiene GRD")
@@ -110,6 +116,10 @@ def leerDf():
                     diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                     grd = str(grd_diagnostico2['GRD'].values[0])
                     sev = str(sev_diagnostico2['SEV'].values[0])
+                    aux['codigo']=str(diag)
+                    aux['nombre']=str(nombre_diagnostico2)
+                    
+                    diagnostico2Json.append(aux)
 
 
                 nombres_diags2.append(diagnostico_dos)
@@ -120,6 +130,7 @@ def leerDf():
                 diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]
         print("Diagnóstico 2: ", diagnostico2)
         print("Nombres diag2: ", nombres_diags2)
+        #diagnostico2Json=json.dumps(diagnostico2Json)
         
         
         if str(diagnostico1Cod) != 'nan':
@@ -339,6 +350,7 @@ def leerDf():
                 diagnostico1Cod=pAntiguo.diagnostico1Cod
                 diag2_final=pAntiguo.diagnostico2
                 diagnostico2Cod=pAntiguo.diagnostico2Cod
+                diagnostico2Json=pAntiguo.diagnostico2Json
                 grd=pAntiguo.ir_grd
                 pc_corte=pAntiguo.pcSuperior
                 em_norma=pAntiguo.emNorma
@@ -371,6 +383,7 @@ def leerDf():
         aux["diagnostico1Cod"]=diagnostico1Cod
         aux["diagnostico2"]= diag2_final
         aux["diagnostico2Cod"]=diagnostico2Cod
+        aux["diagnostico2Json"]=diagnostico2Json
         aux["ir_grd"] = grd
         aux["emNorma"]= float(em_norma)
         aux["pcSuperior"]= int(pc_corte)
@@ -386,7 +399,7 @@ def leerDf():
     #guarda el resumen actual.
     print(jsonRes)
     for paciente in jsonRes:
-        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
+        a ,created = Resumen.objects.get_or_create(rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"], diagnostico2Json=paciente["diagnostico2Json"])
         #guarda en tabla de historicos
         now = datetime.now()
         fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)

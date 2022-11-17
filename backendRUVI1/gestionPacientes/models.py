@@ -123,6 +123,7 @@ class Resumen(models.Model):
     diagnostico1Cod=models.CharField(max_length=7, null=True)
     diagnostico2 = models.CharField(max_length=500, null=True)
     diagnostico2Cod=models.CharField(max_length=100, null=True)
+    diagnostico2Json=models.JSONField(null=True)
     ir_grd = models.CharField(null=True, max_length=10)
     emNorma = models.FloatField(null=True)
     pcSuperior = models.IntegerField(null=True)
