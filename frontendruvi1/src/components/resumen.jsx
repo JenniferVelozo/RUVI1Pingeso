@@ -1,12 +1,22 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemAvatar, ListItemText, Button} from '@mui/material';
+import { Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemAvatar, ListItemText, Button, DialogContentText} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
+import { styled } from '@mui/material/styles';
+
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.header,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 
 
@@ -25,20 +35,27 @@ const columns = [
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
   { field: 'pendiente', headerName: 'Pendiente', width: 100 },
-  { field: 'Editar', renderCell: (params) => {
+  { field: 'Editar Diagnostico 2', renderCell: (params) => {
     return (
-      <ShowDialog props={params}/>
+      <ShowDialogDiagnostico props={params}/>
+    )
+  }},
+  { field: 'Editar Pendientes', renderCell: (params) => {
+    return (
+      <ShowDialogPendientes props={params}/>
     )
   }}
   
 ];
+
+// ZONA EDICION PENDIENTES
 
 // INICIO CHECKBOXES PENDIENTES
 
 function CheckboxesPendientes(idProp, openProp) {
 
   const handleGuardar = async() => {
-      openProp = false;
+      console.log(idProp.openProp)
       const listaSalida = GenerarListaPendientes();
       const json = {"id": idProp.props, "pendientes": listaSalida }
       const {data} = await axios.post('http://localhost:8000/setPendientes/', json)
@@ -60,20 +77,9 @@ function CheckboxesPendientes(idProp, openProp) {
 
   //guardado de elecciones
 
-  const [state, setState] = React.useState({
-    
-  });
-
-  const handleChange = (event) => {
-      setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
   const [checked, setChecked] = React.useState([0]);
 
-const handleToggle = (value) => () => {
+  const handleToggle = (value) => () => {
   const currentIndex = checked.indexOf(value);
   const newChecked = [...checked];
 
@@ -123,7 +129,6 @@ return (
             </ListItem>
           );
         })}
-      <GenerarListaPendientes/>
       <Box textAlign='center'>
           <Button variant="contained" color="primary" margin="normal" type='submit' onClick={handleGuardar}>
               Guardar
@@ -138,7 +143,7 @@ return (
 
 // DIALOG PENDIENTES
 
-function ShowDialog(props) {
+function ShowDialogPendientes(props) {
 const [open, setOpen] = React.useState(false);
 
 return (
@@ -156,6 +161,90 @@ return (
 };
 
 //END DIALOG PENDIENTES
+
+// END ZONA EDICION PENDIENTES
+
+// ZONA EDICION DIAGNOSTICO 2
+
+// INICIO LISTA DIAGNOSTICOS
+
+function ListaDiagnosticos(props, openProp) {
+  const handleClick = (diagnostico) => async() => {
+    console.log(props.openProp)
+    console.log(diagnostico)
+    console.log(props.props)
+    const jsonAux = {"codigo": props.props.diagnostico1Cod, "nombre": props.props.diagnostico1}
+    var listaSalida = props.props.diagnostico1Cod
+    for (let i = 0; i < props.props.diagnostico2Json.length; i++) {
+      if (props.props.diagnostico2Json[i].codigo !== diagnostico.codigo) {
+      listaSalida = listaSalida + ',' + props.props.diagnostico2Json[i].codigo
+      } else { }
+    }
+    console.log(listaSalida)
+    const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
+    console.log(json)
+    const {data} = await axios.post('http://localhost:8000/setDiagnosticos/', json)
+    window.location.replace('/resumen');
+  };
+
+function GenerarListaDiagnosticos(props) {
+    console.log(props.id)
+    const listaSalida = props
+    
+    return listaSalida;
+}
+
+return (
+  <Box sx={{ display: 'flex' }}>
+    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    
+      {props.props.diagnostico2Json.map((diagnostico) => {
+          const labelId = `checkbox-list-label-${diagnostico.codigo}`;
+          return (
+            <ListItem
+              //key={diagnostico.codigo}
+              disablePadding
+            >
+              <ListItemButton role={undefined} onClick={handleClick(diagnostico)}dense>
+                <ListItemText id={labelId} primary={`${diagnostico.codigo} ${diagnostico.nombre}`} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+    </List>
+  </Box>
+);
+}
+
+// END LISTA DIAGNOSTICOS
+
+// DIALOG DIAGNOSTICO 2
+
+function ShowDialogDiagnostico(props) {
+  const [open, setOpen] = React.useState(false);
+
+  function StringDiagnostico(props) {
+    const texto = props.props.diagnostico1Cod + " " + props.props.diagnostico1
+    return texto
+  };
+
+  return ( 
+    <div>
+      <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
+        <TouchAppIcon/>
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle align='center'>Diagnóstico 1 actual:<br/><StringDiagnostico props={props.props.row}/></DialogTitle>
+        <DialogContentText align='center'>Diagnosticos secundarios:</DialogContentText>
+        <ListaDiagnosticos props={props.props.row} openProp={open}/>
+      </Dialog>
+    </div>
+  );
+};
+
+//END DIALOG DIAGNOSTICO 2
+
+// END ZONA EDICION DIAGNOSTICO 2
 
 
 function ShowTable() {
@@ -242,6 +331,9 @@ function ShowTable() {
                 ))}
           </Select>
       </FormControl>
+      <Grid item xs={6}>
+          <Item>Resumen pacientes</Item>
+          </Grid>
       <DataGrid
         getCellClassName={(params) => {
         if (params.field !== 'criterio' || params.value == null) {
