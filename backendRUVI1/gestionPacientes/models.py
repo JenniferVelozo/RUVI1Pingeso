@@ -134,6 +134,7 @@ class Resumen(models.Model):
     pendientes=models.ManyToManyField(Pendientes)
     flag_pend=models.BooleanField(null=True)
     pendientesJson=models.JSONField(null=True)
+    updated_at=models.DateField(null=True)
     class Meta:
         verbose_name='Resumen'
         verbose_name_plural='Resumenes'

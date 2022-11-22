@@ -82,7 +82,10 @@ def setPendientes(request):
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)
         h.pendientes.add(p)
+    now = datetime.now()
+    fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)
     r.flag_pend=True
+    r.updated_at=fecha
     h.flag_pend = True
     r.pendientesJson=pJson
     h.pendientesJson=pJson
@@ -285,6 +288,7 @@ def setDiagnostico(request):
 
     nombres_diags2 = []
     diagnostico2Cod=diagnostico2
+    diagnostico2Json=[]
     if str(diagnostico2) == 'nan':
         diagnostico2 = []
         diagnostico2Cod=NULL
@@ -297,13 +301,16 @@ def setDiagnostico(request):
             grd_diagnostico2 = diagnostico2_pd['GRD'].to_frame(name='GRD')
             sev_diagnostico2 = diagnostico2_pd['SEV'].to_frame(name = 'SEV')
             nombre_diagnostico2 = diagnostico2_pd['DIAGNOSTICO'].to_frame(name='DIAGNOSTICO')
-            
+            aux={}
             if grd_diagnostico2.size != 0:
                 print("AAAAAAAAAAAAAAAAAAAAAAAAA")
                 diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                 grd = str(grd_diagnostico2['GRD'].values[0])
                 sev = str(sev_diagnostico2['SEV'].values[0])
-            
+                aux['codigo']=str(diag)
+                aux['nombre']=str(diagnostico_dos)
+                
+                diagnostico2Json.append(aux)
             else:
                 print("No tiene GRD")
                 print("GRD CONFLICTO...")
@@ -316,6 +323,10 @@ def setDiagnostico(request):
                 diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                 grd = str(grd_diagnostico2['GRD'].values[0])
                 sev = str(sev_diagnostico2['SEV'].values[0])
+                aux['codigo']=str(diag)
+                aux['nombre']=str(nombre_diagnostico2)
+                
+                diagnostico2Json.append(aux)
 
 
             nombres_diags2.append(diagnostico_dos)
@@ -427,6 +438,8 @@ def setDiagnostico(request):
     print("id paciente",idPaciente)
     print("Dias de estada: ", dias_estada)
     print("Valor criterio: ", criterio)
+    now = datetime.now()
+    fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)
     paciente=Resumen.objects.get(id=idPaciente)
     paciente.pcSuperior=pc_corte
     paciente.pesoGRD=peso_grd
@@ -436,9 +449,11 @@ def setDiagnostico(request):
     paciente.diagnostico1=diagnostico_uno
     paciente.diagnostico2Cod=diagnostico2Cod
     paciente.diagnostico2=diag2_final
+    paciente.diagnostico2Json=diagnostico2Json
     paciente.estancia=dias_estada
     paciente.criterio=criterio
     paciente.flag_diag=True
+    paciente.updated_at=fecha
     paciente.save()
     return HttpResponse(data, content_type='application/json')
    
@@ -558,7 +573,7 @@ class ResumenViewSet(viewsets.ModelViewSet):
     queryset = Resumen.objects.all()
     filter_backends = [filters.SearchFilter]
     search_fields=['=servicio__id']'''
-    queryset = Resumen.objects.all()
+    queryset = Resumen.objects.all().order_by('-updated_at')#.values()
     serializer_class = ResumenSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['servicio__id', 'rut',]
