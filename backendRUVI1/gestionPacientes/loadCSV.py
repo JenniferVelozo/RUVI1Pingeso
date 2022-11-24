@@ -11,6 +11,7 @@ from gestionPacientes.dbConnection import conectar_db, close_session_db
 from datetime import date
 
 def load_CIE10_GRD(archivo):
+
     conn = conectar_db()
     print(conn)
     cie10Bruto = pd.read_excel(archivo, sheet_name='CIE10 MOD')
@@ -22,6 +23,7 @@ def load_CIE10_GRD(archivo):
                         sev=cie10Bruto["SEV"],
                         grd=cie10Bruto["GRD"])
     print(cie10)
+    Cie10.objects.all().delete()
     cie10.to_sql("cie10", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE cie10 ADD PRIMARY KEY (id);')
 
@@ -34,6 +36,7 @@ def load_CIE10_GRD(archivo):
                         pcSuperior = normaBruta['PC superior'],
                         pesoGRD = normaBruta['Peso GRD'])
     print(norma)
+    Norma.objects.all().delete()
     norma.to_sql("norma", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE norma ADD PRIMARY KEY (id);')
     conn.dispose()
@@ -42,6 +45,7 @@ def load_CIE10_GRD(archivo):
 
 def load_prestaciones(archivo):
     conn = conectar_db()
+    Pendientes.objects.all().delete()
     prestaciones = pd.read_excel(archivo, sheet_name='Prestaciones')
    # prestaciones = prestaciones.assign(id=listaID)
     print(prestaciones)

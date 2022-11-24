@@ -24,6 +24,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 import os
 from django import forms
+from gestionPacientes.loadCSV import *
 
 
 class UploadFileForm(forms.Form):
@@ -32,16 +33,20 @@ class UploadFileForm(forms.Form):
 
 @api_view(['POST'])
 def subir(request):
-    respuesta={"Response": "Archivo cargado correctamente. 204"}
-    respuesta2={"Response": "Archivo no cargado. 404"}
+    respuesta={"Response": "Archivo cargado correctamente. 200_OK"}
+    respuesta2={"Response": "Archivo no cargado. 400 BAD REQUEST"}
+    respuesta3={"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST"}
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
-            return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
+            if handle_uploaded_file(request.FILES['file']):
+                return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
+            else:
+                return JsonResponse(respuesta3, safe=False, status=status.HTTP_400_BAD_REQUEST)
     else:
+
         form = UploadFileForm()
-    return JsonResponse(respuesta2, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse(respuesta2, safe=False, status=status.HTTP_400_BAD_REQUEST)
 
   
 
@@ -49,12 +54,25 @@ def handle_uploaded_file(f):
     path = os.path.dirname(os.path.realpath(__file__))
     path=path+'\\'
     print(path)
-    with open(path + f.name , 'wb+') as destination:  
+    path=path + f.name 
+    with open(path, 'wb+') as destination:  
       for chunk in f.chunks():  
           destination.write(chunk)  
-    
-    leerDf()
-
+    print("------------------------------")
+    print(f.name)
+    if f.name=='PACIENTES.xlsx':
+        print("pacientes")
+        leerDf()
+        return True
+    if f.name=='CIE10-GRD.xlsm':
+        print("cie10-norma")
+        load_CIE10_GRD(path)
+        return True
+    if f.name=='PRESTACIONES_CAUSAS.xlsx':
+        print("pendientes")
+        load_prestaciones(path)
+        return True
+    return False
 # Create your views here.
 @api_view(['POST'])
 def comprobar(request):
@@ -82,8 +100,7 @@ def setPendientes(request):
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)
         h.pendientes.add(p)
-    now = datetime.now()
-    fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)
+    fecha = datetime.now()
     r.flag_pend=True
     r.updated_at=fecha
     h.flag_pend = True
@@ -438,8 +455,7 @@ def setDiagnostico(request):
     print("id paciente",idPaciente)
     print("Dias de estada: ", dias_estada)
     print("Valor criterio: ", criterio)
-    now = datetime.now()
-    fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)
+    fecha = datetime.now()
     paciente=Resumen.objects.get(id=idPaciente)
     paciente.pcSuperior=pc_corte
     paciente.pesoGRD=peso_grd
@@ -576,7 +592,7 @@ class ResumenViewSet(viewsets.ModelViewSet):
     queryset = Resumen.objects.all().order_by('-updated_at')#.values()
     serializer_class = ResumenSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['servicio__id', 'rut',]
+    filterset_fields = ['servicio__id', 'rut']
 
 
 class HistoricoViewSet(viewsets.ModelViewSet):

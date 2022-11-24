@@ -40,11 +40,7 @@ class HistoricoDatesSerializer(serializers.ModelSerializer):
         model = Historico
         fields = ['fecha', 'id']
 
-class ResumenFilterServiceSerializerAgrupar(serializers.ModelSerializer):
-    class Meta:
-      model = Resumen
-      fields = ['cama', 'rut', 'nombrePaciente', 'estancia', 'criterio', 'diagnostico1', 'diagnostico2', 'ir_grd', 'emNorma', 'pcSuperior', 'pesoGRD', 'nombreServicio', 'servicio', 'flag_diag']
-      
+    
 #---------------- INTENTO DE LOGIN -------------------
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
