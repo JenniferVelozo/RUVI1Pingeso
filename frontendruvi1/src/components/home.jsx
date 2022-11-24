@@ -11,6 +11,7 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 
 const Home =()=>{
     console.log("Hola")
+   
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
 

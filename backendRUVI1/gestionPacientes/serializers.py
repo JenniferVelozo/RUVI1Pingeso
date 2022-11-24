@@ -40,6 +40,11 @@ class HistoricoDatesSerializer(serializers.ModelSerializer):
         model = Historico
         fields = ['fecha', 'id']
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
     
 #---------------- INTENTO DE LOGIN -------------------
 

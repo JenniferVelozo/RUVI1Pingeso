@@ -566,8 +566,8 @@ def resumen_to_excel(request):
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
-    serializer_class = UsuarioSerializer
-    queryset = Usuarios.objects.all()
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
     #print(queryset)
 
 class ServicioViewSet(viewsets.ModelViewSet):
