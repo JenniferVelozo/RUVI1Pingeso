@@ -9,6 +9,9 @@ import { useLoginUserMutation } from '../../services/userAuthApi';
 import { Avatar, Paper, Grid} from '@mui/material';
 import Logo from "./Logo.js";
 
+var aux = "";
+
+
 const UserLogin = () => {
   const paperStyle={padding :20,height:'50vh',width:260, margin:"20px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
@@ -32,6 +35,8 @@ const UserLogin = () => {
       nickname: data.get('nickname'),
       password: data.get('password'),
     }
+    console.log(actualData)
+    aux = actualData;
     const res = await loginUser(actualData)
     if (res.error) {
       // console.log(typeof (res.error.data.errors))
@@ -85,3 +90,5 @@ const UserLogin = () => {
 };
 
 export default UserLogin;
+export var aux;
+

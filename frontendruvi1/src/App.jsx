@@ -19,6 +19,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 import UserLogin from './pages/auth/UserLogin';
+import aux from './pages/auth/UserLogin';
+
 import Registration from './pages/auth/Registration';
 import { getToken, removeToken } from './services/LocalStorageService';
 
@@ -26,6 +28,7 @@ import { getToken, removeToken } from './services/LocalStorageService';
 //----- LO QUE ESTABA ANTES -----------
 function App() {
   const { access_token } = getToken()
+  console.log(aux)
   return (
     <Router>
         <div>
