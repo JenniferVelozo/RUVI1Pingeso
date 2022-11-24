@@ -38,7 +38,8 @@ function App() {
               <Route path='/config' element={<Config/>} />
               <Route path='/historico' element = {<Historico/>} />
               <Route path='/update' element={<Update/>} />
-              <Route path="/home" element={access_token ? <Home /> : <Navigate to="/login" />} />
+              <Route path='/dashboard' element={<Home/>} />
+              <Route path='/home' element={access_token ? <Home /> : <Navigate to="/dashboard" />} />
               <Route path='/mensual' element={<Mensual/>} />
           </Routes>
         </div>

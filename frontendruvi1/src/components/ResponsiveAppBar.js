@@ -168,7 +168,7 @@ const ResponsiveAppBar = () => {
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   {setting == 'Cerrar sesión' ? (
-                    <Link href="/home" onClick={handleLogout}><Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography></Link>
+                    <Link href="/" onClick={handleLogout}><Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography></Link>
 
                   ) : (
                     <Link href="/config" underline="hover"><Typography textAlign="center">{setting}</Typography></Link>

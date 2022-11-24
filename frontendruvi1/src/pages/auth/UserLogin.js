@@ -18,6 +18,13 @@ const UserLogin = () => {
   const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLoginUserMutation()
   const dispatch = useDispatch()
+
+  console.log("no termina aun ")
+  let { access_token } = getToken()
+  useEffect(() => {
+    dispatch(setUserToken({ access_token: access_token }))
+  }, [access_token, dispatch])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -33,17 +40,17 @@ const UserLogin = () => {
     }
     if (res.data) {
       // console.log(typeof (res.data))
-      // console.log(res.data)
+      console.log(res.data)
       storeToken(res.data.token)
       let { access_token } = getToken()
       dispatch(setUserToken({ access_token: access_token }))
+      console.log(access_token)
+      console.log("alo")
       navigate('/home')
+      console.log("alo1")
     }
   }
-  let { access_token } = getToken()
-  useEffect(() => {
-    dispatch(setUserToken({ access_token: access_token }))
-  }, [access_token, dispatch])
+ 
 
 
   return<>

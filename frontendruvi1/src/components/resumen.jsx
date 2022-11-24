@@ -47,7 +47,7 @@ function FiltroServicio() {
           </Select>
         </FormControl>
         <Grid item xs={6}>
-            <Item>Resumen pacientes</Item>
+            <Item><h1> RESUMEN PACIENTES </h1></Item>
         </Grid>
       </Box>
     );
