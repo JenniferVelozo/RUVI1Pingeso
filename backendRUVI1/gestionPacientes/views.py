@@ -81,7 +81,7 @@ def comprobar(request):
     data = Usuarios.objects.get(nickname=user['nickname'])
     if data.password==user['password']:
         #return HttpResponse(data, content_type='application/json')
-        user=[{'entra': 'SI'}]
+        user=[{'entra': 'SI', 'rol': data.rol.nombre}]
         return HttpResponse(user, content_type='application/json')
     user=[{'entra': 'NO'}]
     return HttpResponse(user, content_type='application/json')
@@ -638,10 +638,15 @@ class UserLoginView(APIView):
     serializer.is_valid(raise_exception=True)
     nickname = serializer.data.get('nickname')
     password = serializer.data.get('password')
+    #rol_id = serializer.data.get('rol__id')
+    usuario=User.objects.get(nickname=nickname)
+    rol_id=usuario.rol_id
+    rol=Roles.objects.get(id=rol_id)
+    rol=rol.nombre
     user = authenticate(nickname=nickname, password=password)
     if user is not None:
       token = get_tokens_for_user(user)
-      return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
+      return Response({'token':token, 'msg':'Login Success', 'rol':rol}, status=status.HTTP_200_OK)
     else:
       return Response({'errors':{'non_field_errors':['Nickname o password inválida']}}, status=status.HTTP_404_NOT_FOUND)
 

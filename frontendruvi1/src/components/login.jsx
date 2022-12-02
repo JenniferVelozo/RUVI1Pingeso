@@ -18,16 +18,18 @@ function Login(){
     const getUsuarios = async() => {
         const { data } = await axios.get('http://localhost:8000/login/')
         console.log(data);
+
      } 
 
     const loginUsuario = async() => {
         const json = {"nickname": usuario, "password": password } 
         const {data} = await axios.post('http://localhost:8000/login/', json)
-        console.log(data);
         setRespuesta(data)
-        if (data == "{'entra': 'SI'}"){
+        data=JSON.parse(data)
+        console.log(data)
+        console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+        if (data.entra == 'SI' && data.rol=='Administrador'){
             window.location.replace('/home');
-
         }
         clearInput()
      

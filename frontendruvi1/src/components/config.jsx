@@ -4,10 +4,15 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 import { Avatar, Paper } from '@mui/material';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import {  useNavigate } from 'react-router-dom';
+
+const KEY = "App.rol";
 
 const Config =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
+    
 
     const navigateResumen = () => {
         window.location.href = '/config';
@@ -16,7 +21,7 @@ const Config =()=>{
     return(
         <div classname="config">
             <div className='App d-flex justify-content-center align-items-center'>
-                <ResponsiveAppBar/>
+                <ResponsiveAppBar flag={storedRol.flag}/>
             </div>
             <div style={{
         position: 'absolute', left: '30%', top: '30%',

@@ -14,7 +14,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Logo from "./Logo.js";
 import ModalPopup from "./ModalPopup";
 import Link from '@mui/material/Link';
-
+import { useEffect, useState } from 'react';
 
 
 import { useDispatch } from 'react-redux';
@@ -24,9 +24,9 @@ import { getToken, removeToken } from '../services/LocalStorageService';
 import { useGetLoggedUserQuery } from '../services/userAuthApi';
 import { unsetUserInfo } from '../features/userSlice';
 const pages = ['Menú', 'Añadir usuario'];
-const settings = ['Configuración', 'Cerrar sesión'];
+const settings = ['Configuración', 'Cerrar sesión']
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = ({flag}) => {
 
   const handleLogout = () => {
     dispatch(unsetUserInfo({ name: "", nickname: "" }))
@@ -62,6 +62,7 @@ const ResponsiveAppBar = () => {
   };
 
   return (
+    
     <Box sx={{ display: 'flex' }}>
     <AppBar component='nav'>
       <Container maxWidth="xl">
@@ -71,7 +72,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/home"
+            href='/dashboard'
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -126,7 +127,7 @@ const ResponsiveAppBar = () => {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/dashboard"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -164,18 +165,18 @@ const ResponsiveAppBar = () => {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  {setting == 'Cerrar sesión' ? (
-                    <Link href="/" onClick={handleLogout}><Typography textAlign="center" color="red" fontWeight='bold'>{setting}</Typography></Link>
-
-                  ) : (
-                    <Link href="/config" underline="hover"><Typography textAlign="center">{setting}</Typography></Link>
-                  )}
-                  
-                </MenuItem>
-              ))}
+            > 
+              
+              <MenuItem key={1} onClick={handleCloseUserMenu}>
+                <Link href="/dashboard" underline="hover"><Typography textAlign="center" >Home</Typography></Link>
+              </MenuItem>
+              { flag && <MenuItem key={settings[0]} onClick={handleCloseUserMenu}><Link href="/config" underline="hover"><Typography textAlign="center">{settings[0]}</Typography></Link></MenuItem>
+              }
+              
+              <MenuItem key={settings[1]} onClick={handleCloseUserMenu}>
+                <Link href="/" onClick={handleLogout}><Typography textAlign="center" color="red" fontWeight='bold'>{settings[1]}</Typography></Link>
+              </MenuItem>
+              
             </Menu>
           </Box>
         </Toolbar>

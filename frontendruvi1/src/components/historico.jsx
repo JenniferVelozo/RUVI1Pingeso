@@ -15,6 +15,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {es} from 'date-fns/locale';
 
+const KEY = "App.rol";
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.header,
@@ -41,7 +43,7 @@ const columns = [
 
 
 function ShowTable() {
-
+  const storedRol = JSON.parse(localStorage.getItem(KEY));
   const [pageSize, setPageSize] = React.useState(10);
 
   const [value, setValue] = useState(new Date());
@@ -130,7 +132,7 @@ function ShowTable() {
   return (
     <div className='historico' >
     <Box sx={{ display: 'flex' }}>
-          <ResponsiveAppBar/>
+          <ResponsiveAppBar flag={storedRol.flag}/>
     </Box>
     <Box sx={{ width: '100%', p: 9}}>
       <Grid container spacing={3}>

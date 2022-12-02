@@ -9,7 +9,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
 
-
+const KEY = "App.rol";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.header,
@@ -60,7 +60,7 @@ const Resumen = () => {
         window.location.replace('/home');
     }
 
-
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
     //mostrar tabla
     function ShowTable() {
 
@@ -364,7 +364,7 @@ const Resumen = () => {
   return (
     <div className='resumen' >
       <Box sx={{ display: 'flex' }}>
-        <ResponsiveAppBar/>
+        <ResponsiveAppBar flag={storedRol.flag}/>
       </Box>
       <FiltroServicio/>
       <Box sx={{ width: '95%', ml: 9}}>

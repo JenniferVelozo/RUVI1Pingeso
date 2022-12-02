@@ -15,7 +15,7 @@ function Register(){
 
     const [ listRoles, setListRoles ] = useState([])
     const [ listServicios, setListServicios ] = useState([])
-
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
     useEffect(() => {
         getRoles() 
     },[])
@@ -39,7 +39,7 @@ function Register(){
     return(
         <div className='register'>
             <div className='App d-flex justify-content-center align-items-center'>
-                <ResponsiveAppBar/>
+                <ResponsiveAppBar flag={storedRol.flag}/>
             </div>
             <Grid container spacing={0}>
                 <Paper elevation={10} style={paperStyle}>

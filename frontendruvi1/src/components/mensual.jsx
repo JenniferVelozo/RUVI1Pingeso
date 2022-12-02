@@ -10,7 +10,7 @@ import Fab from '@mui/material/Fab';
 import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 
-
+const KEY = "App.rol";
 
 
 const columns = [
@@ -171,11 +171,11 @@ const Resumen = () => {
     const handleExport = (event) => {
         window.location.replace('/home');
     }
-
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
     return (
         <div className='resumen' >
           <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar/>
+                <ResponsiveAppBar flag={storedRol.flag}/>
           </Box>
           <Box sx={{ width: '95%', p: 9}}>
             <ShowTable/>

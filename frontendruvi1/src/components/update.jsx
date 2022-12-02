@@ -8,7 +8,7 @@ import { createTheme, ThemeProvider, darken, lighten } from '@mui/material/style
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-
+const KEY = "App.rol";
 
 const Update = () => {
 
@@ -66,11 +66,11 @@ const Update = () => {
     };
     ///////// FIN SECCION SUBIDA ARCHIVO
 
-
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
     return (
         <div className='update' >
           <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar/>
+                <ResponsiveAppBar flag={storedRol.flag}/>
           </Box>
           <Grid container spacing={0}>
             <Paper elevation={10} style={paperStyle}>

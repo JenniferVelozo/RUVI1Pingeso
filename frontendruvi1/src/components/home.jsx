@@ -6,30 +6,29 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
 
-
-
+const KEY = "App.rol";
 
 const Home =()=>{
     console.log("Hola")
-   
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
+
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
 
     const navigateResumen = () => {
         window.location.href = '/resumen';
     }
-
     return(
-        <div classname="home">
+        <div className="home">
             <div className='App d-flex justify-content-center align-items-center'>
-                <ResponsiveAppBar/>
+                <ResponsiveAppBar flag={storedRol.flag}/>
             </div>
             <div style={{
         position: 'absolute', left: '50%', top: '50%',
         transform: 'translate(-50%, -50%)'
       }}>
             <Grid container spacing={3}>
-                    <Grid item xs>
+                { !storedRol.flagJ && <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
@@ -37,7 +36,7 @@ const Home =()=>{
                             <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                         </Grid>
                     </Paper>
-                </Grid>
+                </Grid>}
             
             <Grid item xs>
                 <Paper elevation={10} style={paperStyle}>

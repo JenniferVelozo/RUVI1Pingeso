@@ -10,9 +10,10 @@ import { Avatar, Paper, Grid} from '@mui/material';
 import Logo from "./Logo.js";
 
 var aux = "";
+const KEY = "App.rol";
 
 
-const UserLogin = () => {
+export function UserLogin() {
   const paperStyle={padding :20,height:'50vh',width:260, margin:"20px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
 
@@ -27,6 +28,23 @@ const UserLogin = () => {
   useEffect(() => {
     dispatch(setUserToken({ access_token: access_token }))
   }, [access_token, dispatch])
+
+
+  //para agregar rol al localstorage
+  const handleRolAdd = (nombreRol) => {
+    let rol={rol: nombreRol, servicio: "UGP", flag: false, flagJ:false}
+    if(nombreRol=='Administrador'){
+      rol.flag=true
+    }
+    if(nombreRol=='Jefe de servicio'){
+      rol.flagJ=true
+    }
+    localStorage.removeItem(KEY)
+    localStorage.setItem(KEY, JSON.stringify(rol));
+    
+  };
+ 
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,6 +69,8 @@ const UserLogin = () => {
       dispatch(setUserToken({ access_token: access_token }))
       console.log(access_token)
       console.log("alo")
+      console.log(res.data)
+      handleRolAdd(res.data.rol)
       navigate('/home')
       console.log("alo1")
     }
