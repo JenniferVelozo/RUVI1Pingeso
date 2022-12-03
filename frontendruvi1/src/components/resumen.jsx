@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
+import FileSaver from 'file-saver';
 
 const KEY = "App.rol";
 const Item = styled(Paper)(({ theme }) => ({
@@ -18,51 +19,41 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-//funcion filtro servicio
-
-function FiltroServicio() {
-
-    const [evento, setEvento] = React.useState('');
-    const handleChange = (event) => {setEvento(event.target.value);};
-
-    const [ listServicios, setListServicios ] = useState([])
-    const getServicios = async() => {
-        const { data } = await axios.get('http://localhost:8000/servicios/')
-        setListServicios(data)
-        console.log(data)
-    }
-
-    useEffect(() => {
-        getServicios()  
-    },[])
-
-    return (
-      <Box sx={{ml: 9, mt:9, mb: 1, width: '95%'}}>
-        <FormControl margin="normal" required sx = {{ width:260 }}>
-          <InputLabel id="rol">Servicio</InputLabel>
-          <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
-                { listServicios.map(servicios => (
-                <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
-                ))}
-          </Select>
-        </FormControl>
-        <Grid item xs={6}>
-            <Item><h1> RESUMEN PACIENTES </h1></Item>
-        </Grid>
-      </Box>
-    );
-}
-
-
 const Resumen = () => {
 
-    const handleExport = (event) => {
-        window.location.replace('/home');
-    }
+  const handleExport = async(event) => {
+    const { data } = await axios.get("http://localhost:8000/resumen/")
+    /*for (var i = 0; i < data.length; i++) {
+      if (data[i].emNorma !== 0){
+        data[i].emNorma = data[i].emNorma.toFixed(4);
+      }
+      if (data[i].emNorma !== 0){
+        data[i].criterio = (data[i].estancia/data[i].emNorma);
+      }
+      let listPendienteString = ''
+      for (var j = 0; j < data[i].pendientesJson.length; j++) {
+        if (j < data[i].pendientesJson.length - 1) {
+          listPendienteString = data[i].pendientesJson[j].nombre + ', '
+        }
+        else{
+          listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
+        }
+      }
+      data[i].pendiente = listPendienteString
+    }*/
+    const data2 = await axios.post('http://localhost:8000/exportar/', data)
+    console.log(data2.data.ruta)
+    const file = new File(["foo"], data2.data.ruta, {
+      type: "text/csv",
+    });
+    FileSaver.saveAs(file, "resumen.xls");
 
-    const storedRol = JSON.parse(localStorage.getItem(KEY));
-    //mostrar tabla
-    function ShowTable() {
+    
+  }
+
+  const storedRol = JSON.parse(localStorage.getItem(KEY));
+  //mostrar tabla
+  function ShowTable() {
 
     //definicion columnas tabla
     const columns = [
@@ -225,6 +216,7 @@ const Resumen = () => {
       const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
       console.log(json)
       const {data} = await axios.post('http://localhost:8000/setDiagnosticos/', json)
+      getResumen(data)
     //window.location.replace('/resumen');
     };
   
@@ -312,12 +304,75 @@ const Resumen = () => {
       }
       setListResumen(data)
     }
+
+    //funcion filtro servicio
+    function FiltroServicio() {
+
+      const [evento, setEvento] = React.useState('');
+      const handleChange = async(event) => {
+        setEvento(event);
+        const { data } = await axios.get('http://localhost:8000/resumen/')
+        let resumenFiltrado = []
+        for (let i = 0; i < data.length; i++) {
+          if (event.target.value == data[i].servicio) {
+            resumenFiltrado.push(data[i])
+          }
+        }
+        setListResumen(resumenFiltrado)
+
+      };
+      /*const { data } = await axios.get('http://localhost:8000/servicios/')
+          setListServicios(data)
+
+      const handleToggle = (value) => () => {
+        console.log(idProp.openProp)
+        const listaSalida = GenerarListaPendientes();
+        const json = {"id": idProp.props, "pendientes": listaSalida }
+        const { data } = await axios.get('http://localhost:8000/servicios/')
+        setListServicios(data)
+        //window.location.replace('/resumen');
+      };*/
+
+      //datafetch servicios
+      const [ listServicios, setListServicios ] = useState([])
+      const getServicios = async() => {
+          const { data } = await axios.get('http://localhost:8000/servicios/')
+          setListServicios(data)
+      }
+
+      useEffect(() => {
+          getServicios()
+      },[])
+
+      return (
+        <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
+          <FormControl margin="normal" required sx = {{ width:260 }}>
+            <InputLabel id="rol">Servicio</InputLabel>
+            <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
+                  { listServicios.map(servicios => (
+                  <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
+                  ))}
+            </Select>
+          </FormControl>
+          <Grid item xs={6}>
+              <Item><h1> RESUMEN PACIENTES </h1></Item>
+          </Grid>
+        </Box>
+      );
+    }
+
+    //fin filtro servicio
     
   return (
+    <div>
+    <Box>
+      <FiltroServicio/>
+    </Box>
     <Box
       sx={{
+      ml: 4, mr:3,
       height: 300,
-      width: '100%',
+      width: '95%',
       '& .cold': {
         backgroundColor: '#37c871',
         color: '#1a3e72',
@@ -356,6 +411,7 @@ const Resumen = () => {
             experimentalFeatures={{ newEditingApi: true }}
         />
     </Box>
+    </div>
     );
   }
 
@@ -366,8 +422,7 @@ const Resumen = () => {
       <Box sx={{ display: 'flex' }}>
         <ResponsiveAppBar flag={storedRol.flag}/>
       </Box>
-      <FiltroServicio/>
-      <Box sx={{ width: '95%', ml: 9}}>
+      <Box>
         <ShowTable/>
       </Box>
       <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>

@@ -15,7 +15,14 @@ function Register(){
 
     const [ listRoles, setListRoles ] = useState([])
     const [ listServicios, setListServicios ] = useState([])
-    const storedRol = JSON.parse(localStorage.getItem(KEY));
+    let storedRol = JSON.parse(localStorage.getItem(KEY));
+    if (storedRol){
+        console.log('probando')
+    }
+    else {
+        storedRol = {"flag": 1, "flagJ": 0 }
+    }
+
     useEffect(() => {
         getRoles() 
     },[])

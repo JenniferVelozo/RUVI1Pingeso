@@ -2,11 +2,8 @@ import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
 import { makeStyles, Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemAvatar, ListItemText, Button, DialogContentText} from '@mui/material';
-import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import DownloadIcon from '@mui/icons-material/Download';
-import Fab from '@mui/material/Fab';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { blue, yellow, red } from '@mui/material/colors';
@@ -135,8 +132,12 @@ function ShowUsuarios() {
 
     //fin setteo usuarios
 
-    const handleEliminar = (params) => {
-      console.log('deberia eliminar aqui')
+    const handleEliminar = (usuario) => async() => {
+        console.log(usuario.id)
+        const json = {"id": usuario.id }
+        const {data} = await axios.post('http://localhost:8000/deleteuser/', json)
+        getUsuarios()
+        //window.location.replace('/resumen');
     }
 
     function ShowDialog(props) {
@@ -152,7 +153,7 @@ function ShowUsuarios() {
           <Dialog open={open} onClose={() => setOpen(false)}>
             <DialogTitle align='center'>¿Está seguro que desea eliminar al usuario {props.props.row.nickname}? </DialogTitle>
             <div align="center">
-              <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={handleEliminar}>
+              <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={handleEliminar(props.props.row)}>
                 Sí
               </Button>
               <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={() => setOpen(false)}>

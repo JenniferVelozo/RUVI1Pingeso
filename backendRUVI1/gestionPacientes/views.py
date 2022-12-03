@@ -284,6 +284,14 @@ def reporteMensual(request, year, mes):
     return JsonResponse(lista, safe=False,  json_dumps_params={'ensure_ascii':False})
 
 @api_view(['POST'])
+def deleteUser(request):
+    print(request.data)
+    data=request.data
+    idUser = data["id"]
+    User.objects.filter(id=idUser).delete()
+    return HttpResponse("ok", content_type='application/json')
+
+@api_view(['POST'])
 def setDiagnostico(request):
     data=request.data
     print(data)
@@ -507,9 +515,8 @@ def estiloExcel(nombre):
 
 @api_view(['POST'])   
 def resumen_to_excel(request):
-    data=request.data
-    print(data)
-    resumenJSON=data["resumen"]
+    print(request)
+    resumenJSON=request.data
     cama=[]
     rut=[]
     nombrePaciente=[] 
