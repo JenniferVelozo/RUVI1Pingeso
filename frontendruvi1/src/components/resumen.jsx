@@ -8,8 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
-import FileSaver from 'file-saver';
-
+//import Gestion_de_Pacientes from '../../Gestion_de_Pacientes.xlsx';
 const KEY = "App.rol";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,31 +22,7 @@ const Resumen = () => {
 
   const handleExport = async(event) => {
     const { data } = await axios.get("http://localhost:8000/resumen/")
-    /*for (var i = 0; i < data.length; i++) {
-      if (data[i].emNorma !== 0){
-        data[i].emNorma = data[i].emNorma.toFixed(4);
-      }
-      if (data[i].emNorma !== 0){
-        data[i].criterio = (data[i].estancia/data[i].emNorma);
-      }
-      let listPendienteString = ''
-      for (var j = 0; j < data[i].pendientesJson.length; j++) {
-        if (j < data[i].pendientesJson.length - 1) {
-          listPendienteString = data[i].pendientesJson[j].nombre + ', '
-        }
-        else{
-          listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
-        }
-      }
-      data[i].pendiente = listPendienteString
-    }*/
     const data2 = await axios.post('http://localhost:8000/exportar/', data)
-    console.log(data2.data.ruta)
-    const file = new File(["foo"], data2.data.ruta, {
-      type: "text/csv",
-    });
-    FileSaver.saveAs(file, "resumen.xls");
-
     
   }
 
@@ -284,6 +259,8 @@ const Resumen = () => {
     
   const getResumen = async() => {
   const { data } = await axios.get(baseURL)
+  const data2 = await axios.post('http://localhost:8000/exportar/', data)
+  //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
         if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
@@ -426,9 +403,10 @@ const Resumen = () => {
         <ShowTable/>
       </Box>
       <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-        <Fab variant="extended" color="primary" onClick={handleExport}>
+        <Fab variant="extended" color="primary" href="http://localhost:8000/descarga/" download="Resumen.xlsx">
           Exportar a XLS <DownloadIcon />
         </Fab>
+        
       </Box>
     </div>
   )

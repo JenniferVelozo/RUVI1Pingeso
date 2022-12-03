@@ -513,6 +513,16 @@ def estiloExcel(nombre):
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
     informe.save(nombre)
 
+@api_view(['GET'])
+def linkDescarga(request):
+    nombreArchivo='Gestion_de_Pacientes.xlsx'
+    nombreArchivoR='\Gestion_de_Pacientes.xlsx'
+    ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
+    with open(ruta,'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % nombreArchivo
+    return response
+
 @api_view(['POST'])   
 def resumen_to_excel(request):
     print(request)
@@ -562,13 +572,13 @@ def resumen_to_excel(request):
     flag_pend=flag_pend,pendientesJson=pendientesJson)
     
 
-    nombreArchivo='Gestion de Pacientes.xlsx'
-    nombreArchivoR='\Gestion de Pacientes.xlsx'
+    nombreArchivo='gestionPacientes\Gestion_de_Pacientes.xlsx'
+    
     print(resumen)
     resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
     estiloExcel(nombreArchivo)
     resp={}
-    resp["ruta"]=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
+    resp["msg"]="Creado correctamente"
     return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii':False})
 
 

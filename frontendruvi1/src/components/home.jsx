@@ -11,12 +11,7 @@ const KEY = "App.rol";
 const Home =()=>{
     console.log("Hola")
     let storedRol = JSON.parse(localStorage.getItem(KEY));
-    if (storedRol){
-        console.log('probando')
-    }
-    else {
-        storedRol = {"flag": 1, "flagJ": 0 }
-    }
+    
 
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}

@@ -27,27 +27,37 @@ import { getToken, removeToken } from './services/LocalStorageService';
 const KEY = "App.rol";
 
 export function Ruteo() {
-    let storedRol = JSON.parse(localStorage.getItem(KEY));
     const { access_token } = getToken()
+    let storedRol = JSON.parse(localStorage.getItem(KEY));
     if (storedRol){
-        console.log('probando')
+        console.log("Rol encontrado")
     }
     else {
-        storedRol = {"flag": 0, "flagJ": 0 }
+        storedRol = {rol: "", servicio: "", flag: false, flagJ:false}
+        localStorage.setItem(KEY, JSON.stringify(storedRol));
     }
     console.log(aux)
     return (
         <Fragment>
             <Routes>
                 <Route path='/register' element={<Registration/>} />
-                <Route path='/home' element={access_token ? <Home /> : <Navigate to="/dashboard" />} />
-                <Route path='/dashboard' element={<Home/>} />
-                <Route path='/resumen' element={<Resumen/>} />
-                <Route path='/config' element={storedRol.flag ? <Config/>:<Home/>} />
-                <Route path='/historico' element = {<Historico/>} />
-                <Route path='/update' element={storedRol.flagJ ? <Home/>:<Update/>} />
-                <Route path='/mensual' element={storedRol.flagJ ? <Home/>:<Mensual/>} />
-                <Route path='/gestionUser' element={storedRol.flagJ ? <Home/>:<GestionUser/>} />
+                <Route path='/home' element={access_token ? <Home /> : <Navigate to="/out" />} />
+                <Route path='/dashboard' element={<Home />} />
+                <Route path='/out' element={<UserLogin />} />
+                <Route path='/resumen' element={access_token ? <Resumen/>: <UserLogin />} />
+                <Route path='/historico' element = {access_token ? <Historico/> : <Navigate to="/out" />} />
+
+                <Route path='/config' element={access_token ? <Navigate to="/configAccess" />:<Navigate to="/out" />} />
+                <Route path='/configAccess' element={storedRol.flag ? <Config/>:<Home/>} />
+
+                <Route path='/update' element={access_token ? <Navigate to="/updateAccess" />:<Navigate to="/out" />} />
+                <Route path='/updateAccess' element={storedRol.flagJ ? <Home/>:<Update/>} />
+
+                <Route path='/mensual' element={access_token ? <Navigate to="/mensualAccess" />:<Navigate to="/out" />} />               
+                <Route path='/mensualAccess' element={storedRol.flagJ ? <Home/>:<Mensual/>} />
+
+                <Route path='/gestionUser' element={access_token ? <Navigate to="/gestionUserAccess" />:<Navigate to="/out" />} />
+                <Route path='/gestionUserAccess' element={storedRol.flag ? <GestionUser/>:<Home/>} />
             </Routes>
         </Fragment>
     );
