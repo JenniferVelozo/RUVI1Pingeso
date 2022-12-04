@@ -20,7 +20,11 @@ def leerDf():
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.csv'
     pacientes= pd.read_csv(archivo, sep=';', encoding='latin-1')
+    
+    pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
+    pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)
     print(pacientes)
+    
     #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
     # Se tranforma a numérico entero el IR GRD ya que lo toma con un .0 al final
     norma["IR-GRD CÓDIGO v2.3"] = pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer')

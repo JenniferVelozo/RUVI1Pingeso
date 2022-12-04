@@ -52,7 +52,15 @@ def subir(request,carga):
 
 def handle_uploaded_file(f,carga):  
     path = os.path.dirname(os.path.realpath(__file__))
-    path=path+'\\PACIENTES.csv'
+
+    if carga=="pacientes":
+        path=path+'\\PACIENTES.csv'
+    if carga=="CIE10GRD":
+        path=path+'\\CIE10-GRD.xlsm'
+    if carga=='pendientes':
+        path=path+'\\PRESTACIONES_CAUSAS.xlsx'
+    
+
     file = open(path, "w")
     file.close()
     with open(path, 'wb+') as destination:  
@@ -64,15 +72,14 @@ def handle_uploaded_file(f,carga):
         print("pacientes")
         leerDf()
         return True
-    '''
-    if f.name=='CIE10-GRD.xlsm':
+    if carga=="CIE10GRD":
         print("cie10-norma")
         load_CIE10_GRD(path)
         return True
-    if f.name=='PRESTACIONES_CAUSAS.xlsx':
+    if carga=='pendientes':
         print("pendientes")
         load_prestaciones(path)
-        return True'''
+        return True
     return False
 # Create your views here.
 @api_view(['POST'])

@@ -56,7 +56,7 @@ def poblar():
 
     #servicios
     servicios=['Unidad de gestion de pacientes', 
-    'Unidad de Emergencia HEGC', '(UTI)Unidad de Tratamiento Intermedio HEGC', 'Recuperación de Pabellón HPINO', 
+    'Recuperación de Pabellón HPINO', 
     'UCI Adulto HPINO', 'UHT Medicina HPINO', 'Hospitalizacion Domiciliaria HPINO', 'Psiquiatría Hospital de Día HPINO', 
     'Area Medico Quirúrgica HPINO', 'UCI Neonatología HPINO', 'Pensionado HPINO', 
     'Neonatología Hospitalizado HPINO', 'Unidad de Cuidados Medios HPINO', 'Medicina Agudo HPINO', 
