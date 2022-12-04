@@ -523,6 +523,22 @@ def linkDescarga(request):
         response['Content-Disposition'] = 'attachment; filename="%s"' % nombreArchivo
     return response
 
+@api_view(['GET'])
+def usuariosG(request):
+    users=User.objects.all()
+    lista=[]
+    for user in users:
+        aux={}
+        aux['id']=user.id
+        aux["nombre_servicio"]=user.servicio.nombre
+        aux["nombre_rol"]=user.rol.nombre
+        aux["nombre"]= user.nombre
+        aux["apellido"]= user.apellido
+        aux["nickname"]= user.nickname
+        aux["rut"]= user.rut
+        lista.append(aux)
+    return JsonResponse(lista, safe=False, json_dumps_params={'ensure_ascii':False})
+
 @api_view(['POST'])   
 def resumen_to_excel(request):
     print(request)

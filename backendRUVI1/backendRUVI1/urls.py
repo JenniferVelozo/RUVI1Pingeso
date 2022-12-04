@@ -34,6 +34,7 @@ router.register(r'historicoDates', HistoricoDatesViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [
+    path('usuariosG/',usuariosG),
     path('admin/', admin.site.urls),
     path('login/', comprobar),
     path('api/user/', include('gestionPacientes.urls')), # parte del intento de login

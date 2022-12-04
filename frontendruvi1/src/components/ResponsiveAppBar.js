@@ -39,8 +39,6 @@ const ResponsiveAppBar = ({flag}) => {
   const dispatch = useDispatch()
   const { access_token } = getToken()
   const { data, isSuccess } = useGetLoggedUserQuery(access_token)
-  console.log(data)
-  console.log(isSuccess)
 
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);

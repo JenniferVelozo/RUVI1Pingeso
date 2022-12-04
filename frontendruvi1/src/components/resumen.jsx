@@ -15,7 +15,7 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.header,
   padding: theme.spacing(1),
   textAlign: 'center',
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
 }));
 
 const Resumen = () => {
@@ -40,7 +40,7 @@ const Resumen = () => {
       { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
       { field: 'estancia', headerName: 'Estancia', width: 80 },
       { field: 'diagnostico1', headerName: 'Diagnostico 1', width: 250 },
-      { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 100 },
+      { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 250 },
       { field: 'ir_grd', headerName: 'IR-GRD', width: 80 },
       { field: 'emNorma', headerName: 'EM Norma', width: 80},
       { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
@@ -66,25 +66,41 @@ const Resumen = () => {
 
   function CheckboxesPendientes(idProp, openProp) {
 
+    console.log(idProp)
+    console.log(idProp.props.pendientesJson)
+    //listaPendientesPaciente = idProp.pendientesJson.length
     const handleGuardar = async() => {
-      console.log(idProp.openProp)
+      console.log(idProp)
       const listaSalida = GenerarListaPendientes();
-      const json = {"id": idProp.props, "pendientes": listaSalida }
+      const json = {"id": idProp.props.id, "pendientes": listaSalida }
       const {data} = await axios.post('http://localhost:8000/setPendientes/', json)
       getResumen()
-      //window.location.replace('/resumen');
     };
+
+    useEffect(() => {
+      getPendientes()
+    }, [])
 
     //llamado pendientes
     const [ listPendientes, setListPendientes ] = useState([])
     const getPendientes = async() => {
       const { data } = await axios.get('http://localhost:8000/pendientes/')
+      console.log(data)
+      for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
+        for (let j = 0; j < data.length; j++) {
+          if (idProp.props.pendientesJson[i].id == data[j].id) {
+            console.log(data[j])
+            handleToggle(data[j])
+          }
+        }
+      }
+      console.log(data)
       setListPendientes(data)
     }
 
-    useEffect(() => {
-      getPendientes()
-    },[])
+    console.log(idProp)
+
+    
 
     //fin llamado pendientes
 
@@ -92,17 +108,35 @@ const Resumen = () => {
 
     const [checked, setChecked] = React.useState([0]);
 
-    const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+    const getChecked = async() => {
+      let listaSalida = [0]
+      for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
+        listaSalida.push(idProp.props.pendientesJson[i].id)
+      }
+      console.log(listaSalida)
+      setChecked(listaSalida)
     }
 
-    setChecked(newChecked);
+    useEffect(() => {
+      getChecked()
+    }, [])
+
+    const handleToggle = (value) => () => {
+      console.log(checked)
+      console.log("ola")
+      const currentIndex = checked.indexOf(value);
+      console.log(currentIndex)
+      const newChecked = [...checked];
+      console.log(newChecked)
+
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked.splice(currentIndex, 1);
+      }
+      console.log(newChecked)
+
+      setChecked(newChecked);
     };
 
     function GenerarListaPendientes() {
@@ -126,7 +160,8 @@ const Resumen = () => {
               <ListItemButton role={undefined} onClick={handleToggle(pendientes.id)} dense>
                 <ListItemIcon>
                   <Checkbox
-                    checked={checked.indexOf(pendientes.id) !== -1}
+                    checked={
+                      checked.indexOf(pendientes.id) !== -1}
                     tabIndex={-1}
                     inputProps={{ 'aria-labelledby': labelId }}
                     id = {pendientes.id}
@@ -162,7 +197,7 @@ const Resumen = () => {
         </Button>
         <Dialog open={open} onClose={() => setOpen(false)}>
           <DialogTitle>Seleccione pendientes</DialogTitle>
-          <CheckboxesPendientes props={props.props.row.id} openProp={open}/>
+          <CheckboxesPendientes props={props.props.row} openProp={open}/>
         </Dialog>
       </div>
     );
@@ -313,19 +348,6 @@ const Resumen = () => {
         setListResumen(resumenFiltrado)
 
       };
-      /*const { data } = await axios.get('http://localhost:8000/servicios/')
-          setListServicios(data)
-
-      const handleToggle = (value) => () => {
-        console.log(idProp.openProp)
-        const listaSalida = GenerarListaPendientes();
-        const json = {"id": idProp.props, "pendientes": listaSalida }
-        const { data } = await axios.get('http://localhost:8000/servicios/')
-        setListServicios(data)
-        //window.location.replace('/resumen');
-      };*/
-
-      //datafetch servicios
       const [ listServicios, setListServicios ] = useState([])
       const getServicios = async() => {
           const { data } = await axios.get('http://localhost:8000/servicios/')
@@ -339,7 +361,7 @@ const Resumen = () => {
       return (
         <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
           {storedRol.flagJ?
-          <FormControl margin="normal" required sx = {{ width:260 }}>
+          <FormControl margin="normal" required sx = {{ width:500 }}>
             <InputLabel id="rol">{storedRol.servicio}</InputLabel>
           </FormControl>
           :
@@ -372,6 +394,10 @@ const Resumen = () => {
       ml: 4, mr:3,
       height: 300,
       width: '95%',
+      "& .MuiDataGrid-columnHeaders": {
+        backgroundColor: "rgba(0,0,200,0.6)",
+        fontSize: 16
+      },
       '& .cold': {
         backgroundColor: '#37c871',
         color: '#1a3e72',

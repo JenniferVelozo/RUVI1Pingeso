@@ -42,7 +42,7 @@ const Config =()=>{
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
                             <h5>Gestionar Usuarios</h5>
-                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                            <Button href = "/gestionUser" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                         </Grid>
                     </Paper>
                 </Grid>

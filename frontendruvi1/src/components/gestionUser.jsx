@@ -7,6 +7,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { blue, yellow, red } from '@mui/material/colors';
+import Fab from '@mui/material/Fab';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
 const theme = createTheme({
   palette: {
@@ -20,7 +22,7 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.header,
   padding: theme.spacing(1),
   textAlign: 'center',
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
 }));
 
 
@@ -33,8 +35,8 @@ function ShowUsuarios() {
       { field: 'nombre', headerName: 'Nombre', headerClassName: 'super-app-theme--header', width: 200 },
       { field: 'apellido', headerName: 'Apellido', headerClassName: 'super-app-theme--header', width: 200 },
       { field: 'rut', headerName: 'RUT', headerClassName: 'super-app-theme--header', width: 200 },
-      { field: 'servicio', headerName: 'Servicio', headerClassName: 'super-app-theme--header', width: 200},
-      { field: 'rol', headerName: 'Rol de usuario', headerClassName: 'super-app-theme--header', width: 200 },
+      { field: 'nombre_servicio', headerName: 'Servicio', headerClassName: 'super-app-theme--header', width: 200},
+      { field: 'nombre_rol', headerName: 'Rol de usuario', headerClassName: 'super-app-theme--header', width: 200 },
       { field: 'eliminar', headerName: 'Eliminar', headerClassName: 'super-app-theme--header', renderCell: (params) => {
           return (
             <ShowDialog props={params}/>
@@ -48,27 +50,13 @@ function ShowUsuarios() {
     //llamados backend
     const [pageSize, setPageSize] = React.useState(10);
     const [ listUsuarios, setListUsuarios ] = useState([])
-    const [ listServicios, setListServicios ] = useState([])
-    const [ listRoles, setListRoles ] = useState([])
-
-    const getRoles = async() => {
-      const {data} = await axios.get('http://localhost:8000/rol/')
-      setListRoles(data)
-    }
-    const getservicios = async() => {
-      const {data} = await axios.get('http://localhost:8000/servicios/')
-      setListServicios(data)
-    }
     const getUsuarios = async() => {
-      const {data} = await axios.get('http://localhost:8000/usuarios/')
-      console.log('alo')
+      const {data} = await axios.get('http://localhost:8000/usuariosG/')
       setListUsuarios(data)
     }
 
     useEffect(() => {
       getUsuarios()
-      getservicios()
-      getRoles()
     }, [])
 
 
@@ -102,25 +90,8 @@ function ShowUsuarios() {
 
     //setteo coordinado
 
-    console.log(listUsuarios)
-    console.log(listServicios)
-    console.log(listRoles)
-
-    var listUsuariosAux = listUsuarios
-    console.log(listUsuarios)
-
-    const reordenar = async() => {
-      listUsuarios.map((usuario) => {
-        listUsuariosAux.servicio = listServicios[18].nombre
-      })
-    }
-
     //console.log(listUsuariosAux.servicio)
     //setListUsuarios(listUsuariosAux)
-
-    useEffect(() => {
-      reordenar()
-    },[])
     /*for (let i = 0; i < listUsuarios.length; i++) {
       let aux = listUsuarios[i].servicio-1
       console.log(aux)
@@ -191,16 +162,26 @@ function ShowUsuarios() {
 
 const GestionUser = () => {
 
+  const handleRegister = async (e) => {
+    window.location.replace('/register');
+    
+  }
+
     return (
       <div className='GestionUser' >
         <Box sx={{ display: 'flex' }}>
           <ResponsiveAppBar/>
         </Box>
-        <Grid item xs={6} sx={{width: '95%', mt:9, ml: 5, mr: 5, mb: 2}}>
+        <Grid item xs={6} sx={{width: '95%', mt:9, ml: 4, mr: 5, mb: 2}}>
             <Item><h1> GESTIÓN USUARIOS </h1></Item>
         </Grid>
-        <Box sx={{ width: '95%', ml: 5, mr: 5}}>
+        <Box sx={{ width: '95%', ml: 4, mr: 5}}>
           <ShowUsuarios/>
+        </Box>
+        <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
+          <Fab variant="extended" color="primary" onClick={handleRegister}>
+            Registrar nuevo usuario <PersonAddAlt1Icon sx={{ml:1}}/>
+          </Fab>
         </Box>
       </div>
     );
