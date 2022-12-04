@@ -10,4 +10,4 @@ from gestionPacientes.df import *
 
 if __name__=='__main__':
     leerDf()
-    histo()
+    

@@ -38,7 +38,7 @@ urlpatterns += [
     path('admin/', admin.site.urls),
     path('login/', comprobar),
     path('api/user/', include('gestionPacientes.urls')), # parte del intento de login
-    path('subir/', subir),
+    path('subir/<carga>', subir),
     path('exportar/', resumen_to_excel),
     path('setPendientes/', setPendientes),
     path('setDiagnosticos/',setDiagnostico),

@@ -32,14 +32,14 @@ class UploadFileForm(forms.Form):
 
 
 @api_view(['POST'])
-def subir(request):
-    respuesta={"Response": "Archivo cargado correctamente. 200_OK"}
-    respuesta2={"Response": "Archivo no cargado. 400 BAD REQUEST"}
-    respuesta3={"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST"}
+def subir(request,carga):
+    respuesta={"Response": "Archivo cargado correctamente. 200_OK", "cargado": True}
+    respuesta2={"Response": "Archivo no cargado. 400 BAD REQUEST", "cargado": False}
+    respuesta3={"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            if handle_uploaded_file(request.FILES['file']):
+            if handle_uploaded_file(request.FILES['file'],carga):
                 return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
             else:
                 return JsonResponse(respuesta3, safe=False, status=status.HTTP_400_BAD_REQUEST)
@@ -50,17 +50,17 @@ def subir(request):
 
   
 
-def handle_uploaded_file(f):  
+def handle_uploaded_file(f,carga):  
     path = os.path.dirname(os.path.realpath(__file__))
-    path=path+'\\'
-    print(path)
-    path=path + f.name 
+    path=path+'\\PACIENTES.csv'
+    file = open(path, "w")
+    file.close()
     with open(path, 'wb+') as destination:  
       for chunk in f.chunks():  
           destination.write(chunk)  
-    print("------------------------------")
-    print(f.name)
-    if f.name=='PACIENTES.xlsx':
+
+    #if f.name=='PACIENTES.xlsx':
+    if carga=="pacientes":
         print("pacientes")
         leerDf()
         return True

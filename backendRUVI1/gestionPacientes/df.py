@@ -18,7 +18,7 @@ def leerDf():
     norma = pd.read_excel(archivo, sheet_name='NORMA')
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
-    archivo = path+'\STD-EpisodiosHospitalizadosAbiertos_20221201_Hospital_El_Pino__202212010600.csv'
+    archivo = path+'\PACIENTES.csv'
     pacientes= pd.read_csv(archivo, sep=';', encoding='latin-1')
     print(pacientes)
     #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
@@ -254,6 +254,8 @@ def leerDf():
             pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre)
         except Resumen.DoesNotExist:
             pAntiguo=None
+        except Resumen.MultipleObjectsReturned:
+            pAntiguo=None
         
         #si el paciente existe en el anterior y flag=true
         flagCambios=False    
@@ -346,7 +348,7 @@ def leerDf():
         #print(created)
         
         #guarda en tabla de historicos
-        b ,created = Historico.objects.get_or_create(fecha=fecha, rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
+        b= Historico.objects.create(fecha=fecha, rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
         #crea al mismo paciente en historico de dif fechas, solo para pruebas
         j=10
 
@@ -362,8 +364,7 @@ def leerDf():
     print("fin")
     
 
-def histo():
-    print("pycache")
+
 
 if __name__=='__main__':
     leerDf()
