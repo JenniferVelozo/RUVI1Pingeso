@@ -13,7 +13,7 @@ from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio
 
 #ESTE ARCHIVO ES PARA PROBAR CODIGO 
-def prueba(mes, year):
+def mensual(mes, year):
     historicos=Historico.objects.filter(fecha__year=year, fecha__month=mes)
     servicios=Servicio.objects.all()
     mensual=[]
@@ -94,4 +94,4 @@ def prueba(mes, year):
 
 
 if __name__=='__main__':
-    prueba(11, 2022)
+    print(" ")

@@ -10,6 +10,7 @@ import Update from './components/update';
 import Historico from './components/historico';
 import Mensual from './components/mensual';
 import GestionUser from './components/gestionUser';
+import Reportes from './components/reportes';
 import {Ruteo} from './Ruteo';
 
 
@@ -52,6 +53,7 @@ export class App extends React.Component {
               <Route path='/out' element={<UserLogin />} />
               <Route path='/resumen' element={access_token ? <Resumen/>: <UserLogin />} />
               <Route path='/historico' element = {access_token ? <Historico/> : <Navigate to="/out" />} />
+              <Route path='/reportes' element={access_token ? <Reportes/>:<Navigate to="/out" />} />
 
               <Route path='/config' element={access_token ? <Navigate to="/configAccess" />:<Navigate to="/out" />} />
               <Route path='/configAccess' element={storedRol.flag ? <Config/>:<Home/>} />
@@ -64,6 +66,8 @@ export class App extends React.Component {
 
               <Route path='/gestionUser' element={access_token ? <Navigate to="/gestionUserAccess" />:<Navigate to="/out" />} />
               <Route path='/gestionUserAccess' element={storedRol.flag ? <GestionUser/>:<Home/>} />
+
+              
             </Routes>
             
             </div>

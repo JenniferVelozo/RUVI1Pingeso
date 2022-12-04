@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 
 import pandas as pd
+from backendRUVI1.gestionPacientes.repMensual import mensual
 from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio
 
@@ -255,9 +256,14 @@ def leerDf():
         
         #se busca el paciente en el resumen antiguo
         try:
-            pAntiguo = Resumen.objects.get(rut = rut, nombrePaciente = nombre)
+            pAntiguo = Resumen.objects.get(servicio_id=id_servicios, rut = rut, nombrePaciente = nombre, flag_diag=True)
         except Resumen.DoesNotExist:
-            pAntiguo=None
+            try:
+                pAntiguo = Resumen.objects.get(servicio_id=id_servicios, rut = rut, nombrePaciente = nombre, flag_pend=True)
+            except Resumen.DoesNotExist:
+                pAntiguo=None
+            except Resumen.MultipleObjectsReturned:
+                pAntiguo=None
         except Resumen.MultipleObjectsReturned:
             pAntiguo=None
         
@@ -336,10 +342,14 @@ def leerDf():
     #print(jsonRes)
     now = datetime.now()
     fecha=now
+    hist= Historico.objects.all().latest('fecha')
+    print(hist.fecha)
+    if fecha.month-hist.fecha.month!=0:
+        mensual(hist.fecha.month,hist.fecha.year)
+    
     #print(fecha)
-    i = 0
     for paciente in jsonRes:
-        print(i)
+        
         #fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         #print("----------------------------------------------------------------")
 
@@ -353,18 +363,11 @@ def leerDf():
         
         #guarda en tabla de historicos
         b= Historico.objects.create(fecha=fecha, rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
-        #crea al mismo paciente en historico de dif fechas, solo para pruebas
-        j=10
 
         b.save()
-        i = i+1
-        '''
-        fecha=str(now.year) +'-'+str(now.month)+'-'
-        while j<20:
-            b ,created = Historico.objects.get_or_create(fecha=fecha+str(j), rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
-            print(b.save())
-            j=j+1'''
-        
+    
+    
+    
     print("fin")
     
 
