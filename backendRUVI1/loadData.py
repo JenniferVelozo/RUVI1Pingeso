@@ -61,15 +61,15 @@ def poblar():
     'Area Medico Quirúrgica HPINO', 'UCI Neonatología HPINO', 'Pensionado HPINO', 
     'Neonatología Hospitalizado HPINO', 'Unidad de Cuidados Medios HPINO', 'Medicina Agudo HPINO', 
     'Psiquiatría Corta Estadía HPINO', 'Obstetricia y GO HPINO 2°Piso', 'Pediatría Indiferenciado HPINO', 
-    'Hospitalizacion Urgencia Adulto HPINO', 'Obstetricia y Ginecologia 1°Piso', 'Recuperación Pabellón Oftalmologia HPINO']
+    'Hospitalizacion Urgencia Adulto HPINO', 'Obstetricia y Ginecologia 1°Piso', 'Recuperación Pabellón Oftalmologia HPINO', 'UTI Adultos HPINO', 'Recuperación de Pabellón HPINO', 'UTI Neonatología HPINO', 'Recuperación UCMA HPINO', 'Psiquiatría Hospital de Día HPINO']
 
     for nombreservicio in servicios:
         servicio = Servicio.objects.get_or_create(nombre = nombreservicio)[0]
         servicio.save()
 
     #usuarios
-    usuario = Usuarios.objects.get_or_create(nombre='Jennifer', apellido='Velozo', 
-            nickname='JVelozo', password='1234', rut='20433980-5')[0]
+    usuario = Usuarios.objects.get_or_create(nombre='Administrador', apellido='', 
+            nickname='admin', password='1234', rut='')[0]
     usuario.servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes')
     usuario.rol=Roles.objects.get(nombre='Administrador')
     usuario.save()

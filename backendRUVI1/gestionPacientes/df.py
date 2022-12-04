@@ -18,8 +18,8 @@ def leerDf():
     norma = pd.read_excel(archivo, sheet_name='NORMA')
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
-    archivo = path+'\PACIENTES.xlsx'
-    pacientes= pd.read_excel(archivo, sheet_name='DEFINITIVO')
+    archivo = path+'\STD-EpisodiosHospitalizadosAbiertos_20221201_Hospital_El_Pino__202212010600.csv'
+    pacientes= pd.read_csv(archivo, sep=';', encoding='latin-1')
     print(pacientes)
     #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
     # Se tranforma a numérico entero el IR GRD ya que lo toma con un .0 al final
@@ -30,7 +30,7 @@ def leerDf():
     jsonRes=[]
     for i in range(len(pacientes)):
         
-
+        
         # Si el paciente no tiene rut, se deja como string vacío 
         if str(pacientes.iloc[i]['RUNPaciente']) == 'nan':
             print("entra")
@@ -221,6 +221,10 @@ def leerDf():
         print(" El EM es: ", em_norma)
 
 
+        if str(pacientes.iloc[i]['RUNPaciente']) == '5927459-7':
+            print("ENCONTRÓ PACIENTE RARO********************************************************************************************")
+            break
+
 
         '''
         if str(diagnostico1) != 'nan':
@@ -327,12 +331,13 @@ def leerDf():
         print("Valor criterio: ", criterio)
         '''
 
-        nombreServicio=pacientes.iloc[i]['UltimoServicioClínico_Desc']
-        id_servicios=NULL
-        if nombreServicio!= NULL:
-            servicio=Servicio.objects.get(nombre=nombreServicio)
+        nombreServicio=pacientes.iloc[i]['ActualServicioClínico_Desc']
+        print(nombreServicio)
+        id_servicios=None
+        if str(nombreServicio)!= 'nan':
+            servicio=Servicio.objects.get(nombre=nombreServicio.strip(' '))
             id_servicios=servicio.id
-        
+        print("id_Servicio", id_servicios)
         
         #se busca el paciente en el resumen antiguo
         try:
@@ -360,7 +365,8 @@ def leerDf():
                 flagPend=True
                 pendJson=pAntiguo.pendientesJson
             print(flagPend)
-        
+        if dias_estada == '':
+            dias_estada = 0
         #calculo de critero
         criterio = NULL
         if pc_corte!=0:
@@ -369,11 +375,20 @@ def leerDf():
         print("Dias de estada: ", dias_estada)
         print("Puntaje de corte: ", pc_corte)
         print("Valor criterio: ", criterio)
-
+        
         #se guarda en un json y se agrega a la lista.
         aux={}
         aux["rut"]= rut
         aux["nombrePaciente"]= nombre 
+        
+            
+
+        
+        if id_servicios == 0:
+            print("ENTRAAAAAAAAAAAAAAAAAAAA...................................................")
+            id_servicios = None
+            print(id_servicios)
+           
         aux["servicio_id"]=id_servicios 
         aux["nombreServicio"]=nombreServicio
         aux["cama"] = ult_cama
