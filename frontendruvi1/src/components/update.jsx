@@ -1,8 +1,8 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Avatar, Paper, Button, Grid,Box} from '@mui/material';
-
+import { Dialog, DialogTitle, Avatar, Paper, Button, Grid,Box} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useState} from 'react'
 import { createTheme, ThemeProvider, darken, lighten } from '@mui/material/styles';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
@@ -37,42 +37,63 @@ const Update = () => {
     });
 
     ///// SECCION SUBIDA ARCHIVO
+    function SubirArchivo() {
 
-    const [file, setFile] = useState()
+      const [open, setOpen] = React.useState(false);
 
-    const handleInputChange = (event) => {
-      console.log(event.target.files)
-      setFile(event.target.files[0]);
-    };
+      const [file, setFile] = useState()
+      console.log(file)
 
-    const handleSubmit = (event) => {
+      const handleInputChange = (event) => {
+        console.log(event.target.files[0])
+        setFile(event.target.files[0]);
 
-      event.preventDefault();
-      const url = 'http://localhost:8000/subir/';
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("name", file.name)
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
       };
-      console.log(formData.file)
-      axios.post(url, formData, config).then((response) => {
-        console.log(formData)
-        console.log(response.data);
-      });
 
-    };
-    ///////// FIN SECCION SUBIDA ARCHIVO
+      const handleSubmit = async(event) => {
+        console.log(file)
+        
+        /*else{
+          event.preventDefault();
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("name", file.name)
+          const config = {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          };
 
-    const storedRol = JSON.parse(localStorage.getItem(KEY));
-    return (
-        <div className='update' >
-          <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar flag={storedRol.flag}/>
-          </Box>
-          <Grid container spacing={0}>
+          const {data} = await axios.post('http://localhost:8000/subir/pacientes', formData, config)
+          const respuestaAlternativo = true
+          console.log(data[0])
+
+          
+
+      
+          if (data[0].cargado != true) {
+            alert("Ningun archivo seleccionado");
+          }
+          else {
+            console.log("Hola Mundo");
+            console.log(respuestaAlternativo)
+            alert("Archivo subido correctamente, redirigiendo a resumen de pacientes")
+            window.location.href = '/resumen';
+          }
+        }*/
+  
+        
+  
+        /*axios.post(url, formData, config).then((response) => {
+          console.log(response);
+          console.log(formData)
+          console.log(response.data);
+        });*/
+  
+      };
+
+      return (
+        <Grid container spacing={0}>
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><NoteAddIcon/></Avatar>
@@ -84,7 +105,7 @@ const Update = () => {
                     <ThemeProvider theme={theme}>
                         <Button variant="dashed" sx={{ m: 2 }} component="label" >
                             aqui deberia colocar el archivo y/o visualizarse
-                            <input type="file" name="file" onChange={handleInputChange} />
+                            <input type="file" name="file" onChange={handleInputChange}/>
                         </Button>
                     </ThemeProvider>
                 </Box>
@@ -100,6 +121,20 @@ const Update = () => {
         
             </Paper>
         </Grid>
+      )
+
+    }
+    ///////// FIN SECCION SUBIDA ARCHIVO
+
+    //console.log(file)
+
+    const storedRol = JSON.parse(localStorage.getItem(KEY));
+    return (
+        <div className='update' >
+          <Box sx={{ display: 'flex' }}>
+                <ResponsiveAppBar flag={storedRol.flag}/>
+          </Box>
+          <SubirArchivo/>
 
         </div>
     )

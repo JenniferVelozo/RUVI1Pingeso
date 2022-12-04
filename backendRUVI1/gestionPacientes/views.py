@@ -33,9 +33,9 @@ class UploadFileForm(forms.Form):
 
 @api_view(['POST'])
 def subir(request,carga):
-    respuesta={"Response": "Archivo cargado correctamente. 200_OK", "cargado": True}
-    respuesta2={"Response": "Archivo no cargado. 400 BAD REQUEST", "cargado": False}
-    respuesta3={"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}
+    respuesta=[{"Response": "Archivo cargado correctamente. 200_OK", "cargado": True}]
+    respuesta2=[{"Response": "Archivo no cargado. 400 BAD REQUEST", "cargado": False}]
+    respuesta3=[{"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}]
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
