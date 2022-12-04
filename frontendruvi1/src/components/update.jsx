@@ -39,8 +39,6 @@ const Update = () => {
     ///// SECCION SUBIDA ARCHIVO
     function SubirArchivo() {
 
-      const [open, setOpen] = React.useState(false);
-
       const [file, setFile] = useState()
       console.log(file)
 
@@ -52,8 +50,11 @@ const Update = () => {
 
       const handleSubmit = async(event) => {
         console.log(file)
-        
-        /*else{
+        console.log(file == undefined)
+        if (file == undefined){
+          console.log('no hay file')
+        }
+        else{
           event.preventDefault();
           const formData = new FormData();
           formData.append("file", file);
@@ -80,15 +81,7 @@ const Update = () => {
             alert("Archivo subido correctamente, redirigiendo a resumen de pacientes")
             window.location.href = '/resumen';
           }
-        }*/
-  
-        
-  
-        /*axios.post(url, formData, config).then((response) => {
-          console.log(response);
-          console.log(formData)
-          console.log(response.data);
-        });*/
+        }
   
       };
 
@@ -97,27 +90,29 @@ const Update = () => {
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><NoteAddIcon/></Avatar>
-                    <h3>Seleccione el archivo que desea subir </h3>
+                    <h3>Seleccione el archivo csv que desea subir </h3>
                 </Grid>
 
-                <form onSubmit={handleSubmit}>
                 <Box textAlign='center'>
                     <ThemeProvider theme={theme}>
                         <Button variant="dashed" sx={{ m: 2 }} component="label" >
-                            aqui deberia colocar el archivo y/o visualizarse
+                            
                             <input type="file" name="file" onChange={handleInputChange}/>
                         </Button>
                     </ThemeProvider>
                 </Box>
 
-
                 <Box textAlign='center'>
-                    <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" type='submit' >
-                        Subir
+                  {file == undefined ? <Button disabled variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal">
+                    Subir
                     </Button>
+                    :
+                    <Button
+                      variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" onClick={handleSubmit}>
+                      Subir
+                    </Button>
+                  }
                 </Box>
-
-                </form>
         
             </Paper>
         </Grid>
