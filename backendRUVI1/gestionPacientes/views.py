@@ -64,6 +64,7 @@ def handle_uploaded_file(f):
         print("pacientes")
         leerDf()
         return True
+    '''
     if f.name=='CIE10-GRD.xlsm':
         print("cie10-norma")
         load_CIE10_GRD(path)
@@ -71,7 +72,7 @@ def handle_uploaded_file(f):
     if f.name=='PRESTACIONES_CAUSAS.xlsx':
         print("pendientes")
         load_prestaciones(path)
-        return True
+        return True'''
     return False
 # Create your views here.
 @api_view(['POST'])

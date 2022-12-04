@@ -107,9 +107,9 @@ def load_inicial():
     print(archivo)
     load_prestaciones(archivo)
 
-    path = os.path.dirname(os.path.realpath(__file__))
-    archivo = path+'\PACIENTES.xlsx'
-    load_pacientes(archivo)
+    #path = os.path.dirname(os.path.realpath(__file__))
+    #archivo = path+'\PACIENTES.xlsx'
+    #load_pacientes(archivo)
 
 
 if __name__=='__main__':
