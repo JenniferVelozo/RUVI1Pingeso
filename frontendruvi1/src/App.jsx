@@ -35,8 +35,8 @@ export class App extends React.Component {
         console.log("Rol encontrado")
     }
     else {
-        storedRol = {rol: "", servicio: "", flag: false, flagJ:false}
-        localStorage.setItem(KEY, JSON.stringify(storedRol));
+      storedRol = {rol: "", servicio: "", flag: false, flagJ:false, servicio: "", servicio_id:""}
+      localStorage.setItem(KEY, JSON.stringify(storedRol));
     }
     
     return (

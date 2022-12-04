@@ -33,7 +33,7 @@ export function Ruteo() {
         console.log("Rol encontrado")
     }
     else {
-        storedRol = {rol: "", servicio: "", flag: false, flagJ:false}
+        storedRol = {rol: "", servicio: "", flag: false, flagJ:false, servicio: "", servicio_id:""}
         localStorage.setItem(KEY, JSON.stringify(storedRol));
     }
     console.log(aux)

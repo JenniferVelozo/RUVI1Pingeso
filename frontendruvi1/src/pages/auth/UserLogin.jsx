@@ -31,8 +31,9 @@ export function UserLogin() {
 
 
   //para agregar rol al localstorage
-  const handleRolAdd = (nombreRol) => {
-    let rol={rol: nombreRol, servicio: "UGP", flag: false, flagJ:false}
+  const handleRolAdd = (data) => {
+    let nombreRol=data.rol
+    let rol={rol: nombreRol, servicio: data.servicio, servicio_id:data.servicio_id,flag: false, flagJ:false}
     if(nombreRol=='Administrador'){
       rol.flag=true
     }
@@ -70,7 +71,7 @@ export function UserLogin() {
       console.log(access_token)
       console.log("alo")
       console.log(res.data)
-      handleRolAdd(res.data.rol)
+      handleRolAdd(res.data)
       navigate('/home')
       console.log("alo1")
     }

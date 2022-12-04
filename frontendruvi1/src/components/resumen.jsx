@@ -27,6 +27,7 @@ const Resumen = () => {
   }
 
   const storedRol = JSON.parse(localStorage.getItem(KEY));
+
   //mostrar tabla
   function ShowTable() {
 
@@ -279,7 +280,19 @@ const Resumen = () => {
         }
         data[i].pendiente = listPendienteString
       }
-      setListResumen(data)
+      
+      if(storedRol.flagJ){
+        let resumenFiltrado = []
+        for (let i = 0; i < data.length; i++) {
+          if (storedRol.servicio_id == data[i].servicio) {
+            resumenFiltrado.push(data[i])
+          }
+        }
+        setListResumen(resumenFiltrado)
+      }
+      else{
+        setListResumen(data)
+      }
     }
 
     //funcion filtro servicio
@@ -289,12 +302,14 @@ const Resumen = () => {
       const handleChange = async(event) => {
         setEvento(event);
         const { data } = await axios.get('http://localhost:8000/resumen/')
+        
         let resumenFiltrado = []
         for (let i = 0; i < data.length; i++) {
           if (event.target.value == data[i].servicio) {
             resumenFiltrado.push(data[i])
           }
         }
+        const data2 = await axios.post('http://localhost:8000/exportar/', resumenFiltrado)
         setListResumen(resumenFiltrado)
 
       };
@@ -320,17 +335,24 @@ const Resumen = () => {
       useEffect(() => {
           getServicios()
       },[])
-
+      
       return (
         <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
+          {storedRol.flagJ?
+          <FormControl margin="normal" required sx = {{ width:260 }}>
+            <InputLabel id="rol">{storedRol.servicio}</InputLabel>
+          </FormControl>
+          :
           <FormControl margin="normal" required sx = {{ width:260 }}>
             <InputLabel id="rol">Servicio</InputLabel>
             <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
+                  
                   { listServicios.map(servicios => (
                   <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
                   ))}
             </Select>
           </FormControl>
+          }
           <Grid item xs={6}>
               <Item><h1> RESUMEN PACIENTES </h1></Item>
           </Grid>
