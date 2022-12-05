@@ -137,7 +137,7 @@ const ResponsiveAppBar = ({flag, nick}) => {
               textDecoration: 'none',
             }}
           >
-            {nick}
+            RUVI1
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           </Box>
@@ -145,7 +145,7 @@ const ResponsiveAppBar = ({flag, nick}) => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Abrir ajustes">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp"/*añadir usuario de la bd*/ src="/static/images/avatar/2.jpg" />
+                <Avatar alt={nick}/*añadir usuario de la bd*/ src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

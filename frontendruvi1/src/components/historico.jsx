@@ -154,7 +154,7 @@ function ShowTable() {
         </FormControl>
           </Grid>
           <Grid item xs={6}>
-          <Item>Listar Por Servicio</Item>
+          <Item><h1>LISTAR POR SERVICIO</h1></Item>
           </Grid>
           <Grid item xs>
           <LocalizationProvider adapterLocale={es} dateAdapter={AdapterDateFns} >
@@ -177,6 +177,10 @@ function ShowTable() {
       sx={{
         height: 300,
         width: '100%',
+        "& .MuiDataGrid-columnHeaders": {
+          backgroundColor: "rgba(0,0,200,0.6)",
+          fontSize: 16
+        },
         '& .cold': {
           backgroundColor: '#37c871',
           color: '#1a3e72',
