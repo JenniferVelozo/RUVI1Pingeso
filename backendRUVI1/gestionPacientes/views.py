@@ -247,12 +247,13 @@ def filtrarServicio(request, fecha, nombreServicio):
     #print(type(porFecha[0].fecha))
     porServicio = []
     for e in porFecha:
-        #print(e.servicio.id)
-        if nombreServicio=="todos":
-            porServicio.append(e)
-        else:   
-            if e.servicio.nombre == nombreServicio:
+        if e.servicio!=None:
+            #print(e.servicio.id)
+            if nombreServicio=="todos":
                 porServicio.append(e)
+            else:   
+                if e.servicio.nombre == nombreServicio:
+                    porServicio.append(e)
     
     #print("Mostrando filtrado por servicio")
     #print(porServicio)
@@ -622,7 +623,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
 class ServicioViewSet(viewsets.ModelViewSet):
     serializer_class = ServicioSerializer
-    queryset = Servicio.objects.all()
+    queryset = Servicio.objects.all().order_by('id')
 
 class RolViewSet(viewsets.ModelViewSet):
     serializer_class = RolSerializer

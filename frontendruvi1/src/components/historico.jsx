@@ -139,7 +139,10 @@ function ShowTable() {
           <Grid item xs>
           <FormControl fullWidth required>
             <InputLabel id="rol">Servicio</InputLabel>
-            <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={handleChange}>
+            <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={(newServicio) => {
+                setEvento(newServicio.target.value);
+                getResumen();
+              }}>
                   { listServicios.map(servicios => (
                   <MenuItem value={servicios.id}>
                     {servicios.nombre}
