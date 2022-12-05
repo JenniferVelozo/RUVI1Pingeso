@@ -3,11 +3,7 @@ from cmath import nan
 from datetime import datetime
 import json
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE","backendRUVI1.settings")
-import django
-from random import random
 
-django.setup()
 import pandas as pd
 from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio

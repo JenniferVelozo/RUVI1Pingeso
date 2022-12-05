@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 import pandas as pd
-from backendRUVI1.gestionPacientes.repMensual import mensual
+from gestionPacientes.repMensual import mensual
 from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio
 
