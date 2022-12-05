@@ -622,7 +622,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
 class ServicioViewSet(viewsets.ModelViewSet):
     serializer_class = ServicioSerializer
-    queryset = Servicio.objects.all()
+    queryset = Servicio.objects.all().order_by('id')
 
 class RolViewSet(viewsets.ModelViewSet):
     serializer_class = RolSerializer
