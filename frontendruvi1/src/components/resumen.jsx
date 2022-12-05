@@ -63,6 +63,23 @@ const Resumen = () => {
       }}
     
     ];
+    const columnsJ = [
+      { field: 'id', headerName: 'Id', width: 40 },
+      { field: 'criterio', headerName: 'Índice (EM)', width: 100},
+      { field: 'outline', headerName: 'Outline (PC)', width: 110},
+      { field: 'cama', headerName: 'Cama', width: 70},
+      { field: 'rut', headerName: 'Rut', width: 100},
+      { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
+      { field: 'estancia', headerName: 'Estancia', width: 80 },
+      { field: 'diagnostico1', headerName: 'Diagnostico 1', width: 250 },
+      { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 250 },
+      { field: 'ir_grd', headerName: 'IR-GRD', width: 80 },
+      { field: 'emNorma', headerName: 'EM Norma', width: 100},
+      { field: 'pcSuperior', headerName: 'PC Sup.', width: 80 },
+      { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
+      { field: 'pendiente', headerName: 'Pendiente', width: 200 }
+    
+    ];
   //END definicion columnas tabla
 
   // ZONA EDICION PENDIENTES
@@ -330,7 +347,6 @@ const Resumen = () => {
     
   const getResumen = async() => {
   const { data } = await axios.get(baseURL)
-  const data2 = await axios.post(direccion+'/exportar/', data)
   //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
         if (data[i].emNorma !== 0){
@@ -358,9 +374,11 @@ const Resumen = () => {
             resumenFiltrado.push(data[i])
           }
         }
+        const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
         setListResumen(addOutline(resumenFiltrado))
       }
       else{
+        const data2 = await axios.post(direccion+'/exportar/', data)
         setListResumen(addOutline(data))
       }
     }
@@ -467,7 +485,7 @@ const Resumen = () => {
             autoHeight
             autoWidth
             rows={listResumen}
-            columns={columns}
+            columns={storedRol.flagJ? columnsJ:columns}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             getRowHeight={() => 'auto'}
