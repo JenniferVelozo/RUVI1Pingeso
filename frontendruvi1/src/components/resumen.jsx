@@ -245,6 +245,9 @@ const Resumen = () => {
       if (props.props.diagnostico1Cod != 0) {
         listaSalida = props.props.diagnostico1Cod
       }
+      else{
+        return 0
+      }
       for (let i = 0; i < props.props.diagnostico2Json.length; i++) {
         if (props.props.diagnostico2Json[i].codigo !== diagnostico.codigo) {
           if (listaSalida.length !== 0) {
@@ -260,6 +263,7 @@ const Resumen = () => {
       }
       console.log(diagnostico.codigo)
       console.log(props.props.id)
+      
       const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
       console.log(json)
       const {data} = await axios.post(direccion+'/setDiagnosticos/', json)
