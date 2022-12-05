@@ -33,7 +33,7 @@ export function UserLogin() {
   //para agregar rol al localstorage
   const handleRolAdd = (data) => {
     let nombreRol=data.rol
-    let rol={rol: nombreRol, servicio: data.servicio, servicio_id:data.servicio_id,flag: false, flagJ:false}
+    let rol={rol: nombreRol, servicio: data.servicio, servicio_id:data.servicio_id,flag: false, flagJ:false,inicial:data.inicial}
     if(nombreRol=='Administrador'){
       rol.flag=true
     }

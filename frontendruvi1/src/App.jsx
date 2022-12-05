@@ -61,6 +61,13 @@ export class App extends React.Component {
               <Route path='/update' element={access_token ? <Navigate to="/updateAccess" />:<Navigate to="/out" />} />
               <Route path='/updateAccess' element={storedRol.flagJ ? <Home/>:<Update/>} />
 
+              <Route path='/updateCG' element={access_token ? <Navigate to="/updateCGAccess" />:<Navigate to="/out" />} />
+              <Route path='/updateCGAccess' element={storedRol.flagJ ? <Home/>:<UpdateCG/>} />
+
+              <Route path='/updateP' element={access_token ? <Navigate to="/updatePAccess" />:<Navigate to="/out" />} />
+              <Route path='/updatePAccess' element={storedRol.flagJ ? <Home/>:<UpdateP/>} />
+
+
               <Route path='/mensual' element={access_token ? <Navigate to="/mensualAccess" />:<Navigate to="/out" />} />               
               <Route path='/mensualAccess' element={storedRol.flagJ ? <Home/>:<Mensual/>} />
 

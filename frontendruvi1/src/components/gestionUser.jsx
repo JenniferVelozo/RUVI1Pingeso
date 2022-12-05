@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { blue, yellow, red } from '@mui/material/colors';
 import Fab from '@mui/material/Fab';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-
+const KEY = "App.rol";
 const theme = createTheme({
   palette: {
     primary: red,
@@ -113,7 +113,7 @@ function ShowUsuarios() {
 
     function ShowDialog(props) {
       const [open, setOpen] = React.useState(false);
-  
+      
       return ( 
         <div>
           <ThemeProvider theme={theme}>
@@ -135,7 +135,7 @@ function ShowUsuarios() {
         </div>
       );
     };
-
+    
     return (
       <Box sx={{height: 300, width: '100%', "& .MuiDataGrid-columnHeaders": {
         backgroundColor: "rgba(0,0,200,0.6)",
@@ -161,7 +161,7 @@ function ShowUsuarios() {
 // deploy vista
 
 const GestionUser = () => {
-
+  let storedRol = JSON.parse(localStorage.getItem(KEY));
   const handleRegister = async (e) => {
     window.location.replace('/register');
     
@@ -170,7 +170,7 @@ const GestionUser = () => {
     return (
       <div className='GestionUser' >
         <Box sx={{ display: 'flex' }}>
-          <ResponsiveAppBar/>
+          <ResponsiveAppBar flag={storedRol.flag}/>
         </Box>
         <Grid item xs={6} sx={{width: '95%', mt:9, ml: 4, mr: 5, mb: 2}}>
             <Item><h1> GESTIÓN USUARIOS </h1></Item>

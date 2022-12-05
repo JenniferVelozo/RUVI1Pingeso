@@ -699,7 +699,7 @@ class UserLoginView(APIView):
     user = authenticate(nickname=nickname, password=password)
     if user is not None:
       token = get_tokens_for_user(user)
-      return Response({'token':token, 'msg':'Login Success', 'rol':rol,'servicio':servicio,'servicio_id':servicio_id}, status=status.HTTP_200_OK)
+      return Response({'token':token, 'msg':'Login Success', 'rol':rol,'servicio':servicio,'servicio_id':servicio_id, 'inicial':nickname}, status=status.HTTP_200_OK)
     else:
       return Response({'errors':{'non_field_errors':['Nickname o password inválida']}}, status=status.HTTP_404_NOT_FOUND)
 

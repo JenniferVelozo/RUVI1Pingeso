@@ -26,7 +26,7 @@ import { unsetUserInfo } from '../features/userSlice';
 const pages = ['Menú', 'Añadir usuario'];
 const settings = ['Configuración', 'Cerrar sesión']
 
-const ResponsiveAppBar = ({flag}) => {
+const ResponsiveAppBar = ({flag, nick}) => {
 
   const handleLogout = () => {
     dispatch(unsetUserInfo({ name: "", nickname: "" }))
@@ -137,7 +137,7 @@ const ResponsiveAppBar = ({flag}) => {
               textDecoration: 'none',
             }}
           >
-            RUVI1
+            {nick}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           </Box>
