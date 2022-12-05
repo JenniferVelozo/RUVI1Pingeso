@@ -7,6 +7,8 @@ import { BrowserRouter as Router} from 'react-router-dom';
 
 import Config from './components/config';
 import Update from './components/update';
+import UpdateCG from './components/updateCG';
+import UpdateP from './components/updateP';
 import Historico from './components/historico';
 import Mensual from './components/mensual';
 import GestionUser from './components/gestionUser';
