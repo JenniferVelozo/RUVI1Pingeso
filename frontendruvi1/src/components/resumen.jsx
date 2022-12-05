@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
+import $ from 'jquery';
 //import Gestion_de_Pacientes from '../../Gestion_de_Pacientes.xlsx';
 const KEY = "App.rol";
 const Item = styled(Paper)(({ theme }) => ({
@@ -34,7 +35,8 @@ const Resumen = () => {
     //definicion columnas tabla
     const columns = [
       { field: 'id', headerName: 'Id', width: 60 },
-      { field: 'criterio', headerName: 'Criterio', width: 80},
+      { field: 'criterio', headerName: 'Índice (EM)', width: 100},
+      { field: 'outline', headerName: 'Outline (PC)', width: 100},
       { field: 'cama', headerName: 'Cama', width: 70},
       { field: 'rut', headerName: 'Rut', width: 100},
       { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
@@ -149,6 +151,8 @@ const Resumen = () => {
       console.log(listaSalida)
       return listaSalida;
     }
+
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -283,6 +287,22 @@ const Resumen = () => {
 
   // END ZONA EDICION DIAGNOSTICO 2
 
+  function addOutline(data){
+    var ret= [];
+    for (var i = 1; i <= data.length; i++){
+      if(data[i-1].estancia == 0 || data[i-1].pcSuperior == 0){
+        $.extend( data[i-1], {outline:""});
+        ret.push(data[i-1]);
+
+      } else{
+        var aux = data[i-1].estancia / data[i-1].pcSuperior;
+        $.extend( data[i-1], {outline:aux});
+        ret.push(data[i-1]);
+      }
+    }
+    return ret;
+  }
+
   const [pageSize, setPageSize] = React.useState(10);
     
   let baseURL = 'http://localhost:8000/resumen/' //npm i dotenv
@@ -323,10 +343,10 @@ const Resumen = () => {
             resumenFiltrado.push(data[i])
           }
         }
-        setListResumen(resumenFiltrado)
+        setListResumen(addOutline(resumenFiltrado))
       }
       else{
-        setListResumen(data)
+        setListResumen(addOutline(data))
       }
     }
 
@@ -414,14 +434,21 @@ const Resumen = () => {
         backgroundColor: '#ff0000',
         color: '#1a3e72',
       },
+      '& .amarillo': {
+        backgroundColor: '#ffcc00',
+        color: '#1a3e72',
+      },
     }}
     >
       <DataGrid
         getCellClassName={(params) => {
-          if (params.field !== 'criterio' || params.value == null) {
-            return '';
+          if (params.field == 'criterio' && params.value !== null) {
+            return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));
           }
-          return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
+          if (params.field == 'outline' && params.value !== "" && params.row.criterio >= 1) {
+            return params.value >= 1 ? 'hot' : (params.value >= 0.6 ? "mediumhot" : "amarillo");
+          }
+          return '';}}
             autoHeight
             autoWidth
             rows={listResumen}
