@@ -37,9 +37,9 @@ const Resumen = () => {
 
     //definicion columnas tabla
     const columns = [
-      { field: 'id', headerName: 'Id', width: 60 },
+      { field: 'id', headerName: 'Id', width: 40 },
       { field: 'criterio', headerName: 'Índice (EM)', width: 100},
-      { field: 'outline', headerName: 'Outline (PC)', width: 100},
+      { field: 'outline', headerName: 'Outline (PC)', width: 110},
       { field: 'cama', headerName: 'Cama', width: 70},
       { field: 'rut', headerName: 'Rut', width: 100},
       { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
@@ -47,10 +47,10 @@ const Resumen = () => {
       { field: 'diagnostico1', headerName: 'Diagnostico 1', width: 250 },
       { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 250 },
       { field: 'ir_grd', headerName: 'IR-GRD', width: 80 },
-      { field: 'emNorma', headerName: 'EM Norma', width: 80},
-      { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
+      { field: 'emNorma', headerName: 'EM Norma', width: 100},
+      { field: 'pcSuperior', headerName: 'PC Sup.', width: 80 },
       { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
-      { field: 'pendiente', headerName: 'Pendiente', width: 100 },
+      { field: 'pendiente', headerName: 'Pendiente', width: 200 },
       { field: 'Editar Diagnostico 2', renderCell: (params) => {
         return (
           <ShowDialogDiagnostico props={params}/>
@@ -223,14 +223,26 @@ const Resumen = () => {
       console.log(props.openProp)
       console.log(diagnostico)
       console.log(props.props)
-      const jsonAux = {"codigo": props.props.diagnostico1Cod, "nombre": props.props.diagnostico1}
-      var listaSalida = props.props.diagnostico1Cod
+      console.log(props.props.diagnostico1Cod)
+      var listaSalida = []
+      if (props.props.diagnostico1Cod != 0) {
+        listaSalida = props.props.diagnostico1Cod
+      }
       for (let i = 0; i < props.props.diagnostico2Json.length; i++) {
         if (props.props.diagnostico2Json[i].codigo !== diagnostico.codigo) {
-          listaSalida = listaSalida + ',' + props.props.diagnostico2Json[i].codigo
+          if (listaSalida.length !== 0) {
+            listaSalida = listaSalida + ',' + props.props.diagnostico2Json[i].codigo
+          } else {
+          listaSalida = props.props.diagnostico2Json[i].codigo
+          }
         } else { }
       }
       console.log(listaSalida)
+      if (listaSalida.length === 0) {
+        listaSalida = ''
+      }
+      console.log(diagnostico.codigo)
+      console.log(props.props.id)
       const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
       console.log(json)
       const {data} = await axios.post(direccion+'/setDiagnosticos/', json)

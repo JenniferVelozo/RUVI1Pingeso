@@ -14,7 +14,7 @@ const Home =()=>{
     
 
     const avatarStyle={backgroundColor:'#005588'}
-    const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
+    const paperStyle={padding :20,height:'20vh',width:260, margin:"18px auto"}
 
     const navigateResumen = () => {
         window.location.href = '/resumen';
@@ -28,7 +28,8 @@ const Home =()=>{
         position: 'absolute', left: '50%', top: '50%',
         transform: 'translate(-50%, -50%)'
       }}>
-            <Grid container spacing={3}>
+        <Box sx={{mt: 8}}>
+            <Grid container spacing={1}>
                 { !storedRol.flagJ && <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
                         <Grid align='center'>
@@ -59,6 +60,7 @@ const Home =()=>{
                 </Paper>
                 </Grid>
             </Grid>
+            </Box>
             </div>
 
         </div>
