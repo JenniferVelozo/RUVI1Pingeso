@@ -33,7 +33,7 @@ const Config =()=>{
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
                             <h5>Gestionar BD CIE10</h5>
-                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                            <Button href = "/updateCG" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                         </Grid>
                     </Paper>
                 </Grid>
@@ -62,7 +62,7 @@ const Config =()=>{
                       <Grid align='center'>
                           <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
                           <h5>Gestionar BD GRD</h5>
-                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                          <Button href = "/updateCG" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                       </Grid>
                   </Paper>
               </Grid>
@@ -71,7 +71,7 @@ const Config =()=>{
                       <Grid align='center'>
                           <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
                           <h5>Gestionar tabla Pendientes</h5>
-                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                          <Button href = "/updateP" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                       </Grid>
                   </Paper>
               </Grid>

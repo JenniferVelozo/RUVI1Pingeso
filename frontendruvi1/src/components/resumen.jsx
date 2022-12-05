@@ -452,7 +452,7 @@ const Resumen = () => {
       height: 300,
       width: '95%',
       "& .MuiDataGrid-columnHeaders": {
-        backgroundColor: "rgba(0,0,200,0.6)",
+        backgroundColor: '#1F90E9',
         fontSize: 16
       },
       '& .cold': {
