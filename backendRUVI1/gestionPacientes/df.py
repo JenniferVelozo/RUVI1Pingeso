@@ -342,10 +342,14 @@ def leerDf():
     #print(jsonRes)
     now = datetime.now()
     fecha=now
-    hist= Historico.objects.all().latest('fecha')
-    print(hist.fecha)
-    if fecha.month-hist.fecha.month!=0:
-        mensual(hist.fecha.month,hist.fecha.year)
+    try:
+        hist= Historico.objects.all().latest('fecha')
+        print(hist.fecha)
+        if fecha.month-hist.fecha.month!=0:
+            mensual(hist.fecha.month,hist.fecha.year)
+    except Historico.DoesNotExist:
+        print("No hay historico")
+        hist=None
     
     #print(fecha)
     for paciente in jsonRes:
