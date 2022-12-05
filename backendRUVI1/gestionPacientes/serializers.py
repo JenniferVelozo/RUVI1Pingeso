@@ -70,7 +70,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     return User.objects.create_user(**validate_data)
 
 class UserLoginSerializer(serializers.ModelSerializer):
-  nickname = serializers.CharField(max_length=10)
+  nickname = serializers.CharField(max_length=20)
   class Meta:
     model = User
     fields = ['nickname', 'password']

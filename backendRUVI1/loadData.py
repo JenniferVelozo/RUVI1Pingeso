@@ -68,11 +68,11 @@ def poblar():
         servicio.save()
 
     #usuarios
-    usuario = Usuarios.objects.get_or_create(nombre='Administrador', apellido='', 
-            nickname='admin', password='1234', rut='')[0]
-    usuario.servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes')
-    usuario.rol=Roles.objects.get(nombre='Administrador')
-    usuario.save()
+    usuario = User.objects.create_user(nombre='Diego', apellido='Ruiz', 
+            nickname='DRuiz', password="ugp1234", rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
+
+    usuario2 = User.objects.create_user(nombre='Edgardo', apellido='Villavicencio', 
+            nickname='EVillavicencio', password="ugp1234", rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
 
     
 
