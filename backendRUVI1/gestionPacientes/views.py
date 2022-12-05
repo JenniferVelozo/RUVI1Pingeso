@@ -690,7 +690,10 @@ class UserLoginView(APIView):
     nickname = serializer.data.get('nickname')
     password = serializer.data.get('password')
     #rol_id = serializer.data.get('rol__id')
-    usuario=User.objects.get(nickname=nickname)
+    try:
+        usuario=User.objects.get(nickname=nickname)
+    except User.DoesNotExist:
+        return Response({'errors':{'nickname':['Nickname o password inválida']}}, status=status.HTTP_404_NOT_FOUND)
     rol_id=usuario.rol_id
     servicio_id=usuario.servicio_id
     rol=Roles.objects.get(id=rol_id)
@@ -702,7 +705,7 @@ class UserLoginView(APIView):
       token = get_tokens_for_user(user)
       return Response({'token':token, 'msg':'Login Success', 'rol':rol,'servicio':servicio,'servicio_id':servicio_id, 'inicial':nickname}, status=status.HTTP_200_OK)
     else:
-      return Response({'errors':{'non_field_errors':['Nickname o password inválida']}}, status=status.HTTP_404_NOT_FOUND)
+      return Response({'errors':{'nickname':['Nickname o password inválida']}}, status=status.HTTP_404_NOT_FOUND)
 
 class UserProfileView(APIView):
   renderer_classes = [UserRenderer]
