@@ -15,6 +15,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {es} from 'date-fns/locale';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const KEY = "App.rol";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -48,7 +50,7 @@ function ShowTable() {
 
   const [value, setValue] = useState(new Date());
 
-  let URL = 'http://localhost:8000/historicoDates/';
+  let URL = direccion+'/historicoDates/';
 
   const [ listFechas, setListFechas ] = useState([]);
 
@@ -86,7 +88,7 @@ function ShowTable() {
   const [ listServicios, setListServicios ] = useState([{id:0,nombre:"todos",}])
 
   const getServicios = async() => {
-      const { data } = await axios.get('http://localhost:8000/servicios/')
+      const { data } = await axios.get(direccion+'/servicios/')
       setListServicios(data)
       console.log(data)
   }
@@ -103,7 +105,7 @@ function ShowTable() {
 
   console.log(evento)
   console.log(listServicios)
-  let baseURL = 'http://localhost:8000/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre //npm i dotenv
+  let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre //npm i dotenv
 
   console.log(baseURL)
   const [ listResumen, setListResumen ] = useState([])

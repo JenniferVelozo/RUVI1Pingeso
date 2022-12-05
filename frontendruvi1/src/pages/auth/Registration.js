@@ -9,6 +9,8 @@ import React from 'react';
 import { useEffect} from 'react';
 import axios from 'axios';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const Registration = () => {
   const paperStyle={padding :30,height:'100vh',width:260, margin:"40px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
@@ -36,13 +38,13 @@ const Registration = () => {
   },[])
 
   const getRoles = async() => {
-    const { data } = await axios.get('http://localhost:8000/rol/')
+    const { data } = await axios.get(direccion+'/rol/')
     setListRoles(data)
     console.log(data)
   }
 
   const getServicios = async() => {
-      const { data } = await axios.get('http://localhost:8000/servicios/')
+      const { data } = await axios.get(direccion+'/servicios/')
       setListServicios(data)
       console.log(data)
   }

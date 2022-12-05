@@ -4,8 +4,6 @@ import Home from './components/home';
 import Resumen from './components/resumen';
 
 import { BrowserRouter as Router} from 'react-router-dom';
-import UpdateCG from './components/updateCG';
-import UpdateP from './components/updateP';
 
 import Config from './components/config';
 import Update from './components/update';

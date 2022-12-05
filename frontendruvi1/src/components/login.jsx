@@ -7,6 +7,8 @@ import { Component, useState, useEffect} from 'react';
 import axios from 'axios'; 
 import Home from './home';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 function Login(){
     const paperStyle={padding :20,height:'50vh',width:260, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#005588', width:60,height:60}
@@ -16,14 +18,14 @@ function Login(){
     const [respuesta, setRespuesta ] = useState("")
 
     const getUsuarios = async() => {
-        const { data } = await axios.get('http://localhost:8000/login/')
+        const { data } = await axios.get(direccion+'/login/')
         console.log(data);
 
      } 
 
     const loginUsuario = async() => {
         const json = {"nickname": usuario, "password": password } 
-        const {data} = await axios.post('http://localhost:8000/login/', json)
+        const {data} = await axios.post(direccion+'/login/', json)
         setRespuesta(data)
         data=JSON.parse(data)
         console.log(data)

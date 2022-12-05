@@ -11,6 +11,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.header,
@@ -44,7 +46,7 @@ function ShowTable() {
 
   const [pageSize, setPageSize] = React.useState(10);
 
-  let baseURL = 'http://localhost:8000/mensual/2022/12  ' //npm i dotenv
+  let baseURL = direccion+'/mensual/2022/12  ' //npm i dotenv
 
   const [ listMensual, setListMensual ] = useState([])
 
@@ -71,7 +73,7 @@ function ShowTable() {
     };
     const [ listMeses, setListMeses ] = useState([])
     const getMeses = async() => {
-        const { data } = await axios.get('http://localhost:8000/servicios/')
+        const { data } = await axios.get(direccion+'/servicios/')
         setListMeses(data)
     }
 

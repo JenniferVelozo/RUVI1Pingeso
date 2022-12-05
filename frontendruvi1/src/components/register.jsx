@@ -6,6 +6,8 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { Component, useState, useEffect} from 'react';
 import axios from 'axios';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 function Register(){
     const paperStyle={padding :20,height:'80vh',width:260, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#005588', width:60,height:60}
@@ -26,13 +28,13 @@ function Register(){
     },[])
 
     const getRoles = async() => {
-        const { data } = await axios.get('http://localhost:8000/rol/')
+        const { data } = await axios.get(direccion+'/rol/')
         setListRoles(data)
         console.log(data)
     }
 
     const getServicios = async() => {
-        const { data } = await axios.get('http://localhost:8000/servicios/')
+        const { data } = await axios.get(direccion+'/servicios/')
         setListServicios(data)
         console.log(data)
     }

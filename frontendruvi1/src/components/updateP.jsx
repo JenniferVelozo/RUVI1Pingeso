@@ -8,6 +8,8 @@ import { createTheme, ThemeProvider, darken, lighten } from '@mui/material/style
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const KEY = "App.rol";
 
 const Update = () => {
@@ -77,7 +79,7 @@ const Update = () => {
           },
         };
 
-        const {data} = await axios.post('http://localhost:8000/subir/pendientes', formData, config)
+        const {data} = await axios.post(direccion+'/subir/pendientes', formData, config)
         const respuestaAlternativo = true
         console.log(data[0])
 

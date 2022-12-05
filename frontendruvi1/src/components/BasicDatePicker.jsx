@@ -7,13 +7,13 @@ import {es} from 'date-fns/locale';
 import { useState, useEffect} from 'react';
 import axios from 'axios';
 
-
+const direccion = process.env.REACT_APP_DIRECCION_IP
 
 
 function ShowDate(){
   const [value, setValue] = useState(new Date());
 
-  let baseURL = 'http://localhost:8000/historicoDates/';
+  let baseURL = direccion+'/historicoDates/';
 
   const [ listFechas, setListFechas ] = useState([]);
 

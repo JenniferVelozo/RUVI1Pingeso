@@ -9,6 +9,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { blue, yellow, red } from '@mui/material/colors';
 import Fab from '@mui/material/Fab';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const KEY = "App.rol";
 const theme = createTheme({
   palette: {
@@ -51,7 +54,7 @@ function ShowUsuarios() {
     const [pageSize, setPageSize] = React.useState(10);
     const [ listUsuarios, setListUsuarios ] = useState([])
     const getUsuarios = async() => {
-      const {data} = await axios.get('http://localhost:8000/usuariosG/')
+      const {data} = await axios.get(direccion+'/usuariosG/')
       setListUsuarios(data)
     }
 
@@ -59,54 +62,12 @@ function ShowUsuarios() {
       getUsuarios()
     }, [])
 
-
-    /*useEffect(() => {
-      getRoles()  
-    },[])
-
-    const getRoles = async() => {
-        const { data } = await axios.get('http://localhost:8000/rol/')
-        setListRoles(data)
-    }
-
-    useEffect(() => {
-      getServicios()  
-    },[])
-
-    const getServicios = async() => {
-        const { data } = await axios.get('http://localhost:8000/servicios/')
-        setListServicios(data)
-    }
-
-    useEffect(() => {
-      getUsuarios()
-    },[])
-      
-    const getUsuarios  = async() => {
-        const { data } = await axios.get('http://localhost:8000/usuarios/')
-        setListUsuarios(data)
-    }*/
-    //fin llamados backend
-
-    //setteo coordinado
-
-    //console.log(listUsuariosAux.servicio)
-    //setListUsuarios(listUsuariosAux)
-    /*for (let i = 0; i < listUsuarios.length; i++) {
-      let aux = listUsuarios[i].servicio-1
-      console.log(aux)
-      let auxNombre = listServicios[aux]
-      console.log(auxNombre)
-
-      listUsuariosAux[i].servicio = listServicios[listUsuarios[i].servicio-1].nombre
-    }*/
-
     //fin setteo usuarios
 
     const handleEliminar = (usuario) => async() => {
         console.log(usuario.id)
         const json = {"id": usuario.id }
-        const {data} = await axios.post('http://localhost:8000/deleteuser/', json)
+        const {data} = await axios.post(direccion+'/deleteuser/', json)
         getUsuarios()
         //window.location.replace('/resumen');
     }

@@ -1,9 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+const direccion = process.env.REACT_APP_DIRECCION_IP
+console.log(direccion)
+
 // Define a service using a base URL and expected endpoints
 export const userAuthApi = createApi({
   reducerPath: 'userAuthApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:8000/api/user/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: direccion+'/api/user/' }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (user) => {

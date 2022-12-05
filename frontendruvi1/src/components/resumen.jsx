@@ -10,6 +10,9 @@ import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
 import $ from 'jquery';
 //import Gestion_de_Pacientes from '../../Gestion_de_Pacientes.xlsx';
+
+const direccion = process.env.REACT_APP_DIRECCION_IP
+
 const KEY = "App.rol";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -22,8 +25,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const Resumen = () => {
 
   const handleExport = async(event) => {
-    const { data } = await axios.get("http://localhost:8000/resumen/")
-    const data2 = await axios.post('http://localhost:8000/exportar/', data)
+    const { data } = await axios.get(direccion+'/resumen/')
+    const data2 = await axios.post(direccion+'/exportar/', data)
     
   }
 
@@ -75,7 +78,7 @@ const Resumen = () => {
       console.log(idProp)
       const listaSalida = GenerarListaPendientes();
       const json = {"id": idProp.props.id, "pendientes": listaSalida }
-      const {data} = await axios.post('http://localhost:8000/setPendientes/', json)
+      const {data} = await axios.post(direccion+'/setPendientes/', json)
       getResumen()
     };
 
@@ -86,7 +89,7 @@ const Resumen = () => {
     //llamado pendientes
     const [ listPendientes, setListPendientes ] = useState([])
     const getPendientes = async() => {
-      const { data } = await axios.get('http://localhost:8000/pendientes/')
+      const { data } = await axios.get(direccion+'/pendientes/')
       console.log(data)
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
         for (let j = 0; j < data.length; j++) {
@@ -230,7 +233,7 @@ const Resumen = () => {
       console.log(listaSalida)
       const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
       console.log(json)
-      const {data} = await axios.post('http://localhost:8000/setDiagnosticos/', json)
+      const {data} = await axios.post(direccion+'/setDiagnosticos/', json)
       getResumen(data)
     //window.location.replace('/resumen');
     };
@@ -305,7 +308,7 @@ const Resumen = () => {
 
   const [pageSize, setPageSize] = React.useState(10);
     
-  let baseURL = 'http://localhost:8000/resumen/' //npm i dotenv
+  let baseURL = direccion+'/resumen/' //npm i dotenv
     
   const [ listResumen, setListResumen ] = useState([])
     
@@ -315,7 +318,7 @@ const Resumen = () => {
     
   const getResumen = async() => {
   const { data } = await axios.get(baseURL)
-  const data2 = await axios.post('http://localhost:8000/exportar/', data)
+  const data2 = await axios.post(direccion+'/exportar/', data)
   //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
         if (data[i].emNorma !== 0){
@@ -356,7 +359,7 @@ const Resumen = () => {
       const [evento, setEvento] = React.useState('');
       const handleChange = async(event) => {
         setEvento(event);
-        const { data } = await axios.get('http://localhost:8000/resumen/')
+        const { data } = await axios.get(direccion+'/resumen/')
         
         let resumenFiltrado = []
         for (let i = 0; i < data.length; i++) {
@@ -364,13 +367,13 @@ const Resumen = () => {
             resumenFiltrado.push(data[i])
           }
         }
-        const data2 = await axios.post('http://localhost:8000/exportar/', resumenFiltrado)
+        const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
         setListResumen(resumenFiltrado)
 
       };
       const [ listServicios, setListServicios ] = useState([])
       const getServicios = async() => {
-          const { data } = await axios.get('http://localhost:8000/servicios/')
+          const { data } = await axios.get(direccion+'/servicios/')
           setListServicios(data)
       }
 
@@ -478,7 +481,7 @@ const Resumen = () => {
         <ShowTable/>
       </Box>
       <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-        <Fab variant="extended" color="primary" href="http://localhost:8000/descarga/" download="Resumen.xlsx">
+        <Fab variant="extended" color="primary" href={direccion+'/descarga/'} download="Resumen.xlsx">
           Exportar a XLS <DownloadIcon />
         </Fab>
         
