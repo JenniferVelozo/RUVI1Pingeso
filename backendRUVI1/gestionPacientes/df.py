@@ -20,7 +20,7 @@ def leerDf():
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.csv'
-    pacientes= pd.read_csv(archivo, sep=';', encoding='latin-1')
+    pacientes= pd.read_csv(archivo, sep='~', encoding='latin-1')
     
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)

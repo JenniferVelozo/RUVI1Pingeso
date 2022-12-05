@@ -105,28 +105,30 @@ function ShowTable() {
 
   console.log(evento)
   console.log(listServicios)
-  let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre //npm i dotenv
+   //npm i dotenv
 
-  console.log(baseURL)
+
   const [ listResumen, setListResumen ] = useState([])
 
-    useEffect(() => {
-        getResumen() 
-    },[])
+  useEffect(() => {
+      getResumen() 
+  },[])
+  
 
-    const getResumen = async() => {
-        const { data } = await axios.get(baseURL)
-        for (var i = 0; i < data.length; i++) {
-          if (data[i].emNorma !== 0){
-          data[i].emNorma = data[i].emNorma.toFixed(4);
-          }
-          if (data[i].emNorma !== 0){
-          data[i].criterio = (data[i].estancia/data[i].emNorma);
-          }
-       }
-        setListResumen(data)
-        console.log(data)
-    }
+  const getResumen = async(evento) => {
+      let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre
+      const { data } = await axios.get(baseURL)
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].emNorma !== 0){
+        data[i].emNorma = data[i].emNorma.toFixed(4);
+        }
+        if (data[i].emNorma !== 0){
+        data[i].criterio = (data[i].estancia/data[i].emNorma);
+        }
+      }
+      setListResumen(data)
+      console.log(data)
+  }
     
 
 
@@ -142,8 +144,8 @@ function ShowTable() {
           <FormControl fullWidth required>
             <InputLabel id="rol">Servicio</InputLabel>
             <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={(newServicio) => {
-                setEvento(newServicio.target.value);
-                getResumen();
+                // setEvento(newServicio.target.value);
+                getResumen(newServicio.target.value);
               }}>
                   { listServicios.map(servicios => (
                   <MenuItem value={servicios.id}>
