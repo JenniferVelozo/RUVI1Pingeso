@@ -509,7 +509,7 @@ const Resumen = () => {
   return (
     <div className='resumen' >
       <Box sx={{ display: 'flex' }}>
-        <ResponsiveAppBar flag={storedRol.flag}/>
+        <ResponsiveAppBar flag={storedRol.flag}  nick={storedRol.inicial}/>
       </Box>
       <Box>
         <ShowTable/>

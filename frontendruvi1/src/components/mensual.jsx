@@ -149,7 +149,7 @@ const Mensual = () => {
     return (
         <div className='mensual' >
           <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar flag={storedRol.flag}/>
+                <ResponsiveAppBar flag={storedRol.flag} nick={storedRol.inicial}/>
           </Box>
           <Box sx={{ width: '95%'}}>
             <ShowTable/>

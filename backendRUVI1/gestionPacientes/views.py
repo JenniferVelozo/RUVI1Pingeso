@@ -35,18 +35,18 @@ class UploadFileForm(forms.Form):
 def subir(request,carga):
     respuesta=[{"Response": "Archivo cargado correctamente. 200_OK", "cargado": True}]
     respuesta2=[{"Response": "Archivo no cargado. 400 BAD REQUEST", "cargado": False}]
-    respuesta3=[{"Response": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}]
+    respuesta3=[{"ErrorFormato": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}]
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             if handle_uploaded_file(request.FILES['file'],carga):
                 return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
             else:
-                return JsonResponse(respuesta3, safe=False, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse(respuesta3, safe=False)
     else:
 
         form = UploadFileForm()
-    return JsonResponse(respuesta2, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(respuesta2, safe=False)
 
   
 
@@ -72,11 +72,11 @@ def handle_uploaded_file(f,carga):
         print("pacientes")
         leerDf()
         return True
-    if carga=="CIE10GRD":
+    if carga=="CIE10GRD" and f.name=='CIE10-GRD.xlsm':
         print("cie10-norma")
         load_CIE10_GRD(path)
         return True
-    if carga=='pendientes':
+    if carga=='pendientes' and f.name=='PRESTACIONES_CAUSAS.xlsx':
         print("pendientes")
         load_prestaciones(path)
         return True

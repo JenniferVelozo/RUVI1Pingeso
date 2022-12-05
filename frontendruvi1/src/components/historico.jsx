@@ -134,7 +134,7 @@ function ShowTable() {
   return (
     <div className='historico' >
     <Box sx={{ display: 'flex' }}>
-          <ResponsiveAppBar flag={storedRol.flag}/>
+          <ResponsiveAppBar flag={storedRol.flag} nick={storedRol.inicial}/>
     </Box>
     <Box sx={{ width: '100%', p: 9}}>
       <Grid container spacing={3}>

@@ -131,7 +131,7 @@ const GestionUser = () => {
     return (
       <div className='GestionUser' >
         <Box sx={{ display: 'flex' }}>
-          <ResponsiveAppBar flag={storedRol.flag}/>
+          <ResponsiveAppBar flag={storedRol.flag}  nick={storedRol.inicial}/>
         </Box>
         <Grid item xs={6} sx={{width: '95%', mt:9, ml: 4, mr: 5, mb: 2}}>
             <Item><h1> GESTIÓN USUARIOS </h1></Item>

@@ -21,7 +21,7 @@ const Config =()=>{
     return(
         <div classname="config">
             <div className='App d-flex justify-content-center align-items-center'>
-                <ResponsiveAppBar flag={storedRol.flag}/>
+                <ResponsiveAppBar flag={storedRol.flag}  nick={storedRol.inicial}/>
             </div>
             <div style={{
         position: 'absolute', left: '30%', top: '30%',

@@ -11,6 +11,7 @@ import axios from 'axios';
 
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+const KEY = "App.rol";
 const Registration = () => {
   const paperStyle={padding :30,height:'100vh',width:260, margin:"40px auto"}
   const avatarStyle={backgroundColor:'#005588', width:60,height:60}
@@ -89,11 +90,13 @@ const Registration = () => {
       navigate('/home')
     }
   }
+  
+  const storedRol = JSON.parse(localStorage.getItem(KEY));
   return <>
     {}
     <div className='register'> 
       <div className='App d-flex justify-content-center align-items-center'>
-        <ResponsiveAppBar/>
+        <ResponsiveAppBar flag={storedRol.flag} nick={storedRol.inicial}/>
       </div>
     <Grid container spacing={0}> 
     <Paper elevation={10} style={paperStyle}>

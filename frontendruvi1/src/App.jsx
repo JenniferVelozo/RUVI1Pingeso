@@ -49,7 +49,7 @@ export class App extends React.Component {
             <Routes>
               <Route path='/' element={access_token ? <Navigate to="/home" />: <UserLogin /> } />
               <Route path='/login' element={access_token ? <Navigate to="/home" />: <UserLogin />} />
-              <Route path='/register' element={<Registration/>} />
+              
               <Route path='/home' element={{access_token} ? <Home /> : <Navigate to="/out" />} />
               <Route path='/dashboard' element={<Home />} />
               <Route path='/out' element={<UserLogin />} />
@@ -59,6 +59,10 @@ export class App extends React.Component {
 
               <Route path='/config' element={access_token ? <Navigate to="/configAccess" />:<Navigate to="/out" />} />
               <Route path='/configAccess' element={storedRol.flag ? <Config/>:<Home/>} />
+
+              <Route path='/register' element={access_token ? <Navigate to="/registerAccess" />:<Navigate to="/out" />} />
+              <Route path='/registerAccess' element={storedRol.flag ? <Registration/>:<Home/>} />
+              
 
               <Route path='/update' element={access_token ? <Navigate to="/updateAccess" />:<Navigate to="/out" />} />
               <Route path='/updateAccess' element={storedRol.flagJ ? <Home/>:<Update/>} />

@@ -87,7 +87,14 @@ const Update = () => {
 
     
         if (data[0].cargado != true) {
-          alert("Ningun archivo seleccionado");
+          if(data[0].ErrorFormato){
+            alert("Archivo archivo seleccionado no cumple con el formato");
+          }
+          else{
+            alert("Ningun archivo seleccionado");
+          }
+          setSuccess(false);
+          setLoading(false);
         }
         else {
           console.log("Hola Mundo");
@@ -105,7 +112,7 @@ const Update = () => {
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><NoteAddIcon/></Avatar>
-                    <h3>Seleccione el archivo csv que desea subir </h3>
+                    <h3>Seleccione el archivo Excel .xlsm que desea subir </h3>
                 </Grid>
 
               <Box textAlign='center'>
@@ -169,7 +176,7 @@ const Update = () => {
     return (
         <div className='update' >
           <Box sx={{ display: 'flex' }}>
-                <ResponsiveAppBar flag={storedRol.flag}/>
+                <ResponsiveAppBar flag={storedRol.flag}  nick={storedRol.inicial}/>
           </Box>
           <SubirArchivo/>
 
