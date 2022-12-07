@@ -1,6 +1,4 @@
-from asyncio.windows_events import NULL
-from cmath import nan
-import json
+#################
 import os
 from datetime import datetime
 
@@ -9,7 +7,6 @@ from gestionPacientes.repMensual import mensual
 from gestionPacientes.models import *
 #from backendRUVI1.gestionPacientes.models import Servicio
 
-from gestionPacientes.models import Resumen, Pacientes
 
 def leerDf():
     # Se lee el archivo del CIE10
@@ -101,7 +98,7 @@ def leerDf():
         diagnostico2Json=[]
         if str(diagnostico2) == 'nan':
             diagnostico2 = []
-            diagnostico2Cod=NULL
+            diagnostico2Cod=None
         else:
             diagnostico2 = str(diagnostico2).split(',')
             for diag in diagnostico2:
@@ -180,7 +177,7 @@ def leerDf():
             diagnostico_uno = ""
             grd = ""
             sev = ""
-            diagnostico1Cod=NULL
+            diagnostico1Cod=None
 
         print("DIAGNÓSTICO 1: ", diagnostico_uno)
         print("GRD ANTES: ", grd)
@@ -273,7 +270,7 @@ def leerDf():
         #si el paciente existe en el anterior y flag=true
         flagCambios=False    
         flagPend=False
-        pendJson= NULL
+        pendJson= None
         if pAntiguo!=None:
             if pAntiguo.flag_diag:
                 diagnostico_uno=pAntiguo.diagnostico1
@@ -293,7 +290,7 @@ def leerDf():
         if dias_estada == '':
             dias_estada = 0
         #calculo de critero
-        criterio = NULL
+        criterio = None
         if pc_corte!=0:
             criterio=float(dias_estada)/float(pc_corte)
         
@@ -318,7 +315,10 @@ def leerDf():
         aux["nombreServicio"]=nombreServicio
         aux["cama"] = ult_cama
         aux["estancia"] = int(dias_estada) 
-        aux["criterio"]=float(criterio)
+        if criterio==None:
+            aux["criterio"]=0
+        else:
+            aux["criterio"]=float(criterio)
         aux["diagnostico1"]= diagnostico_uno
         aux["diagnostico1Cod"]=diagnostico1Cod
         aux["diagnostico2"]= diag2_final
