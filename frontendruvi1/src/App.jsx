@@ -10,6 +10,7 @@ import Update from './components/update';
 import UpdateCG from './components/updateCG';
 import UpdateP from './components/updateP';
 import Historico from './components/historico';
+import HistoricoP from './components/historicoPorP';
 import Mensual from './components/mensual';
 import GestionUser from './components/gestionUser';
 import Reportes from './components/reportes';
@@ -55,6 +56,7 @@ export class App extends React.Component {
               <Route path='/out' element={<UserLogin />} />
               <Route path='/resumen' element={access_token ? <Resumen/>: <UserLogin />} />
               <Route path='/historico' element = {access_token ? <Historico/> : <Navigate to="/out" />} />
+              <Route path='/historicoP' element = {access_token ? <HistoricoP/> : <Navigate to="/out" />} />
               <Route path='/reportes' element={access_token ? <Reportes/>:<Navigate to="/out" />} />
 
               <Route path='/config' element={access_token ? <Navigate to="/configAccess" />:<Navigate to="/out" />} />

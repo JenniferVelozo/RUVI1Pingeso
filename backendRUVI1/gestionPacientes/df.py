@@ -20,7 +20,7 @@ def leerDf():
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.csv'
-    pacientes= pd.read_csv(archivo, sep='~', encoding='latin-1')
+    pacientes= pd.read_csv(archivo, sep='~',encoding='latin-1')
     
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)
@@ -249,8 +249,11 @@ def leerDf():
         print(nombreServicio)
         id_servicios=None
         if str(nombreServicio)!= 'nan':
-            servicio=Servicio.objects.get(nombre=nombreServicio.strip(' '))
-            id_servicios=servicio.id
+            try:
+                servicio=Servicio.objects.get(nombre=nombreServicio.strip(' '))
+                id_servicios=servicio.id
+            except Servicio.DoesNotExist:
+                id_servicios=None
         print("id_Servicio", id_servicios)
         
         
@@ -337,7 +340,10 @@ def leerDf():
     
     print(len(jsonRes))
     #Borra el resumen anterior
-    Resumen.objects.all().delete()
+    try:
+        Resumen.objects.all().delete()
+    except Resumen.DoesNotExist:
+        pass
     #guarda el resumen actual.
     #print(jsonRes)
     now = datetime.now()

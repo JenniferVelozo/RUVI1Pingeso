@@ -18,9 +18,7 @@ const Home =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
 
-    const navigateServicio = () => {
-        window.location.href = '/historico';
-    }
+    
     return(
         <div className="home">
             <div className='App d-flex justify-content-center align-items-center'>
@@ -36,7 +34,7 @@ const Home =()=>{
                     <Grid align='center'>
                         <Avatar style={avatarStyle}><LocalHospitalIcon/></Avatar>
                         <h5>Listar por Servicio</h5>
-                        <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" onClick={navigateServicio}></Button>
+                        <Button href = "/historico" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal"></Button>
                     </Grid>
                 </Paper>
             </Grid>
@@ -46,7 +44,7 @@ const Home =()=>{
                     <Grid align='center'>
                         <Avatar style={avatarStyle}><MonitorHeartIcon/></Avatar>
                         <h5>Listar por Pendientes</h5>
-                        <Button variant="contained" color="primary" endIcon={<ArrowForwardIosIcon/>} margin="normal" onClick={navigateServicio}></Button>
+                        <Button href = "/historicoP" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon/>} margin="normal" ></Button>
                     </Grid>
                 </Paper>
                 </Grid>
