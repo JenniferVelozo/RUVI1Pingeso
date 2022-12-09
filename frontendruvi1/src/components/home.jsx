@@ -9,7 +9,7 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 const KEY = "App.rol";
 
 const Home =()=>{
-    console.log("Hola")
+    console.log("Hola este es el push de prueba desde Home")
     let storedRol = JSON.parse(localStorage.getItem(KEY));
     
 
