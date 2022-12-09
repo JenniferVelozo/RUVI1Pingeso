@@ -343,8 +343,6 @@ const Resumen = () => {
 
   const [pageSize, setPageSize] = React.useState(10);
     
-  let baseURL = direccion+'/resumen/' //npm i dotenv
-    
   const [ listResumen, setListResumen ] = useState([])
     
   useEffect(() => {
@@ -352,8 +350,9 @@ const Resumen = () => {
   },[])
     
   const getResumen = async() => {
-  const { data } = await axios.get(baseURL)
-  //console.log(data2.data.msg)
+    console.log("caidaaaaaaaaaaaaaaaaaaaaaaaaa")
+    const { data } = await axios.get(direccion+'/resumen/')
+    //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
         if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
@@ -396,18 +395,25 @@ const Resumen = () => {
       const handleChange = async(event) => {
         setEvento(event);
         const { data } = await axios.get(direccion+'/resumen/')
-        
         let resumenFiltrado = []
-        for (let i = 0; i < data.length; i++) {
-          if (event.target.value == data[i].servicio) {
-            resumenFiltrado.push(data[i])
+        if(event.target.value==1){
+          resumenFiltrado = data
+        }
+        else{
+          resumenFiltrado = []
+          for (let i = 0; i < data.length; i++) {
+            if (event.target.value == data[i].servicio) {
+              resumenFiltrado.push(data[i])
+            }
           }
         }
+        
         const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
         setListResumen(resumenFiltrado)
 
       };
       const [ listServicios, setListServicios ] = useState([])
+      
       const getServicios = async() => {
           const { data } = await axios.get(direccion+'/servicios/')
           setListServicios(data)

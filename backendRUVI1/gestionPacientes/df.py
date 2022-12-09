@@ -279,7 +279,7 @@ def leerDf():
         #si el paciente existe en el anterior y flag=true
         flagCambios=False    
         flagPend=False
-        pendJson= None
+        pendJson= {}
         if pAntiguo!=None:
             if pAntiguo.flag_diag:
                 diagnostico_uno=pAntiguo.diagnostico1
@@ -339,7 +339,7 @@ def leerDf():
         aux["pesoGRD"] = float(peso_grd)
         aux["flag_diag"]=flagCambios
         aux["flag_pend"]=flagPend
-        aux["pendientesJson"]={}
+        aux["pendientesJson"]=pendJson
         jsonRes.append(aux)
         print(aux)
 
