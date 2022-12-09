@@ -24,6 +24,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Resumen = () => {
 
+  console.log("Hola este es el push de prueba")
+
   const handleExport = async(event) => {
     const { data } = await axios.get(direccion+'/resumen/')
     const data2 = await axios.post(direccion+'/exportar/', data)
