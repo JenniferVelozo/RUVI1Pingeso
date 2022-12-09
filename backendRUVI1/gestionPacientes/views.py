@@ -25,6 +25,7 @@ from rest_framework.permissions import IsAuthenticated
 import os
 from django import forms
 from gestionPacientes.loadCSV import *
+import pandas as pd
 
 
 class UploadFileForm(forms.Form):
@@ -70,8 +71,8 @@ def handle_uploaded_file(f,carga):
     #if f.name=='PACIENTES.xlsx':
     if carga=="pacientes":
         print("pacientes")
-        leerDf()
-        return True
+        return leerDf()
+        
     if carga=="CIE10GRD" and f.name=='CIE10-GRD.xlsm':
         print("cie10-norma")
         load_CIE10_GRD(path)

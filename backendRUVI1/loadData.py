@@ -29,9 +29,11 @@ def poblar():
     
     #Define y puebla con roles.
     roles=['Jefe de servicio', 'UGP', 'Administrador']
+    i=1
     for nombreRol in roles:
-        rol = Roles.objects.get_or_create(nombre = nombreRol)[0]
+        rol = Roles.objects.get_or_create(id=i,nombre = nombreRol)[0]
         rol.save()
+        i=i+1
     
     #asigna los permisos al rol de jefe de servicio
     rolJefeS=Roles.objects.get(nombre='Jefe de servicio')
@@ -61,12 +63,14 @@ def poblar():
     'Area Medico Quirúrgica HPINO', 'UCI Neonatología HPINO', 'Pensionado HPINO', 
     'Neonatología Hospitalizado HPINO', 'Unidad de Cuidados Medios HPINO', 'Medicina Agudo HPINO', 
     'Psiquiatría Corta Estadía HPINO', 'Obstetricia y GO HPINO 2°Piso', 'Pediatría Indiferenciado HPINO', 
-    'Hospitalizacion Urgencia Adulto HPINO', 'Obstetricia y Ginecologia 1°Piso', 'Recuperación Pabellón Oftalmologia HPINO', 'UTI Adultos HPINO', 'Recuperación de Pabellón HPINO', 'UTI Neonatología HPINO', 'Recuperación UCMA HPINO', 'Psiquiatría Hospital de Día HPINO']
-
+    'Hospitalizacion Urgencia Adulto HPINO', 'Obstetricia y Ginecologia 1°Piso', 'Recuperación Pabellón Oftalmologia HPINO', 'UTI Adultos HPINO', 'UTI Neonatología HPINO', 'Recuperación UCMA HPINO']
+    i=1
+    Servicio.objects.all().delete()
     for nombreservicio in servicios:
-        servicio = Servicio.objects.get_or_create(nombre = nombreservicio)[0]
+        servicio = Servicio.objects.get_or_create(id=i,nombre = nombreservicio)[0]
         servicio.save()
-
+        i=i+1
+    User.objects.all().delete()
     #usuarios
     usuario = User.objects.create_user(nombre='Diego', apellido='Ruiz', 
             nickname='DRuiz', password="ugp1234", rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))

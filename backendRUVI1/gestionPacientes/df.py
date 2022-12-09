@@ -17,7 +17,13 @@ def leerDf():
     print(norma)
     archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.csv'
-    pacientes= pd.read_csv(archivo, sep='~',encoding='latin-1')
+    try:
+        pacientes= pd.read_csv(archivo, sep='~',encoding='latin-1')
+    except pd.errors.ParserError:
+        return False
+        
+    
+
     
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)
@@ -245,11 +251,14 @@ def leerDf():
         nombreServicio=pacientes.iloc[i]['ActualServicioClínico_Desc']
         print(nombreServicio)
         id_servicios=None
+        print("nombre",nombreServicio)
         if str(nombreServicio)!= 'nan':
             try:
                 servicio=Servicio.objects.get(nombre=nombreServicio.strip(' '))
                 id_servicios=servicio.id
             except Servicio.DoesNotExist:
+                id_servicios=None
+            except Servicio.MultipleObjectsReturned:
                 id_servicios=None
         print("id_Servicio", id_servicios)
         
@@ -379,6 +388,7 @@ def leerDf():
     
     
     print("fin")
+    return True
     
 
 

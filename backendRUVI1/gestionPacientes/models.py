@@ -9,7 +9,7 @@ from django.contrib.auth.models import BaseUserManager,AbstractBaseUser
 
 
 class Permisos(models.Model):
-    nombre = models.CharField(max_length = 40)
+    nombre = models.TextField(null=True)
     class Meta:
         verbose_name='Permiso'
         verbose_name_plural='Permisos'
@@ -17,7 +17,8 @@ class Permisos(models.Model):
 
 
 class Roles(models.Model):
-    nombre = models.CharField(max_length = 20)
+    id=models.IntegerField(primary_key=True)
+    nombre = models.TextField(null=True)
     permisos = models.ManyToManyField(Permisos)
     class Meta:
         verbose_name='Rol'
@@ -26,7 +27,8 @@ class Roles(models.Model):
 
 
 class Servicio(models.Model):
-    nombre = models.CharField(max_length = 50)
+    id=models.IntegerField(primary_key=True)
+    nombre = models.TextField(null=True)
     class Meta:
         verbose_name='Servicio'
         verbose_name_plural='Servicios'
@@ -34,11 +36,11 @@ class Servicio(models.Model):
 
 
 class Usuarios(models.Model):
-    nombre = models.CharField(max_length=30)
-    apellido = models.CharField(max_length=30)
-    nickname = models.CharField(max_length = 20)
-    password = models.CharField(max_length = 20)
-    rut = models.CharField(max_length = 10)
+    nombre = models.TextField(null=True)
+    apellido = models.TextField(null=True)
+    nickname = models.TextField(null=True)
+    password = models.TextField(null=True)
+    rut = models.TextField(null=True)
     servicio= models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     rol = models.ForeignKey(Roles, null=True, on_delete=models.CASCADE)
     class Meta:
@@ -48,10 +50,11 @@ class Usuarios(models.Model):
 
 
 class Cie10(models.Model):
-    codigo = models.CharField(max_length = 7)
-    diagnostico = models.CharField(max_length = 250)
-    grd = models.CharField(max_length = 10)
-    sev = models.CharField(max_length = 3)
+    id=models.IntegerField(primary_key=True)
+    codigo = models.TextField(null=True)
+    diagnostico = models.TextField(null=True)
+    grd = models.TextField(null=True)
+    sev = models.TextField(null=True)
     class Meta:
         verbose_name='Cie10'
         verbose_name_plural='Cie10s'
@@ -59,8 +62,9 @@ class Cie10(models.Model):
 
 
 class Norma(models.Model):
-    ir_grd = models.CharField(max_length = 10)
-    nombreGRD = models.CharField(max_length = 150)
+    id=models.IntegerField(primary_key=True)
+    ir_grd = models.TextField(null=True)
+    nombreGRD = models.TextField(null=True)
     emInlier = models.FloatField()
     pcSuperior = models.SmallIntegerField()
     pesoGRD = models.FloatField()
@@ -70,17 +74,17 @@ class Norma(models.Model):
         db_table='norma'
 
 class Pacientes(models.Model):
-    rut = models.CharField(max_length = 10, null=True)
-    nombre = models.CharField(max_length=75, null=True)
-    apellidoPaterno = models.CharField(max_length=75, null=True)
-    apellidoMaterno = models.CharField(max_length=75, null=True)
+    rut = models.TextField(null=True)
+    nombre = models.TextField(null=True)
+    apellidoPaterno = models.TextField(null=True)
+    apellidoMaterno = models.TextField(null=True)
     fechaCarga = models.DateField(auto_now_add=True)
-    ultimaCama = models.CharField(max_length=75,null=True)
+    ultimaCama = models.TextField(null=True)
     diasEstancia = models.IntegerField(null=True)
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     fechaIngreso = models.DateField(null=True)
-    diagnosticoPricipal= models.CharField(max_length=250, null=True)
-    diagnosticoSecundario= models.CharField(max_length=250, null=True)
+    diagnosticoPricipal= models.TextField(null=True)
+    diagnosticoSecundario= models.TextField(null=True)
     class Meta:
         verbose_name='Paciente'
         verbose_name_plural='Pacientes'
@@ -88,7 +92,7 @@ class Pacientes(models.Model):
 
 class ReporteMensual(models.Model):
     fecha = models.DateField()
-    servicioNombre= models.CharField(max_length = 50, null=True)
+    servicioNombre= models.TextField(null=True)
     servicio = models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     em=models.FloatField()
     emaf = models.FloatField()
@@ -106,29 +110,30 @@ class ReporteMensual(models.Model):
         db_table='reporteMensual'
 
 class Pendientes(models.Model):
-    nombrePendiente = models.CharField(max_length=30)
-    causa = models.CharField(max_length=40, null=True)
+    id=models.IntegerField(primary_key=True)
+    nombrePendiente = models.TextField(null=True)
+    causa = models.TextField(null=True)
     class Meta:
         verbose_name='Pendiente'
         verbose_name_plural='Pendientes'
         db_table='pendiente'
 
 class Resumen(models.Model):
-    cama = models.CharField(max_length=10,null=True)
-    rut = models.CharField(max_length=30,null=True)
-    nombrePaciente = models.CharField(max_length=200)
-    estancia = models.CharField(max_length=10,null=True)
+    cama = models.TextField(null=True)
+    rut = models.TextField(null=True)
+    nombrePaciente = models.TextField(null=True)
+    estancia = models.TextField(null=True)
     criterio =models.FloatField(null=True)
-    diagnostico1 = models.CharField(max_length=250, null=True)
-    diagnostico1Cod=models.CharField(max_length=7, null=True)
+    diagnostico1 = models.TextField( null=True)
+    diagnostico1Cod=models.TextField(null=True)
     diagnostico2 = models.TextField( null=True)
     diagnostico2Cod=models.TextField( null=True)
     diagnostico2Json=models.JSONField(null=True)
-    ir_grd = models.CharField(null=True, max_length=10)
+    ir_grd = models.TextField(null=True, max_length=10)
     emNorma = models.FloatField(null=True)
     pcSuperior = models.IntegerField(null=True)
     pesoGRD = models.FloatField(null=True)
-    nombreServicio=models.CharField(max_length=75, null=True)
+    nombreServicio=models.TextField(null=True)
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     flag_diag=models.BooleanField(null=True)
     pendientes=models.ManyToManyField(Pendientes)
@@ -144,20 +149,20 @@ class Resumen(models.Model):
 class Historico(models.Model):
 
     fecha=models.DateField(null=True)#fecha en la que se carga el historico
-    cama = models.CharField(max_length=10,null=True)
-    rut = models.CharField(max_length=30,null=True)
-    nombrePaciente = models.CharField(max_length=200)
-    estancia = models.CharField(max_length=10,null=True)
+    cama = models.TextField(null=True)
+    rut = models.TextField(null=True)
+    nombrePaciente = models.TextField(null=True)
+    estancia = models.TextField(null=True)
     criterio =models.FloatField(null=True)
-    diagnostico1 = models.CharField(max_length=250, null=True)
-    diagnostico1Cod=models.CharField(max_length=7, null=True)
+    diagnostico1 = models.TextField(null=True)
+    diagnostico1Cod=models.TextField(null=True)
     diagnostico2 = models.TextField(null=True)
     diagnostico2Cod=models.TextField(null=True)
-    ir_grd = models.CharField(null=True, max_length=10)
+    ir_grd = models.TextField(null=True, max_length=10)
     emNorma = models.FloatField(null=True)
     pcSuperior = models.IntegerField(null=True)
     pesoGRD = models.FloatField(null=True)
-    nombreServicio=models.CharField(max_length=75, null=True)
+    nombreServicio=models.TextField(null=True)
     servicio=models.ForeignKey(Servicio, null=True, on_delete=models.CASCADE)
     flag_diag=models.BooleanField(null=True)
     pendientes=models.ManyToManyField(Pendientes)

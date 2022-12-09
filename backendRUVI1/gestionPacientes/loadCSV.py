@@ -17,19 +17,21 @@ def load_CIE10_GRD(archivo):
     cie10Bruto = pd.read_excel(archivo, sheet_name='CIE10 MOD')
     listaID = arange(1,cie10Bruto.shape[0]+1,1).tolist()
     cie10=pd.DataFrame()
-    cie10=cie10.assign(#id=listaID,
+    cie10=cie10.assign(id=listaID,
                         codigo=cie10Bruto["CODIGO"],
                         diagnostico=cie10Bruto["DIAGNOSTICO"],
                         sev=cie10Bruto["SEV"],
                         grd=cie10Bruto["GRD"])
     print(cie10)
     Cie10.objects.all().delete()
+
     cie10.to_sql("cie10", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE cie10 ADD PRIMARY KEY (id);')
 
     normaBruta = pd.read_excel(archivo, sheet_name='NORMA')
-    norma=pd.DataFrame()
-    norma= norma.assign(#id=listaID,
+    listaID = arange(1,normaBruta.shape[0]+1,1).tolist()
+    norma=pd.DataFrame()    
+    norma= norma.assign(id=listaID,
                         ir_grd = normaBruta['IR-GRD CÓDIGO v2.3'],
                         nombreGRD= normaBruta['NOMBRE GRUPO GRD'],
                         emInlier = normaBruta['EM \n(inlier)'],
@@ -47,10 +49,12 @@ def load_prestaciones(archivo):
     conn = conectar_db()
     Pendientes.objects.all().delete()
     prestaciones = pd.read_excel(archivo, sheet_name='Prestaciones')
-   # prestaciones = prestaciones.assign(id=listaID)
+    listaID = arange(1,prestaciones.shape[0]+1,1).tolist()
+    prestaciones = prestaciones.assign(id=listaID)
     print(prestaciones)
     prestaciones=prestaciones.rename(columns={"PRESTACIONES": "nombrePendiente",
                                                 "CAUSAS": "causa"})
+    
     prestaciones.to_sql("pendiente", con=conn, if_exists="append", index=False, dtype={'id': sqlalchemy.types.BigInteger()})
     #conn.execute('ALTER TABLE pendiente ADD PRIMARY KEY (id);')
     conn.dispose()
