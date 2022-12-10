@@ -360,8 +360,14 @@ def leerDf():
     try:
         hist= Historico.objects.all().latest('fecha')
         print(hist.fecha)
-        if fecha.month-hist.fecha.month!=0:
-            mensual(hist.fecha.month,hist.fecha.year)
+        indicador=(fecha.month-hist.fecha.month)+(fecha.year-hist.fecha.year)+(fecha.day-hist.fecha.day)
+        if indicador==0:
+            print("entra al delete")
+            Historico.objects.filter(fecha=fecha).delete()
+        else:
+            if fecha.month-hist.fecha.month!=0:
+                mensual(hist.fecha.month,hist.fecha.year)
+        
     except Historico.DoesNotExist:
         print("No hay historico")
         hist=None
@@ -371,18 +377,13 @@ def leerDf():
         
         #fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         #print("----------------------------------------------------------------")
-
         a = Resumen.objects.create(updated_at=fecha,rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"], diagnostico2Json=paciente["diagnostico2Json"])
-
-
         #print("\n")
         #print(paciente)
         a.save()
         #print(created)
-        
         #guarda en tabla de historicos
         b= Historico.objects.create(fecha=fecha, rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
-
         b.save()
     
     
