@@ -262,11 +262,11 @@ def filtrarServicio(request, fecha, nombreServicio):
     #print(type(porFecha[0].fecha))
     porServicio = []
     for e in porFecha:
-        if e.servicio!=None:
-            #print(e.servicio.id)
-            if nombreServicio=="Unidad de gestion de pacientes":
+        if nombreServicio=="Unidad de gestion de pacientes":
                 porServicio.append(e)
-            else:   
+        else:
+            if e.servicio!=None:
+                #print(e.servicio.id)
                 if e.servicio.nombre == nombreServicio:
                     porServicio.append(e)
     

@@ -85,7 +85,7 @@ function ShowTable() {
 
 
 
-  const [ listServicios, setListServicios ] = useState([{id:0,nombre:"todos",}])
+  const [ listServicios, setListServicios ] = useState([{id:1,nombre:"Unidad de gestion de pacientes"}])
 
   const getServicios = async() => {
       const { data } = await axios.get(direccion+'/servicios/')
@@ -111,7 +111,7 @@ function ShowTable() {
   const [ listResumen, setListResumen ] = useState([])
 
   useEffect(() => {
-      getResumen() 
+      getResumen(evento) 
   },[])
   
 
