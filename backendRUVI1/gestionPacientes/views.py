@@ -190,11 +190,11 @@ def filtrarServicioPendiente(request, fecha, nombreServicio, nombrePendiente):
     #print(type(porFecha[0].fecha))
     porServicio = []
     for e in porFecha:
-        if e.servicio!=None:
-            #print(e.servicio.id)
-            if nombreServicio=="todos":
+        if nombreServicio=="Unidad de gestion de pacientes":
                 porServicio.append(e)
-            else:   
+        else:
+            if e.servicio!=None:
+                #print(e.servicio.id)
                 if e.servicio.nombre == nombreServicio:
                     porServicio.append(e)
     
@@ -204,11 +204,15 @@ def filtrarServicioPendiente(request, fecha, nombreServicio, nombrePendiente):
 
     porPendiente = []
     for e in porServicio:
+        print("netro")
         #print(e.pendientesJson)
-        if e.pendientesJson!=0:
-            if nombrePendiente=="todos":
-                    porPendiente.append(e)
-            else:
+        if nombrePendiente=="todos":
+            porPendiente.append(e)
+        else:
+            aux=json.dumps({})
+            print(e.pendientesJson)
+            if e.pendientesJson!=aux:
+                print("entra---------------")
                 for i in e.pendientesJson:
                     if i['nombre'] == nombrePendiente:
                         #print("entra")

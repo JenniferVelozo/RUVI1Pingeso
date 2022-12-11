@@ -36,6 +36,7 @@ const Resumen = () => {
     //definicion columnas tabla
     const columns = [
       { field: 'id', headerName: 'Id', width: 40 },
+      { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
       { field: 'criterio', headerName: 'Índice (EM)', width: 100},
       { field: 'outline', headerName: 'Outline (PC)', width: 110},
       { field: 'cama', headerName: 'Cama', width: 70},
@@ -63,6 +64,7 @@ const Resumen = () => {
     ];
     const columnsJ = [
       { field: 'id', headerName: 'Id', width: 40 },
+      { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
       { field: 'criterio', headerName: 'Índice (EM)', width: 100},
       { field: 'outline', headerName: 'Outline (PC)', width: 110},
       { field: 'cama', headerName: 'Cama', width: 70},
@@ -352,6 +354,9 @@ const Resumen = () => {
     const { data } = await axios.get(direccion+'/resumen/')
     //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
+        if(data[i].nombreServicio=='nan'){
+          data[i].nombreServicio=""
+        }
         if (data[i].emNorma !== 0){
           data[i].emNorma = data[i].emNorma.toFixed(4);
         }
@@ -392,6 +397,9 @@ const Resumen = () => {
     setEvento(event);
     const { data } = await axios.get(direccion+'/resumen/')
     for (var i = 0; i < data.length; i++) {
+      if(data[i].nombreServicio=='nan'){
+        data[i].nombreServicio=""
+      }
       if (data[i].emNorma !== 0){
         data[i].emNorma = data[i].emNorma.toFixed(4);
       }

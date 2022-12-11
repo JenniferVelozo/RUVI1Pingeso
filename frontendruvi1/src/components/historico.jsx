@@ -29,6 +29,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
+  { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
   { field: 'criterio', headerName: 'Criterio', width: 80},
   { field: 'cama', headerName: 'Cama', width: 70},
   { field: 'rut', headerName: 'Rut', width: 100},
@@ -40,6 +41,7 @@ const columns = [
   { field: 'emNorma', headerName: 'EM Norma', width: 80},
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
+  { field: 'pendiente', headerName: 'Pendiente', width: 200 },
 ];
 
 
@@ -119,12 +121,25 @@ function ShowTable() {
       let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre
       const { data } = await axios.get(baseURL)
       for (var i = 0; i < data.length; i++) {
-        if (data[i].emNorma !== 0){
-        data[i].emNorma = data[i].emNorma.toFixed(4);
+        if(data[i].nombreServicio=='nan'){
+          data[i].nombreServicio=""
         }
         if (data[i].emNorma !== 0){
-        data[i].criterio = (data[i].estancia/data[i].emNorma);
+          data[i].emNorma = data[i].emNorma.toFixed(4);
         }
+        if (data[i].emNorma !== 0){
+          data[i].criterio = (data[i].estancia/data[i].emNorma);
+        }
+        let listPendienteString = ''
+        for (var j = 0; j < data[i].pendientesJson.length; j++) {
+          if (j < data[i].pendientesJson.length - 1) {
+            listPendienteString = data[i].pendientesJson[j].nombre + ', '
+          }
+          else{
+            listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
+          }
+        }
+        data[i].pendiente = listPendienteString
       }
       setListResumen(data)
       console.log(data)

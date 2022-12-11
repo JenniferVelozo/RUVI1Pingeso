@@ -29,6 +29,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
+  { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
   { field: 'criterio', headerName: 'Criterio', width: 80},
   { field: 'cama', headerName: 'Cama', width: 70},
   { field: 'rut', headerName: 'Rut', width: 100},
@@ -40,6 +41,7 @@ const columns = [
   { field: 'emNorma', headerName: 'EM Norma', width: 80},
   { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
+  { field: 'pendiente', headerName: 'Pendiente', width: 200 },
 ];
 
 
@@ -79,17 +81,17 @@ function ShowTable() {
     return true;
   }
 
-  const [evento, setEvento] = React.useState(1);
+  const [evento, setEvento] = React.useState(0);
   const handleChange = (event) => {setEvento(event.target.value);};
 
 
 
 
-  const [ listPendientes, setlistPendientes ] = useState([{id:0,nombre:"todos",}])
+  const [ listPendientes, setListPendientes ] = useState([{id:0,nombre:"Unidad de gestion de pacientes"}])
 
   const getPendientes = async() => {
       const { data } = await axios.get(direccion+'/pendientes/')
-      setlistPendientes(data)
+      setListPendientes(data)
       console.log(data)
   }
 
@@ -111,23 +113,46 @@ function ShowTable() {
   const [ listResumen, setListResumen ] = useState([])
 
   useEffect(() => {
-      getResumen() 
+      getResumen(evento) 
   },[])
   
 
   const getResumen = async(evento) => {
-      let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/todos/"+listPendientes[evento-1].nombrePendiente
-      const { data } = await axios.get(baseURL)
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].emNorma !== 0){
+    console.log("evento")
+    console.log(evento)
+    let baseURL = ""
+    if(evento==0){
+      console.log("entreeeeeeeeeee")
+      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/Unidad de gestion de pacientes/todos" 
+    }
+    else{
+      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/Unidad de gestion de pacientes/" + listPendientes[evento-1].nombrePendiente
+
+    }
+    const { data } = await axios.get(baseURL)
+    for (var i = 0; i < data.length; i++) {
+      if(data[i].nombreServicio=='nan'){
+        data[i].nombreServicio=""
+      }
+      if (data[i].emNorma !== 0){
         data[i].emNorma = data[i].emNorma.toFixed(4);
-        }
-        if (data[i].emNorma !== 0){
+      }
+      if (data[i].emNorma !== 0){
         data[i].criterio = (data[i].estancia/data[i].emNorma);
+      }
+      let listPendienteString = ''
+      for (var j = 0; j < data[i].pendientesJson.length; j++) {
+        if (j < data[i].pendientesJson.length - 1) {
+          listPendienteString = data[i].pendientesJson[j].nombre + ', '
+        }
+        else{
+          listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
         }
       }
-      setListResumen(data)
-      console.log(data)
+      data[i].pendiente = listPendienteString
+    }
+    setListResumen(data)
+    console.log(data)
   }
     
 
@@ -143,7 +168,7 @@ function ShowTable() {
           <Grid item xs>
           <FormControl fullWidth required>
             <InputLabel id="rol">Pendiente</InputLabel>
-            <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={(newPendiente) => {
+            <Select labelId="rol" id="rol" label="Rol" onChange={(newPendiente) => {
                 // setEvento(newPendiente.target.value);
                 getResumen(newPendiente.target.value);
               }}>
