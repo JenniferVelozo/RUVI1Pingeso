@@ -105,19 +105,25 @@ def setPendientes(request):
     for idP in idPendientes:
         r=Resumen.objects.get(id=idRes)
         p=Pendientes.objects.get(id=idP)
-        h = Historico.objects.get(id = idRes)
+        flag=True
+        try:
+            h = Historico.objects.get(id = idRes)
+        except Historico.DoesNotExist:
+            h=None
+            flag=False
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)
-        h.pendientes.add(p)
+        if flag:
+            h.pendientes.add(p)
     fecha = datetime.now()
     r.flag_pend=True
     r.updated_at=fecha
-    h.flag_pend = True
     r.pendientesJson=pJson
-    h.pendientesJson=pJson
-    print(type(h.pendientesJson))
+    if flag:
+        h.flag_pend = True
+        h.pendientesJson=pJson
+        h.save()
     r.save()
-    h.save()
     #print(r.nombrePaciente)
     #print(r.pendientes.all())
     #print(r.flag_pend)
@@ -258,7 +264,7 @@ def filtrarServicio(request, fecha, nombreServicio):
     for e in porFecha:
         if e.servicio!=None:
             #print(e.servicio.id)
-            if nombreServicio=="todos":
+            if nombreServicio=="Unidad de gestion de pacientes":
                 porServicio.append(e)
             else:   
                 if e.servicio.nombre == nombreServicio:
@@ -343,7 +349,7 @@ def setDiagnostico(request):
     diagnostico2Json=[]
     if str(diagnostico2) == 'nan':
         diagnostico2 = []
-        diagnostico2Cod=NULL
+        diagnostico2Cod=None
     else:
         diagnostico2 = str(diagnostico2).split(',')
         for diag in diagnostico2:
@@ -420,7 +426,7 @@ def setDiagnostico(request):
         diagnostico_uno = ""
         grd = ""
         sev = ""
-        diagnostico1Cod=NULL
+        diagnostico1Cod=None
 
     print("DIAGNÓSTICO 1: ", diagnostico_uno)
     print("GRD ANTES: ", grd)
@@ -475,7 +481,7 @@ def setDiagnostico(request):
         peso_grd = fila_norma['Peso GRD'].values[0]
         em_norma = fila_norma['EM \n(inlier)'].values[0]
         
-    criterio = NULL
+    criterio = None
     if pc_corte!=0:
         criterio=float(dias_estada)/float(pc_corte)
         

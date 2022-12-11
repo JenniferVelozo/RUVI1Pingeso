@@ -143,7 +143,7 @@ function ShowTable() {
           <Grid item xs>
           <FormControl fullWidth required>
             <InputLabel id="rol">Servicio</InputLabel>
-            <Select displayEmpty labelId="rol" id="rol" label="Rol" onChange={(newServicio) => {
+            <Select labelId="rol" id="rol" label="Rol" onChange={(newServicio) => {
                 // setEvento(newServicio.target.value);
                 getResumen(newServicio.target.value);
               }}>

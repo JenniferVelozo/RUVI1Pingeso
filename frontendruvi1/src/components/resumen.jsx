@@ -26,11 +26,7 @@ const Resumen = () => {
 
   console.log("Hola este es el push de prueba")
 
-  const handleExport = async(event) => {
-    const { data } = await axios.get(direccion+'/resumen/')
-    const data2 = await axios.post(direccion+'/exportar/', data)
-    
-  }
+  
 
   const storedRol = JSON.parse(localStorage.getItem(KEY));
 
@@ -98,7 +94,9 @@ const Resumen = () => {
       const listaSalida = GenerarListaPendientes();
       const json = {"id": idProp.props.id, "pendientes": listaSalida }
       const {data} = await axios.post(direccion+'/setPendientes/', json)
-      getResumen()
+      
+      handleChange(evento)
+      
     };
 
     useEffect(() => {
@@ -270,7 +268,7 @@ const Resumen = () => {
       console.log(json)
       const {data} = await axios.post(direccion+'/setDiagnosticos/', json)
       getResumen(data)
-    //window.location.replace('/resumen');
+    
     };
   
 
@@ -388,43 +386,61 @@ const Resumen = () => {
       }
     }
 
-    //funcion filtro servicio
-    function FiltroServicio() {
-
-      const [evento, setEvento] = React.useState('');
-      const handleChange = async(event) => {
-        setEvento(event);
-        const { data } = await axios.get(direccion+'/resumen/')
-        let resumenFiltrado = []
-        if(event.target.value==1){
-          resumenFiltrado = data
+  //filtro servicio
+  const [evento, setEvento] = React.useState('');
+  const handleChange = async(event) => {
+    setEvento(event);
+    const { data } = await axios.get(direccion+'/resumen/')
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].emNorma !== 0){
+        data[i].emNorma = data[i].emNorma.toFixed(4);
+      }
+      if (data[i].emNorma !== 0){
+        data[i].criterio = (data[i].estancia/data[i].emNorma);
+      }
+      let listPendienteString = ''
+      for (var j = 0; j < data[i].pendientesJson.length; j++) {
+        if (j < data[i].pendientesJson.length - 1) {
+          listPendienteString = data[i].pendientesJson[j].nombre + ', '
         }
         else{
-          resumenFiltrado = []
-          for (let i = 0; i < data.length; i++) {
-            if (event.target.value == data[i].servicio) {
-              resumenFiltrado.push(data[i])
-            }
-          }
+          listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
         }
-        
-        const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
-        setListResumen(resumenFiltrado)
-
-      };
-      const [ listServicios, setListServicios ] = useState([])
-      
-      const getServicios = async() => {
-          const { data } = await axios.get(direccion+'/servicios/')
-          setListServicios(data)
       }
+      data[i].pendiente = listPendienteString
+    }
+    let resumenFiltrado = []
+    if(event.target.value==1){
+      resumenFiltrado = data
+    }
+    else{
+      resumenFiltrado = []
+      for (let i = 0; i < data.length; i++) {
+        if (event.target.value == data[i].servicio) {
+          resumenFiltrado.push(data[i])
+        }
+      }
+    }
+    
+    const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+    setListResumen(resumenFiltrado)
 
-      useEffect(() => {
-          getServicios()
-      },[])
-      
-      return (
-        <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
+  };
+  const [ listServicios, setListServicios ] = useState([])
+  
+  const getServicios = async() => {
+      const { data } = await axios.get(direccion+'/servicios/')
+      setListServicios(data)
+  }
+
+  useEffect(() => {
+      getServicios()
+  },[])  
+
+  return (
+    <div>
+    <Box>
+    <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
           {storedRol.flagJ?
           <FormControl margin="normal" required sx = {{ width:500 }}>
             <InputLabel id="rol">{storedRol.servicio}</InputLabel>
@@ -435,7 +451,9 @@ const Resumen = () => {
             <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
                   
                   { listServicios.map(servicios => (
-                  <MenuItem value={servicios.id}>{servicios.nombre}</MenuItem>
+                  <MenuItem value={servicios.id}>
+                    {servicios.nombre}
+                  </MenuItem>
                   ))}
             </Select>
           </FormControl>
@@ -444,15 +462,6 @@ const Resumen = () => {
               <Item><h1> RESUMEN PACIENTES </h1></Item>
           </Grid>
         </Box>
-      );
-    }
-
-    //fin filtro servicio
-    
-  return (
-    <div>
-    <Box>
-      <FiltroServicio/>
     </Box>
     <Box
       sx={{
