@@ -99,11 +99,6 @@ function ShowTable() {
       getPendientes() 
   },[])
 
-  var dateOb = value.getDate();
-
-  if(dateOb < 10){
-    dateOb = "0" + dateOb;
-  }
 
   console.log(evento)
   console.log(listPendientes)
@@ -113,13 +108,17 @@ function ShowTable() {
   const [ listResumen, setListResumen ] = useState([])
 
   useEffect(() => {
-      getResumen(evento) 
+      getResumen(evento,value) 
   },[])
   
 
-  const getResumen = async(evento) => {
+  const getResumen = async(evento,value) => {
     console.log("evento")
     console.log(evento)
+    var dateOb = value.getDate();
+      if(dateOb < 10){
+        dateOb = "0" + dateOb;
+      }
     let baseURL = ""
     if(evento==0){
       console.log("entreeeeeeeeeee")
@@ -151,8 +150,27 @@ function ShowTable() {
       }
       data[i].pendiente = listPendienteString
     }
-    setListResumen(data)
-    console.log(data)
+    if(storedRol.flagJ){
+        
+      let resumenFiltrado = []
+      for (let i = 0; i < data.length; i++) {
+        if (storedRol.servicio_id === data[i].servicio_id) {
+          resumenFiltrado.push(data[i])
+          console.log("entro")
+        }
+      }
+      // const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+      setListResumen(resumenFiltrado)
+      setEvento(evento)
+    }
+    else{
+      
+      // const data2 = await axios.post(direccion+'/exportar/', data)
+      setListResumen(data)
+      setEvento(evento)
+      console.log(data)
+    }
+    
   }
     
 
@@ -166,11 +184,12 @@ function ShowTable() {
     <Box sx={{ width: '100%', p: 9}}>
       <Grid container spacing={3}>
           <Grid item xs>
+            
           <FormControl fullWidth required>
             <InputLabel id="rol">Pendiente</InputLabel>
             <Select labelId="rol" id="rol" label="Rol" onChange={(newPendiente) => {
                 // setEvento(newPendiente.target.value);
-                getResumen(newPendiente.target.value);
+                getResumen(newPendiente.target.value,value);
               }}>
                   { listPendientes.map(pendientes => (
                   <MenuItem value={pendientes.id}>
@@ -191,7 +210,7 @@ function ShowTable() {
               value={value}
               onChange={(newValue) => {
                 setValue(newValue);
-                getResumen();
+                getResumen(evento,newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
             />

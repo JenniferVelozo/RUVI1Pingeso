@@ -168,6 +168,9 @@ const ResponsiveAppBar = ({flag, nick}) => {
               <MenuItem key={1} onClick={handleCloseUserMenu}>
                 <Link href="/dashboard" underline="hover"><Typography textAlign="center" >Home</Typography></Link>
               </MenuItem>
+              <MenuItem key={4} onClick={handleCloseUserMenu}>
+                <Link href="/reportes" underline="hover"><Typography textAlign="center" >Reportes</Typography></Link>
+              </MenuItem>
               { flag && <MenuItem key={settings[0]} onClick={handleCloseUserMenu}><Link href="/config" underline="hover"><Typography textAlign="center">{settings[0]}</Typography></Link></MenuItem>
               }
               

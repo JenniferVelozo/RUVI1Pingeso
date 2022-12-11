@@ -45,7 +45,6 @@ const columns = [
 ];
 
 
-
 function ShowTable() {
   const storedRol = JSON.parse(localStorage.getItem(KEY));
   const [pageSize, setPageSize] = React.useState(10);
@@ -99,11 +98,6 @@ function ShowTable() {
       getServicios() 
   },[])
 
-  var dateOb = value.getDate();
-
-  if(dateOb < 10){
-    dateOb = "0" + dateOb;
-  }
 
   console.log(evento)
   console.log(listServicios)
@@ -113,13 +107,18 @@ function ShowTable() {
   const [ listResumen, setListResumen ] = useState([])
 
   useEffect(() => {
-      getResumen(evento) 
+      getResumen(evento,value) 
   },[])
   
 
-  const getResumen = async(evento) => {
+  const getResumen = async(evento,value) => {
+      var dateOb = value.getDate();
+      if(dateOb < 10){
+        dateOb = "0" + dateOb;
+      }
       let baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/" + listServicios[evento-1].nombre
       const { data } = await axios.get(baseURL)
+      console.log(data)
       for (var i = 0; i < data.length; i++) {
         if(data[i].nombreServicio=='nan'){
           data[i].nombreServicio=""
@@ -141,8 +140,26 @@ function ShowTable() {
         }
         data[i].pendiente = listPendienteString
       }
-      setListResumen(data)
-      console.log(data)
+      if(storedRol.flagJ){
+        
+        let resumenFiltrado = []
+        for (let i = 0; i < data.length; i++) {
+          if (storedRol.servicio_id === data[i].servicio_id) {
+            resumenFiltrado.push(data[i])
+            console.log("entro")
+          }
+        }
+        // const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+        setListResumen(resumenFiltrado)
+        setEvento(evento)
+      }
+      else{
+        
+        // const data2 = await axios.post(direccion+'/exportar/', data)
+        setListResumen(data)
+        setEvento(evento)
+        console.log(data)
+      }
   }
     
 
@@ -156,11 +173,15 @@ function ShowTable() {
     <Box sx={{ width: '100%', p: 9}}>
       <Grid container spacing={3}>
           <Grid item xs>
+          {storedRol.flagJ?
+          <FormControl margin="normal" required sx = {{ width:500 }}>
+            <InputLabel id="rol">{storedRol.servicio}</InputLabel>
+          </FormControl>
+          :
           <FormControl fullWidth required>
             <InputLabel id="rol">Servicio</InputLabel>
             <Select labelId="rol" id="rol" label="Rol" onChange={(newServicio) => {
-                // setEvento(newServicio.target.value);
-                getResumen(newServicio.target.value);
+                getResumen(newServicio.target.value,value);
               }}>
                   { listServicios.map(servicios => (
                   <MenuItem value={servicios.id}>
@@ -168,7 +189,8 @@ function ShowTable() {
                   </MenuItem>
                   ))}
             </Select>
-        </FormControl>
+          </FormControl>
+        }
           </Grid>
           <Grid item xs={6}>
           <Item><h1>LISTAR POR SERVICIO</h1></Item>
@@ -181,7 +203,7 @@ function ShowTable() {
               value={value}
               onChange={(newValue) => {
                 setValue(newValue);
-                getResumen();
+                getResumen(evento,newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
             />
