@@ -30,6 +30,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
   { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
+  { field: 'fecha', headerName: 'Fecha', width: 100 },
   { field: 'criterio', headerName: 'Criterio', width: 80},
   { field: 'cama', headerName: 'Cama', width: 70},
   { field: 'rut', headerName: 'Rut', width: 100},
@@ -159,13 +160,13 @@ function ShowTable() {
           console.log("entro")
         }
       }
-      // const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+      const data2 = await axios.post(direccion+'/exportarH/', resumenFiltrado)
       setListResumen(resumenFiltrado)
       setEvento(evento)
     }
     else{
       
-      // const data2 = await axios.post(direccion+'/exportar/', data)
+      const data2 = await axios.post(direccion+'/exportarH/', data)
       setListResumen(data)
       setEvento(evento)
       console.log(data)
@@ -269,7 +270,7 @@ function ShowTable() {
       </Box>
       </Box>
       <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
-          <Fab variant="extended" color="primary">
+          <Fab variant="extended" color="primary" href={direccion+'/descargaH/'} download="Historico.xlsx">
               Exportar a XLS <DownloadIcon />
           </Fab>
       </Box>

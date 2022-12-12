@@ -144,9 +144,7 @@ def HistoricotoDictionary(historico):
     aux["id"]=historico.id
     aux["rut"]= historico.rut
     aux["nombrePaciente"]= historico.nombrePaciente
-
-    
-
+    aux["fecha"]=historico.fecha
     aux["nombreServicio"]=historico.nombreServicio
     aux["cama"] = historico.cama
     aux["estancia"] = int(historico.estancia) 
@@ -521,7 +519,7 @@ def setDiagnostico(request):
 
 
 # establece el tamaño de las celdas y los colores para que no se sobrepongan
-def estiloExcel(nombre):
+def estiloExcel(nombre,flag):
     informe = openpyxl.load_workbook(nombre)
 
     sheet = informe.active 
@@ -541,10 +539,16 @@ def estiloExcel(nombre):
     set_width_to(sheet, "I", "I", width=27)
     set_width_to(sheet, "J", "M", width=10)
     set_width_to(sheet, "N", "N", width=40)
-    set_width_to(sheet, "O", "R", width=10)
-    set_width_to(sheet, "S", "S", width=50)
+    set_width_to(sheet, "O", "R", width=11)
+    if flag:
+        set_width_to(sheet, "S", "S", width=11)
+        set_width_to(sheet, "T", "T", width=50)
+        encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1","T1"]
+    else:
+        set_width_to(sheet, "S", "S", width=50)
+        encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1"]
 
-    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1"]
+
     for encabezado in encabezados:
         celda = sheet[encabezado]
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
@@ -554,6 +558,16 @@ def estiloExcel(nombre):
 def linkDescarga(request):
     nombreArchivo='Gestion_de_Pacientes.xlsx'
     nombreArchivoR='\Gestion_de_Pacientes.xlsx'
+    ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
+    with open(ruta,'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % nombreArchivo
+    return response
+
+@api_view(['GET'])
+def linkDescargaH(request):
+    nombreArchivo='Historico_de_Pacientes.xlsx'
+    nombreArchivoR='\Historico_de_Pacientes.xlsx'
     ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
     with open(ruta,'rb') as fh:
         response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
@@ -575,6 +589,71 @@ def usuariosG(request):
         aux["rut"]= user.rut
         lista.append(aux)
     return JsonResponse(lista, safe=False, json_dumps_params={'ensure_ascii':False})
+
+
+@api_view(['POST'])   
+def historico_to_excel(request):
+    print(request.data)
+    
+    resumenJSON=request.data
+    cama=[]
+    rut=[]
+    nombrePaciente=[] 
+    estancia=[] 
+    criterio=[] 
+    diagnostico1=[] 
+    diagnostico2 =[]
+    diagnostico1Cod=[] 
+    diagnostico2Cod =[]
+    ir_grd=[] 
+    emNorma=[] 
+    pcSuperior=[] 
+    pesoGRD=[] 
+    nombreServicio=[] 
+    servicio=[] 
+    flag_diag =[]
+    flag_pend=[]
+    pendientesJson=[]
+    fecha=[]
+    for paciente in resumenJSON:
+        cama.append(paciente['cama']) 
+        rut.append(paciente['rut']) 
+        nombrePaciente.append(paciente['nombrePaciente']) 
+        estancia.append(paciente['estancia']) 
+        criterio.append(paciente['criterio']) 
+        diagnostico1.append(paciente['diagnostico1'])
+        diagnostico1Cod.append(paciente['diagnostico1Cod'])  
+        diagnostico2.append(paciente['diagnostico2'])
+        diagnostico2Cod.append(paciente['diagnostico2Cod'])
+        ir_grd.append(paciente['ir_grd']) 
+        emNorma.append(paciente['emNorma']) 
+        pcSuperior.append(paciente['pcSuperior']) 
+        pesoGRD.append(paciente['pesoGRD']) 
+        nombreServicio.append(paciente['nombreServicio']) 
+        servicio.append(paciente['servicio_id']) 
+        flag_diag.append(paciente['flag_diag'])
+        flag_pend.append(paciente["flag_pend"])
+        pend=""
+        for j in paciente["pendientesJson"]:
+            pend=pend+j["nombre"] + " ("+j["causa"]+"), \n"
+        pendientesJson.append(pend)
+        fecha.append(paciente["fecha"])
+
+    resumen= pd.DataFrame()
+    resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
+    diagnostico1=diagnostico1, diagnostico1Cod=diagnostico1Cod, diagnostico2=diagnostico2, diagnostico2Cod=diagnostico2Cod, ir_grd=ir_grd, emNorma=emNorma, 
+    pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
+    flag_pend=flag_pend, fecha=fecha,pendientesJson=pendientesJson)
+
+    nombreArchivo='gestionPacientes\Historico_de_Pacientes.xlsx'
+    
+    print(resumen)
+    resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
+    estiloExcel(nombreArchivo, True)
+
+    resp={}
+    resp["msg"]="Creado correctamente"
+    return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii':False})
 
 @api_view(['POST'])   
 def resumen_to_excel(request):
@@ -598,6 +677,7 @@ def resumen_to_excel(request):
     flag_diag =[]
     flag_pend=[]
     pendientesJson=[]
+
     for paciente in resumenJSON:
         cama.append(paciente['cama']) 
         rut.append(paciente['rut']) 
@@ -616,7 +696,10 @@ def resumen_to_excel(request):
         servicio.append(paciente['servicio']) 
         flag_diag.append(paciente['flag_diag'])
         flag_pend.append(paciente["flag_pend"])
-        pendientesJson.append(paciente["pendientesJson"])
+        pend=""
+        for j in paciente["pendientesJson"]:
+            pend=pend+j["nombre"] + " ("+j["causa"]+"), \n"
+        pendientesJson.append(pend)
 
     resumen= pd.DataFrame()
     resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
@@ -629,7 +712,7 @@ def resumen_to_excel(request):
     
     print(resumen)
     resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
-    estiloExcel(nombreArchivo)
+    estiloExcel(nombreArchivo,False)
     resp={}
     resp["msg"]="Creado correctamente"
     return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii':False})

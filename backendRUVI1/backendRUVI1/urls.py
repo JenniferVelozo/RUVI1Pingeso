@@ -40,6 +40,7 @@ urlpatterns += [
     path('api/user/', include('gestionPacientes.urls')), # parte del intento de login
     path('subir/<carga>', subir),
     path('exportar/', resumen_to_excel),
+    path('exportarH/', historico_to_excel),
     path('setPendientes/', setPendientes),
     path('setDiagnosticos/',setDiagnostico),
     path('historico/<fecha>/<nombreServicio>/<nombrePendiente>', filtrarServicioPendiente),
@@ -47,5 +48,6 @@ urlpatterns += [
     path('resumen/pendientes/<id_paciente>', filtrarPendientesPorPaciente),
     path('deleteuser/', deleteUser),
     path('mensual/<year>/<mes>', reporteMensual),
-    path('descarga/',linkDescarga)
+    path('descarga/',linkDescarga),
+    path('descargaH/',linkDescargaH)
 ]
