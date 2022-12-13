@@ -554,6 +554,30 @@ def estiloExcel(nombre,flag):
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
     informe.save(nombre)
 
+
+# establece el tamaño de las celdas y los colores para que no se sobrepongan
+def estiloExcelMensual(nombre,flag):
+    informe = openpyxl.load_workbook(nombre)
+
+    sheet = informe.active 
+
+    def set_width_to(sheet, start, stop, width):
+        for col in get_column_interval(start, stop):
+            sheet.column_dimensions[col].width = width
+
+    set_width_to(sheet, "A", "A", width=5)
+    set_width_to(sheet, "B", "B", width=40)
+    set_width_to(sheet, "C", "C", width=10)
+    set_width_to(sheet, "D", "D", width=15)
+    set_width_to(sheet, "E", "N", width=22)
+    encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1"]
+    for encabezado in encabezados:
+        celda = sheet[encabezado]
+        celda.fill =  PatternFill("solid", fgColor="D9D9D9")
+    informe.save(nombre)
+
+
+
 @api_view(['GET'])
 def linkDescarga(request):
     nombreArchivo='Gestion_de_Pacientes.xlsx'
@@ -574,6 +598,18 @@ def linkDescargaH(request):
         response['Content-Disposition'] = 'attachment; filename="%s"' % nombreArchivo
     return response
 
+
+@api_view(['GET'])
+def linkDescargaM(request):
+    nombreArchivo='Reporte_mensual.xlsx'
+    nombreArchivoR='\Reporte_mensual.xlsx'
+    ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
+    with open(ruta,'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % nombreArchivo
+    return response
+
+    
 @api_view(['GET'])
 def usuariosG(request):
     users=User.objects.all()
@@ -590,10 +626,59 @@ def usuariosG(request):
         lista.append(aux)
     return JsonResponse(lista, safe=False, json_dumps_params={'ensure_ascii':False})
 
+@api_view(['POST'])   
+def mensual_to_excel(request):
+    print(request.data)
+    
+    resumenJSON=request.data
+    print(len(resumenJSON))
+
+    fecha=[]
+    nombreServicio=[] 
+    servicio=[] 
+    em=[]
+    emaf=[]
+    iema=[]
+    peso=[]
+    iemaInliersMenor=[]
+    iemaInliersMayor=[]
+    outliers=[]
+    pInt=[]
+    pExt=[]
+    condP=[]
+    for ser in resumenJSON:
+        fecha.append(ser["fecha"])
+        nombreServicio.append(ser['servicioNombre']) 
+        servicio.append(ser['servicioId']) 
+        em.append(ser["em"])
+        emaf.append(ser["emaf"])
+        iema.append(ser["iema"])
+        peso.append(ser["peso"])
+        iemaInliersMenor.append(ser["iemaInliersMenor"])
+        iemaInliersMayor.append(ser["iemaInliersMayor"])
+        outliers.append(ser["outliers"])
+        pInt.append(ser["pInt"])
+        pExt.append(ser["pExt"])
+        condP.append(ser["condP"])
+    
+    resumen= pd.DataFrame()
+    resumen=resumen.assign(nombreServicio=nombreServicio,servicio=servicio,fecha=fecha,em=em,emaf=emaf,iema=iema,peso=peso,
+    iemaInliersMenor=iemaInliersMenor,iemaInliersMayor=iemaInliersMayor,outliers=outliers,pInt=pInt,pExt=pExt,condP=condP)
+    
+    nombreArchivo='gestionPacientes\Reporte_mensual.xlsx'
+    
+    print(resumen)
+    resumen.to_excel(nombreArchivo, sheet_name='Resumen Mensual')
+    estiloExcelMensual(nombreArchivo, True)
+    resp={}
+    resp["msg"]="Creado correctamente"
+    return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii':False})
+
 
 @api_view(['POST'])   
 def historico_to_excel(request):
     print(request.data)
+
     
     resumenJSON=request.data
     cama=[]

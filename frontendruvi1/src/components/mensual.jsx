@@ -56,47 +56,44 @@ function ShowTable() {
     },[])
 
     const getMensual = async(year, mes) => {
+        
         const { data } = await axios.get(baseURL+year+"/"+mes)
         setListMensual(data)
+        const data2 = await axios.post(direccion+'/exportarM/', data)
+
     }
+  
+  const [evento, setEvento] = React.useState('');
+  const handleChange = async(event) => {
+    let fechas=listMeses[event.target.value].fecha.split("-")
+    getMensual(fechas[0],fechas[1])
     
 
-    const [evento, setEvento] = React.useState('');
-    const handleChange = (event) => {setEvento(event.target.value);};
-
-  //funcion filtro mes
-  function FiltroMes() {
-
-    const [evento, setEvento] = React.useState('');
-    const handleChange = async(event) => {
-      let fechas=listMeses[event.target.value].fecha.split("-")
-      getMensual(fechas[0],fechas[1])
+  };
+  const [ listMeses, setListMeses ] = useState([])
+  const getMeses = async() => {
+      const { data } = await axios.get(direccion+'/mensualDates/')
+      let i=1
       
+      while (i<=data.length){
+        let sep=data[i-1].fecha.split("-")
+        let aux=sep[0]+"-"+sep[1]
+        data[i-1].id=i-1
+        data[i-1].fecha=aux
+        console.log(data)
+        i=i+1
+      }
+      setListMeses(data)
+  }
 
-    };
-    const [ listMeses, setListMeses ] = useState([])
-    const getMeses = async() => {
-        const { data } = await axios.get(direccion+'/mensualDates/')
-        let i=1
-        
-        while (i<=data.length){
-          let sep=data[i-1].fecha.split("-")
-          let aux=sep[0]+"-"+sep[1]
-          data[i-1].id=i-1
-          data[i-1].fecha=aux
-          console.log(data)
-          i=i+1
-        }
-        setListMeses(data)
-    }
-
-    useEffect(() => {
-        getMeses()
-    },[])
-    
-    //retorno filtro y titulo
-    return (
-      <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
+  useEffect(() => {
+      getMeses()
+  },[])
+  //retorno de tabla
+  return (
+    <div>
+    <Box>
+    <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
         {storedRol.flagJ?
         <FormControl margin="normal" required sx = {{ width:500 }}>
           <InputLabel id="rol">{storedRol.servicio}</InputLabel>
@@ -116,15 +113,6 @@ function ShowTable() {
           <Item><h1> REPORTE MENSUAL </h1></Item>
         </Grid>
       </Box>
-    );
-  }
-  
-
-  //retorno de tabla
-  return (
-    <div>
-    <Box>
-      <FiltroMes/>
     </Box>
     <Box
       sx={{
@@ -165,6 +153,11 @@ const Mensual = () => {
           </Box>
           <Box sx={{ width: '95%'}}>
             <ShowTable/>
+         </Box>
+         <Box const style = {{position: 'fixed', bottom: 0, left: 0, margin: 20}}>
+          <Fab variant="extended" color="primary" href={direccion+'/descargaM/'} download="Reporte_mensual.xlsx">
+              Exportar a XLS <DownloadIcon />
+          </Fab>
          </Box>
         </div>
     )

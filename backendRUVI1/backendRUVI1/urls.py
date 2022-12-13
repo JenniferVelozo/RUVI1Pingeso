@@ -42,6 +42,7 @@ urlpatterns += [
     path('subir/<carga>', subir),
     path('exportar/', resumen_to_excel),
     path('exportarH/', historico_to_excel),
+    path('exportarM/', mensual_to_excel),
     path('setPendientes/', setPendientes),
     path('setDiagnosticos/',setDiagnostico),
     path('historico/<fecha>/<nombreServicio>/<nombrePendiente>', filtrarServicioPendiente),
@@ -50,5 +51,7 @@ urlpatterns += [
     path('deleteuser/', deleteUser),
     path('mensual/<year>/<mes>', reporteMensual),
     path('descarga/',linkDescarga),
-    path('descargaH/',linkDescargaH)
+    path('descargaH/',linkDescargaH),
+    path('descargaM/',linkDescargaM),
+    
 ]
