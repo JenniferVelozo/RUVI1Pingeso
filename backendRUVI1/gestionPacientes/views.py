@@ -760,7 +760,9 @@ class HistoricoDatesViewSet(viewsets.ModelViewSet):
     queryset = Historico.objects.values('fecha', 'id')
     serializer_class = HistoricoDatesSerializer
 
-  
+class MensualDatesViewSet(viewsets.ModelViewSet):
+    queryset = ReporteMensual.objects.values('fecha').distinct()
+    serializer_class = HistoricoDatesSerializer
 
 
     

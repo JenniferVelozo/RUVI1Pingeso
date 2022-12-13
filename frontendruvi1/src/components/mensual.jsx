@@ -27,17 +27,18 @@ const storedRol = JSON.parse(localStorage.getItem(KEY));
 
 
 const columns = [
-  { field: 'servicioNombre', headerName: 'Servicio', width: 200},
-  { field: 'em', headerName: 'EM', width: 80},
-  { field: 'emaf', headerName: 'EMAF', width: 100},
-  { field: 'iema', headerName: 'IEMA', width: 100 },
-  { field: 'peso', headerName: 'Peso', width: 80 },
-  { field: 'iemaInliersMenor', headerName: 'iemaInliers <1', width: 150 },
-  { field: 'iemaInliersMayor', headerName: 'iemaInliers >1', width: 150 },
-  { field: 'outliers', headerName: 'outliers', width: 80 },
-  { field: 'pInt', headerName: 'pInt', width: 80},
-  { field: 'pExt', headerName: 'pExt', width: 80 },
-  { field: 'condP', headerName: 'condP', width: 80 }
+  { field: 'servicioNombre', headerName: 'Servicio', width: 200, height:50},
+  { field: 'fecha', headerName: 'Fecha Creacion', width: 140,height:50 },
+  { field: 'em', headerName: 'EM', width: 140, height:50},
+  { field: 'emaf', headerName: 'EMAF', width: 140, height:50},
+  { field: 'iema', headerName: 'IEMA', width: 140, height:50 },
+  { field: 'peso', headerName: 'Peso', width: 140, height:50 },
+  { field: 'iemaInliersMenor', headerName: 'iemaInliers <1', width: 140, height:50 },
+  { field: 'iemaInliersMayor', headerName: 'iemaInliers >1', width: 140, height:50 },
+  { field: 'outliers', headerName: 'outliers', width: 140, height:50  },
+  { field: 'pInt', headerName: 'pInt', width: 140, height:50 },
+  { field: 'pExt', headerName: 'pExt', width: 140, height:50 },
+  { field: 'condP', headerName: 'condP', width: 140, height:50  }
   
 ];
 
@@ -46,7 +47,7 @@ function ShowTable() {
 
   const [pageSize, setPageSize] = React.useState(10);
 
-  let baseURL = direccion+'/mensual/2022/12  ' //npm i dotenv
+  let baseURL = direccion+'/mensual/' //npm i dotenv
 
   const [ listMensual, setListMensual ] = useState([])
 
@@ -54,8 +55,8 @@ function ShowTable() {
         getMensual() 
     },[])
 
-    const getMensual = async() => {
-        const { data } = await axios.get(baseURL)
+    const getMensual = async(year, mes) => {
+        const { data } = await axios.get(baseURL+year+"/"+mes)
         setListMensual(data)
     }
     
@@ -68,12 +69,24 @@ function ShowTable() {
 
     const [evento, setEvento] = React.useState('');
     const handleChange = async(event) => {
-      console.log('esperar al cambio')
+      let fechas=listMeses[event.target.value].fecha.split("-")
+      getMensual(fechas[0],fechas[1])
+      
 
     };
     const [ listMeses, setListMeses ] = useState([])
     const getMeses = async() => {
-        const { data } = await axios.get(direccion+'/servicios/')
+        const { data } = await axios.get(direccion+'/mensualDates/')
+        let i=1
+        
+        while (i<=data.length){
+          let sep=data[i-1].fecha.split("-")
+          let aux=sep[0]+"-"+sep[1]
+          data[i-1].id=i-1
+          data[i-1].fecha=aux
+          console.log(data)
+          i=i+1
+        }
         setListMeses(data)
     }
 
@@ -94,7 +107,7 @@ function ShowTable() {
           <Select labelId="rol" id="rol" label="Rol" onChange={handleChange}>
                 
                 { listMeses.map(meses => (
-                <MenuItem value={meses.id}>{meses.nombre}</MenuItem>
+                <MenuItem value={meses.id}>{meses.fecha}</MenuItem>
                 ))}
           </Select>
         </FormControl>
@@ -131,7 +144,6 @@ function ShowTable() {
         columns={columns}
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        getRowHeight={() => 'auto'}
         rowsPerPageOptions={[10,25,100]}
         pagination
         disableSelectionOnClick

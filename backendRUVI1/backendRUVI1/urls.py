@@ -31,6 +31,7 @@ router.register(r'pendientes', PendienteViewSet)
 router.register(r'resumen', ResumenViewSet)
 router.register(r'historico', HistoricoViewSet)
 router.register(r'historicoDates', HistoricoDatesViewSet)
+router.register(r'mensualDates', MensualDatesViewSet)
 urlpatterns = router.urls
 
 urlpatterns += [
