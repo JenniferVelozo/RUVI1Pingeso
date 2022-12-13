@@ -113,6 +113,7 @@ const Update = () => {
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><NoteAddIcon/></Avatar>
+                    <h2>Carga de pacientes</h2>
                     <h3>Seleccione el archivo csv que desea subir </h3>
                 </Grid>
 
@@ -179,6 +180,7 @@ const Update = () => {
           <Box sx={{ display: 'flex' }}>
                 <ResponsiveAppBar flag={storedRol.flag}  nick={storedRol.inicial}/>
           </Box>
+        
           <SubirArchivo/>
 
         </div>

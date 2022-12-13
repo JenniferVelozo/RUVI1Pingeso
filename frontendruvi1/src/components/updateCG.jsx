@@ -112,6 +112,7 @@ const Update = () => {
             <Paper elevation={10} style={paperStyle}>
                 <Grid align='center'>
                     <Avatar style={avatarStyle}><NoteAddIcon/></Avatar>
+                    <h2>Carga de CIE10-GRD</h2>
                     <h3>Seleccione el archivo Excel .xlsm que desea subir </h3>
                 </Grid>
 
