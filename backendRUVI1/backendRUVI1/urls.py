@@ -52,6 +52,6 @@ urlpatterns += [
     path('mensual/<year>/<mes>', reporteMensual),
     path('descarga/',linkDescarga),
     path('descargaH/',linkDescargaH),
-    path('descargaM/',linkDescargaM),
+    path('descargaM/',linkDescargaM)
     
 ]

@@ -28,6 +28,14 @@ def leerDf():
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)
     print(pacientes)
+    pacientesEnCierre=[]
+    for i in range(len(pacientes)):
+        if str(pacientes.iloc[i]['ActualHabitación_Desc']).count('Cierre de Atención')!=0:
+            pacientesEnCierre.append(i)
+        else:
+            pass
+    pacientes.drop(pacientesEnCierre, inplace=True)
+
     
     #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
     # Se tranforma a numérico entero el IR GRD ya que lo toma con un .0 al final
