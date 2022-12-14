@@ -10,9 +10,13 @@ import { blue, yellow, red } from '@mui/material/colors';
 import Fab from '@mui/material/Fab';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//rol de usuario
 const KEY = "App.rol";
+
+//color alternativo
 const theme = createTheme({
   palette: {
     primary: red,
@@ -20,6 +24,7 @@ const theme = createTheme({
   }
 });
 
+//tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.header,
@@ -32,102 +37,100 @@ const Item = styled(Paper)(({ theme }) => ({
 //mostrar tabla
 function ShowUsuarios() {
 
-    //definicion columnas tabla
-    const columns = [
-      { field: 'nickname', headerName: 'Nickname', headerClassName: 'super-app-theme--header', width: 200},
-      { field: 'nombre', headerName: 'Nombre', headerClassName: 'super-app-theme--header', width: 200 },
-      { field: 'apellido', headerName: 'Apellido', headerClassName: 'super-app-theme--header', width: 200 },
-      { field: 'rut', headerName: 'RUT', headerClassName: 'super-app-theme--header', width: 200 },
-      { field: 'nombre_servicio', headerName: 'Servicio', headerClassName: 'super-app-theme--header', width: 200},
-      { field: 'nombre_rol', headerName: 'Rol de usuario', headerClassName: 'super-app-theme--header', width: 200 },
-      { field: 'eliminar', headerName: 'Eliminar', headerClassName: 'super-app-theme--header', renderCell: (params) => {
-          return (
-            <ShowDialog props={params}/>
-          )
-        }
+  //definicion columnas tabla
+  const columns = [
+    { field: 'nickname', headerName: 'Nickname', headerClassName: 'super-app-theme--header', width: 200},
+    { field: 'nombre', headerName: 'Nombre', headerClassName: 'super-app-theme--header', width: 200 },
+    { field: 'apellido', headerName: 'Apellido', headerClassName: 'super-app-theme--header', width: 200 },
+    { field: 'rut', headerName: 'RUT', headerClassName: 'super-app-theme--header', width: 200 },
+    { field: 'nombre_servicio', headerName: 'Servicio', headerClassName: 'super-app-theme--header', width: 200},
+    { field: 'nombre_rol', headerName: 'Rol de usuario', headerClassName: 'super-app-theme--header', width: 200 },
+    { field: 'eliminar', headerName: 'Eliminar', headerClassName: 'super-app-theme--header', renderCell: (params) => {
+        return (
+          <ShowDialog props={params}/>
+        )
       }
-    ];
-
-    //setteo de usuarios
-
-    //llamados backend
-    const [pageSize, setPageSize] = React.useState(10);
-    const [ listUsuarios, setListUsuarios ] = useState([])
-    const getUsuarios = async() => {
-      const {data} = await axios.get(direccion+'/usuariosG/')
-      setListUsuarios(data)
     }
+  ];
 
-    useEffect(() => {
+  //datafetch usuarios
+  const [pageSize, setPageSize] = React.useState(10);
+  const [ listUsuarios, setListUsuarios ] = useState([])
+  const getUsuarios = async() => {
+    const {data} = await axios.get(direccion+'/usuariosG/')
+    setListUsuarios(data)
+  }
+
+  useEffect(() => {
+    getUsuarios()
+  }, [])
+
+  //handler boton eliminar
+  const handleEliminar = (usuario) => async() => {
+      const json = {"id": usuario.id }
+      const {data} = await axios.post(direccion+'/deleteuser/', json)
       getUsuarios()
-    }, [])
+  }
 
-    //fin setteo usuarios
-
-    const handleEliminar = (usuario) => async() => {
-        console.log(usuario.id)
-        const json = {"id": usuario.id }
-        const {data} = await axios.post(direccion+'/deleteuser/', json)
-        getUsuarios()
-        //window.location.replace('/resumen');
-    }
-
-    function ShowDialog(props) {
-      const [open, setOpen] = React.useState(false);
-      
-      return ( 
-        <div>
-          <ThemeProvider theme={theme}>
-          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-            <DeleteIcon/>
-          </Button>
-          </ThemeProvider>
-          <Dialog open={open} onClose={() => setOpen(false)}>
-            <DialogTitle align='center'>¿Está seguro que desea eliminar al usuario {props.props.row.nickname}? </DialogTitle>
-            <div align="center">
-              <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={handleEliminar(props.props.row)}>
-                Sí
-              </Button>
-              <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={() => setOpen(false)}>
-                No
-              </Button>
-            </div>
-          </Dialog>
-        </div>
-      );
-    };
+  //dialogo eliminar
+  function ShowDialog(props) {
+    const [open, setOpen] = React.useState(false);
     
-    return (
-      <Box sx={{height: 300, width: '100%', "& .MuiDataGrid-columnHeaders": {
-        backgroundColor: '#1F90E9',
-        fontSize: 16
-      },}}>
-        <DataGrid
-              autoHeight
-              autoWidth
-              rows={listUsuarios}
-              columns={columns}
-              pageSize={pageSize}
-              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              getRowHeight={() => 'auto'}
-              rowsPerPageOptions={[10,25,100]}
-              pagination
-              disableSelectionOnClick
-              experimentalFeatures={{ newEditingApi: true }}
-          />
-      </Box>
-      );
-}
-
-// deploy vista
+  //display de dialog
+    return ( 
+      <div>
+        <ThemeProvider theme={theme}>
+        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+          <DeleteIcon/>
+        </Button>
+        </ThemeProvider>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle align='center'>¿Está seguro que desea eliminar al usuario {props.props.row.nickname}? </DialogTitle>
+          <div align="center">
+            <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={handleEliminar(props.props.row)}>
+              Sí
+            </Button>
+            <Button variant="contained" color="primary" sx={{m:2}} align="center" onClick={() => setOpen(false)}>
+              No
+            </Button>
+          </div>
+        </Dialog>
+      </div>
+    );
+  };
+    
+  //display de tabla
+  return (
+    <Box sx={{height: 300, width: '100%', "& .MuiDataGrid-columnHeaders": {
+      backgroundColor: '#1F90E9',
+      fontSize: 16
+    },}}>
+      <DataGrid
+            autoHeight
+            autoWidth
+            rows={listUsuarios}
+            columns={columns}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            getRowHeight={() => 'auto'}
+            rowsPerPageOptions={[10,25,100]}
+            pagination
+            disableSelectionOnClick
+            experimentalFeatures={{ newEditingApi: true }}
+        />
+    </Box>
+    );
+  }
 
 const GestionUser = () => {
+  //control de rol de usuario
   let storedRol = JSON.parse(localStorage.getItem(KEY));
   const handleRegister = async (e) => {
     window.location.replace('/register');
     
   }
 
+  //display gestion de usuarios
     return (
       <div className='GestionUser' >
         <Box sx={{ display: 'flex' }}>

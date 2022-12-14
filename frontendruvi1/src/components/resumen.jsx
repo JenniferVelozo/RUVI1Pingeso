@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemAvatar, ListItemText, Button, DialogContentText} from '@mui/material';
+import { Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, ListItemButton, ListItemIcon, Checkbox, List, ListItem, ListItemText, Button, DialogContentText} from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
@@ -9,11 +9,14 @@ import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled } from '@mui/material/styles';
 import $ from 'jquery';
-//import Gestion_de_Pacientes from '../../Gestion_de_Pacientes.xlsx';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//rol de usuario
 const KEY = "App.rol";
+
+//tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.header,
@@ -23,11 +26,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Resumen = () => {
-
-  console.log("Hola este es el push de prueba")
-
-  
-
   const storedRol = JSON.parse(localStorage.getItem(KEY));
 
   //mostrar tabla
@@ -88,19 +86,14 @@ const Resumen = () => {
 
   function CheckboxesPendientes(idProp, openProp) {
 
-    console.log(idProp)
-    console.log(idProp.props.pendientesJson)
-    //listaPendientesPaciente = idProp.pendientesJson.length
+    //handler post cambio pendientes
     const handleGuardar = async() => {
-      console.log(idProp)
       const listaSalida = GenerarListaPendientes();
       const json = {"id": idProp.props.id, "pendientes": listaSalida }
       const {data} = await axios.post(direccion+'/setPendientes/', json)
-      
       handleChange(evento)
       
     };
-
     useEffect(() => {
       getPendientes()
     }, [])
@@ -109,7 +102,6 @@ const Resumen = () => {
     const [ listPendientes, setListPendientes ] = useState([])
     const getPendientes = async() => {
       const { data } = await axios.get(direccion+'/pendientes/')
-      console.log(data)
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
         for (let j = 0; j < data.length; j++) {
           if (idProp.props.pendientesJson[i].id == data[j].id) {
@@ -118,20 +110,12 @@ const Resumen = () => {
           }
         }
       }
-      console.log(data)
       setListPendientes(data)
     }
-
-    console.log(idProp)
-
-    
-
     //fin llamado pendientes
 
     //guardado de elecciones
-
     const [checked, setChecked] = React.useState([0]);
-
     const getChecked = async() => {
       let listaSalida = [0]
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
@@ -140,29 +124,24 @@ const Resumen = () => {
       console.log(listaSalida)
       setChecked(listaSalida)
     }
-
     useEffect(() => {
       getChecked()
     }, [])
 
+    //handler cambio en checkbox
     const handleToggle = (value) => () => {
-      console.log(checked)
-      console.log("ola")
       const currentIndex = checked.indexOf(value);
-      console.log(currentIndex)
       const newChecked = [...checked];
-      console.log(newChecked)
 
       if (currentIndex === -1) {
         newChecked.push(value);
       } else {
         newChecked.splice(currentIndex, 1);
       }
-      console.log(newChecked)
-
       setChecked(newChecked);
     };
 
+    //generar lista de nuevos pendientes checkeados
     function GenerarListaPendientes() {
       const listaSalida = []
       for (let i = 0; i < listPendientes.length; i++) {
@@ -170,43 +149,41 @@ const Resumen = () => {
           listaSalida.push(listPendientes[i].id)
         }
       }
-      console.log(listaSalida)
       return listaSalida;
     }
 
-
-
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        {listPendientes.map((pendientes) => {
-          const labelId = `checkbox-list-label-${pendientes.id}`;
-          return (
-            <ListItem key={pendientes.id} disablePadding>
-              <ListItemButton role={undefined} onClick={handleToggle(pendientes.id)} dense>
-                <ListItemIcon>
-                  <Checkbox
-                    checked={
-                      checked.indexOf(pendientes.id) !== -1}
-                    tabIndex={-1}
-                    inputProps={{ 'aria-labelledby': labelId }}
-                    id = {pendientes.id}
-                    label={pendientes.id + ' ' + pendientes.nombrePendiente}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`${pendientes.id} ${pendientes.nombrePendiente}`} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-        <Box textAlign='center'>
-          <Button variant="contained" color="primary" margin="normal" type='submit' onClick={handleGuardar}>
-              Guardar
-          </Button>
-        </Box>
-      </List>
-    </Box>
-  );
+    //display de checkboxes de pendientes
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          {listPendientes.map((pendientes) => {
+            const labelId = `checkbox-list-label-${pendientes.id}`;
+            return (
+              <ListItem key={pendientes.id} disablePadding>
+                <ListItemButton role={undefined} onClick={handleToggle(pendientes.id)} dense>
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={
+                        checked.indexOf(pendientes.id) !== -1}
+                      tabIndex={-1}
+                      inputProps={{ 'aria-labelledby': labelId }}
+                      id = {pendientes.id}
+                      label={pendientes.id + ' ' + pendientes.nombrePendiente}
+                    />
+                  </ListItemIcon>
+                  <ListItemText id={labelId} primary={`${pendientes.id} ${pendientes.nombrePendiente}`} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+          <Box textAlign='center'>
+            <Button variant="contained" color="primary" margin="normal" type='submit' onClick={handleGuardar}>
+                Guardar
+            </Button>
+          </Box>
+        </List>
+      </Box>
+    );
   }
 
   // END CHECKBOXES PENDIENTES
@@ -216,6 +193,7 @@ const Resumen = () => {
   function ShowDialogPendientes(props) {
     const [open, setOpen] = React.useState(false);
 
+    //display boton edicion de pendientes
     return (
       <div>
         <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
@@ -229,20 +207,16 @@ const Resumen = () => {
     );
   };
 
-  //END DIALOG PENDIENTES
+  // END DIALOG PENDIENTES
 
   // END ZONA EDICION PENDIENTES
 
-  // ZONA EDICION DIAGNOSTICO 2
-
-  // INICIO LISTA DIAGNOSTICOS
+  // ZONA EDICION DIAGNOSTICOS
 
   function ListaDiagnosticos(props, openProp) {
+
+    //handler intercambio de diagnostico 1 y 2
     const handleClick = (diagnostico) => async() => {
-      console.log(props.openProp)
-      console.log(diagnostico)
-      console.log(props.props)
-      console.log(props.props.diagnostico1Cod)
       var listaSalida = []
       if (props.props.diagnostico1Cod != 0) {
         listaSalida = props.props.diagnostico1Cod
@@ -259,21 +233,17 @@ const Resumen = () => {
           }
         } else { }
       }
-      console.log(listaSalida)
       if (listaSalida.length === 0) {
         listaSalida = ''
       }
-      console.log(diagnostico.codigo)
-      console.log(props.props.id)
       
       const json = {"id": props.props.id, "principal": diagnostico.codigo, "secundarios": listaSalida, "dias": props.props.estancia}
-      console.log(json)
       const {data} = await axios.post(direccion+'/setDiagnosticos/', json)
       getResumen(data)
     
     };
   
-
+    //display de lista de diagnosticos
     return (
       <Box sx={{ display: 'flex' }}>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -281,7 +251,6 @@ const Resumen = () => {
             const labelId = `checkbox-list-label-${diagnostico.codigo}`;
             return (
               <ListItem
-                //key={diagnostico.codigo}
                 disablePadding
               >
                 <ListItemButton role={undefined} onClick={handleClick(diagnostico)}dense>
@@ -302,11 +271,13 @@ const Resumen = () => {
   function ShowDialogDiagnostico(props) {
     const [open, setOpen] = React.useState(false);
 
+    //diagnosticos con su id en string
     function StringDiagnostico(props) {
       const texto = props.props.diagnostico1Cod + " " + props.props.diagnostico1
       return texto
     };
 
+    //display boton edicion de diagnosticos
     return ( 
       <div>
         <Button variant="outlined" color="primary" onClick={() => setOpen(true)}>
@@ -325,6 +296,7 @@ const Resumen = () => {
 
   // END ZONA EDICION DIAGNOSTICO 2
 
+  //edicion de lineas
   function addOutline(data){
     var ret= [];
     for (var i = 1; i <= data.length; i++){
@@ -342,17 +314,14 @@ const Resumen = () => {
   }
 
   const [pageSize, setPageSize] = React.useState(10);
-    
   const [ listResumen, setListResumen ] = useState([])
-    
   useEffect(() => {
     getResumen()
   },[])
     
+  //datafetch resumen
   const getResumen = async() => {
-    console.log("caidaaaaaaaaaaaaaaaaaaaaaaaaa")
     const { data } = await axios.get(direccion+'/resumen/')
-    //console.log(data2.data.msg)
     for (var i = 0; i < data.length; i++) {
         if(data[i].nombreServicio=='nan'){
           data[i].nombreServicio=""
@@ -429,22 +398,22 @@ const Resumen = () => {
         }
       }
     }
-    
     const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
     setListResumen(resumenFiltrado)
 
   };
+
+  //datafetch servicios
   const [ listServicios, setListServicios ] = useState([])
-  
   const getServicios = async() => {
       const { data } = await axios.get(direccion+'/servicios/')
       setListServicios(data)
   }
-
   useEffect(() => {
       getServicios()
   },[])  
 
+  //display de tabla de resumen
   return (
     <div>
     <Box>
@@ -480,6 +449,9 @@ const Resumen = () => {
         backgroundColor: '#1F90E9',
         fontSize: 16
       },
+      '& .edited': {
+        backgroundColor: '#CCCCCC',
+      },
       '& .cold': {
         backgroundColor: '#37c871',
         color: '#1a3e72',
@@ -510,6 +482,9 @@ const Resumen = () => {
           if (params.field == 'outline' && params.value !== "" && params.row.criterio >= 1) {
             return params.value >= 1 ? 'hot' : (params.value >= 0.6 ? "mediumhot" : "amarillo");
           }
+          if (params.row.flag_diag == true) {
+            return 'edited'
+          }
           return '';}}
             autoHeight
             autoWidth
@@ -520,7 +495,6 @@ const Resumen = () => {
             getRowHeight={() => 'auto'}
             rowsPerPageOptions={[10,25,100]}
             pagination
-            //checkboxSelection
             disableSelectionOnClick
             experimentalFeatures={{ newEditingApi: true }}
         />
@@ -531,6 +505,7 @@ const Resumen = () => {
 
   //END mostrar tabla
 
+  //display de resumen
   return (
     <div className='resumen' >
       <Box sx={{ display: 'flex' }}>

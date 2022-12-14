@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Box, Select, MenuItem, FormControl, InputLabel, Grid, Button} from '@mui/material';
+import { Box, Select, MenuItem, FormControl, InputLabel, Grid} from '@mui/material';
 import { useState, useEffect} from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -15,18 +15,22 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {es} from 'date-fns/locale';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//rol de usuario
 const KEY = "App.rol";
 
+//tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.header,
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   }));
 
+////definicion columnas tabla
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
   { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
@@ -49,28 +53,28 @@ const columns = [
 function ShowTable() {
   const storedRol = JSON.parse(localStorage.getItem(KEY));
   const [pageSize, setPageSize] = React.useState(10);
-
   const [value, setValue] = useState(new Date());
-
   let URL = direccion+'/historicoDates/';
-
   const [ listFechas, setListFechas ] = useState([]);
 
   useEffect(() => {
     getFechas(); 
   },[])
 
+  //datafetch para obtener fechas historicas
   const getFechas = async() => {
     const { data } = await axios.get(URL)
     setListFechas(data)
   }
 
+  //nuevas fechas
   function addDays(date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
   }
   
+  //deshabilitar fechas
   function disableNotHistorico(date) {
     for (var i = 0; i < listFechas.length; i++){
       var historico = new Date(addDays(listFechas[i].fecha,1));
@@ -83,12 +87,9 @@ function ShowTable() {
 
   const [evento, setEvento] = React.useState(1);
   const handleChange = (event) => {setEvento(event.target.value);};
-
-
-
-
   const [ listServicios, setListServicios ] = useState([{id:1,nombre:"Unidad de gestion de pacientes"}])
 
+  //datafetch para obtener servicios
   const getServicios = async() => {
       const { data } = await axios.get(direccion+'/servicios/')
       setListServicios(data)
@@ -99,9 +100,6 @@ function ShowTable() {
       getServicios() 
   },[])
 
-
-  console.log(evento)
-  console.log(listServicios)
    //npm i dotenv
 
 
@@ -111,7 +109,7 @@ function ShowTable() {
       getResumen(evento,value) 
   },[])
   
-
+  //datafetch para obtener resumen
   const getResumen = async(evento,value) => {
       var dateOb = value.getDate();
       if(dateOb < 10){
@@ -165,13 +163,13 @@ function ShowTable() {
     
 
 
-
+  //display de la tabla
   return (
     <div className='historico' >
     <Box sx={{ display: 'flex' }}>
           <ResponsiveAppBar flag={storedRol.flag} nick={storedRol.inicial}/>
     </Box>
-    <Box sx={{ width: '100%', p: 9}}>
+    <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
       <Grid container spacing={3}>
           <Grid item xs>
           {storedRol.flagJ?
@@ -194,7 +192,7 @@ function ShowTable() {
         }
           </Grid>
           <Grid item xs={6}>
-          <Item><h1>LISTAR POR SERVICIO</h1></Item>
+            <Item><h1>LISTAR POR SERVICIO</h1></Item>
           </Grid>
           <Grid item xs>
           <LocalizationProvider adapterLocale={es} dateAdapter={AdapterDateFns} >
@@ -212,7 +210,7 @@ function ShowTable() {
           </Grid>
       </Grid>
       </Box>
-      <Box sx={{ width: '95%', p: 9}}>
+      <Box sx={{ml: 4, mt:9, mb: 1, width: '95%'}}>
       <Box
       sx={{
         height: 300,
@@ -220,6 +218,9 @@ function ShowTable() {
         "& .MuiDataGrid-columnHeaders": {
           backgroundColor: '#1F90E9',
           fontSize: 16
+        },
+        '& .edited': {
+          backgroundColor: '#CCCCCC',
         },
         '& .cold': {
           backgroundColor: '#37c871',
@@ -237,14 +238,24 @@ function ShowTable() {
           backgroundColor: '#ff0000',
           color: '#1a3e72',
         },
+        '& .amarillo': {
+          backgroundColor: '#ffcc00',
+          color: '#1a3e72',
+        },
       }}
     >
       <DataGrid
         getCellClassName={(params) => {
-        if (params.field !== 'criterio' || params.value == null) {
-          return '';
+        if (params.field == 'criterio' && params.value !== null) {
+          return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));
         }
-        return params.value >= 1.5 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));}}
+        if (params.field == 'outline' && params.value !== "" && params.row.criterio >= 1) {
+          return params.value >= 1 ? 'hot' : (params.value >= 0.6 ? "mediumhot" : "amarillo");
+        }
+        if (params.row.flag_diag == true) {
+          return 'edited'
+        }
+        return '';}}
         autoHeight
         autoWidth
         onChange={(newRows) => {
@@ -272,8 +283,6 @@ function ShowTable() {
     
   );
 }
-
-
 
 const Historico = () => {
     return (

@@ -8,17 +8,17 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ResponsiveAppBar from './ResponsiveAppBar.js';
 
+//rol de usuario
 const KEY = "App.rol";
 
 const Home =()=>{
-    console.log("Hola")
     let storedRol = JSON.parse(localStorage.getItem(KEY));
     
-
+    //tematizacion paper
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
-
     
+    //display reportes
     return(
         <div className="home">
             <div className='App d-flex justify-content-center align-items-center'>

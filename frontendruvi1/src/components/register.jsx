@@ -6,9 +6,11 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import { Component, useState, useEffect} from 'react';
 import axios from 'axios';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
 function Register(){
+    //tematizacion paper
     const paperStyle={padding :20,height:'80vh',width:260, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#005588', width:60,height:60}
 
@@ -17,6 +19,7 @@ function Register(){
 
     const [ listRoles, setListRoles ] = useState([])
     const [ listServicios, setListServicios ] = useState([])
+    //rol de usuario
     let storedRol = JSON.parse(localStorage.getItem(KEY));
     
     useEffect(() => {
@@ -27,18 +30,21 @@ function Register(){
         getServicios() 
     },[])
 
+    //datafetch roles
     const getRoles = async() => {
         const { data } = await axios.get(direccion+'/rol/')
         setListRoles(data)
         console.log(data)
     }
 
+    //datafetch servicios
     const getServicios = async() => {
         const { data } = await axios.get(direccion+'/servicios/')
         setListServicios(data)
         console.log(data)
     }
 
+    //display formulario
     return(
         <div className='register'>
             <div className='App d-flex justify-content-center align-items-center'>

@@ -7,6 +7,7 @@ import { Component, useState, useEffect} from 'react';
 import axios from 'axios'; 
 import Home from './home';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
 function Login(){
@@ -28,8 +29,6 @@ function Login(){
         const {data} = await axios.post(direccion+'/login/', json)
         setRespuesta(data)
         data=JSON.parse(data)
-        console.log(data)
-        console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
         if (data.entra == 'SI' && data.rol=='Administrador'){
             window.location.replace('/home');
         }
@@ -42,15 +41,7 @@ function Login(){
         setPassword('')
       }
 
-
-    const handleChange1 = event => {
-        this.setState({ usuario: event.target.value });
-    }
-
-    const handleChange2 = event => {
-        this.setState({ password: event.target.value });
-    }
-
+    //display login
     return(
         <Grid container spacing={0}>
           <Paper elevation={10} style={paperStyle}>

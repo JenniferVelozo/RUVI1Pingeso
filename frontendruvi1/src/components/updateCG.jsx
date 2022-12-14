@@ -8,12 +8,12 @@ import { createTheme, ThemeProvider, darken, lighten } from '@mui/material/style
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
-
+//rol de usuario
 const KEY = "App.rol";
 
 const Update = () => {
-
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
 
@@ -24,11 +24,13 @@ const Update = () => {
     }),
   };
 
+  //tematizacion paper y avatar
   const paperStyle={padding :20,height:'48vh',width:350, margin:"100px auto"}
-    const avatarStyle={backgroundColor:'#005588', width:60,height:60}
+  const avatarStyle={backgroundColor:'#005588', width:60,height:60}
 
   const defaultTheme = createTheme();
 
+  //tematizacion para boton
   const theme = createTheme({
     components: {
       MuiButton: {
@@ -54,12 +56,14 @@ const Update = () => {
     const [file, setFile] = useState()
     console.log(file)
 
+    //handler cambio archivo
     const handleInputChange = (event) => {
       console.log(event.target.files[0])
       setFile(event.target.files[0]);
 
     };
 
+    //handler carga archivo
     const handleSubmit = async(event) => {
       if (!loading) {
         setSuccess(false);
@@ -107,6 +111,7 @@ const Update = () => {
 
     };
 
+    //display formulario para archivo
     return (
       <Grid container spacing={0}>
             <Paper elevation={10} style={paperStyle}>
@@ -171,9 +176,8 @@ const Update = () => {
   }
     ///////// FIN SECCION SUBIDA ARCHIVO
 
-    //console.log(file)
-
     const storedRol = JSON.parse(localStorage.getItem(KEY));
+    //display update
     return (
         <div className='update' >
           <Box sx={{ display: 'flex' }}>

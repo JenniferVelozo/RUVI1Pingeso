@@ -11,8 +11,10 @@ import PersonIcon from '@mui/icons-material/Person';
 import { blue } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
 
+//direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.header,
@@ -21,11 +23,11 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
+//rol de usuario
 const KEY = "App.rol";
-
 const storedRol = JSON.parse(localStorage.getItem(KEY));
 
-
+//definicion columnas tabla
 const columns = [
   { field: 'servicioNombre', headerName: 'Servicio', width: 200, height:50},
   { field: 'fecha', headerName: 'Fecha Creacion', width: 140,height:50 },
@@ -44,19 +46,15 @@ const columns = [
 
 
 function ShowTable() {
-
   const [pageSize, setPageSize] = React.useState(10);
-
   let baseURL = direccion+'/mensual/' //npm i dotenv
-
   const [ listMensual, setListMensual ] = useState([])
 
     useEffect(() => {
         getMensual() 
     },[])
-
+    //datafetch mensual
     const getMensual = async(year, mes) => {
-        
         const { data } = await axios.get(baseURL+year+"/"+mes)
         setListMensual(data)
         const data2 = await axios.post(direccion+'/exportarM/', data)
@@ -67,14 +65,13 @@ function ShowTable() {
   const handleChange = async(event) => {
     let fechas=listMeses[event.target.value].fecha.split("-")
     getMensual(fechas[0],fechas[1])
-    
 
   };
   const [ listMeses, setListMeses ] = useState([])
+  //datafetch meses
   const getMeses = async() => {
       const { data } = await axios.get(direccion+'/mensualDates/')
       let i=1
-      
       while (i<=data.length){
         let sep=data[i-1].fecha.split("-")
         let aux=sep[0]+"-"+sep[1]
@@ -142,7 +139,7 @@ function ShowTable() {
   );
 }
 
-//deploy vista
+//display vista mensual
 const Mensual = () => {
 
     const storedRol = JSON.parse(localStorage.getItem(KEY));
