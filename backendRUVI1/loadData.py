@@ -73,10 +73,10 @@ def poblar():
     User.objects.all().delete()
     #usuarios
     usuario = User.objects.create_user(nombre='Diego', apellido='Ruiz', 
-            nickname='DRuiz', password="ugp1234", rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
+            nickname='DRuiz', password=os.environ.get("PASS"), rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
 
     usuario2 = User.objects.create_user(nombre='Edgardo', apellido='Villavicencio', 
-            nickname='EVillavicencio', password="ugp1234", rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
+            nickname='EVillavicencio', password=os.environ.get("PASS"), rut='11111111-1', servicio=Servicio.objects.get(nombre='Unidad de gestion de pacientes'), rol=Roles.objects.get(nombre='Administrador'))
 
     
 
