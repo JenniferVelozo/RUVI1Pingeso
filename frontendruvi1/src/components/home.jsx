@@ -16,10 +16,7 @@ const Home =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"18px auto"}
 
-    //cambio de pagina
-    const navigateResumen = () => {
-        window.location.href = '/resumen';
-    }
+    
     //display home
     return(
         <div className="home">
@@ -44,7 +41,7 @@ const Home =()=>{
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><AccessAlarmIcon/></Avatar>
                             <h5>Pendientes</h5>
-                            <Button href = "/reportes" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" onClick={navigateResumen}></Button>
+                            <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
                         </Grid>
                     </Paper>
                 </Grid>
