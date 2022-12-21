@@ -7,8 +7,9 @@ import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
-import { styled } from '@mui/material/styles';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import $ from 'jquery';
+import SaveIcon from '@mui/icons-material/Save';
 
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
@@ -25,6 +26,26 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
+//scrollbar
+const barra = createTheme({
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "*::-webkit-scrollbar": {
+          width: "5px"
+        },
+        "*::-webkit-scrollbar-track": {
+          background: "#E4EFEF"
+        },
+        "*::-webkit-scrollbar-thumb": {
+          background: "#1D388F61",
+          borderRadius: "2px"
+        }
+      }
+    }
+  }
+});
+
 const Resumen = () => {
   const storedRol = JSON.parse(localStorage.getItem(KEY));
 
@@ -33,9 +54,11 @@ const Resumen = () => {
 
     //definicion columnas tabla
     const columns = [
-      { field: 'id', headerName: 'Id', width: 40 },
+      { field: 'id', headerName: 'Id', width: 80 },
+      { field: 'criterioView', headerName: 'Días restantes para EM norma', width: 240},
+      { field: 'outlineView', headerName: 'Días restantes para Outlier', width: 210},
       { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
-      { field: 'criterio', headerName: 'Índice (EM)', width: 100},
+      { field: 'criterio', headerName: 'Índice (EM)', width: 110},
       { field: 'outline', headerName: 'Outline (PC)', width: 110},
       { field: 'cama', headerName: 'Cama', width: 70},
       { field: 'rut', headerName: 'Rut', width: 100},
@@ -48,12 +71,12 @@ const Resumen = () => {
       { field: 'pcSuperior', headerName: 'PC Sup.', width: 80 },
       { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
       { field: 'pendiente', headerName: 'Pendiente', width: 200 },
-      { field: 'Editar Diagnostico 2', renderCell: (params) => {
+      { field: 'Editar Diagnóstico', width:150, renderCell: (params) => {
         return (
           <ShowDialogDiagnostico props={params}/>
         )
       }},
-      { field: 'Editar Pendientes', renderCell: (params) => {
+      { field: 'Editar Pendientes', width:150, renderCell: (params) => {
         return (
           <ShowDialogPendientes props={params}/>
         )
@@ -62,6 +85,8 @@ const Resumen = () => {
     ];
     const columnsJ = [
       { field: 'id', headerName: 'Id', width: 40 },
+      { field: 'criterioView', headerName: 'EM - Estancia', width: 100},
+      { field: 'outlineView', headerName: 'PC - Estancia', width: 110},
       { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
       { field: 'criterio', headerName: 'Índice (EM)', width: 100},
       { field: 'outline', headerName: 'Outline (PC)', width: 110},
@@ -89,9 +114,9 @@ const Resumen = () => {
     //handler post cambio pendientes
     const handleGuardar = async() => {
       const listaSalida = GenerarListaPendientes();
-      const json = {"id": idProp.props.id, "pendientes": listaSalida }
+      const json = {"id": idProp.props.id, "pendientes": listaSalida}
       const {data} = await axios.post(direccion+'/setPendientes/', json)
-      handleChange(evento)
+      getResumen(data)
       
     };
     useEffect(() => {
@@ -105,7 +130,6 @@ const Resumen = () => {
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
         for (let j = 0; j < data.length; j++) {
           if (idProp.props.pendientesJson[i].id == data[j].id) {
-            console.log(data[j])
             handleToggle(data[j])
           }
         }
@@ -121,7 +145,6 @@ const Resumen = () => {
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
         listaSalida.push(idProp.props.pendientesJson[i].id)
       }
-      console.log(listaSalida)
       setChecked(listaSalida)
     }
     useEffect(() => {
@@ -154,8 +177,10 @@ const Resumen = () => {
 
     //display de checkboxes de pendientes
     return (
-      <Box sx={{ display: 'flex' }}>
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+      <Grid item>
+      <Grid>
+        <ThemeProvider theme={barra}>
+        <List sx={{ width: '100%', maxHeight: 360, maxWidth: 360 }}>
           {listPendientes.map((pendientes) => {
             const labelId = `checkbox-list-label-${pendientes.id}`;
             return (
@@ -176,13 +201,15 @@ const Resumen = () => {
               </ListItem>
             );
           })}
-          <Box textAlign='center'>
-            <Button variant="contained" color="primary" margin="normal" type='submit' onClick={handleGuardar}>
-                Guardar
-            </Button>
-          </Box>
         </List>
+        </ThemeProvider>
+      </Grid>
+      <Box const style = {{position: 'fixed'}} sx={{height: '100%', width: '100%'}}>
+        <Button  sx={{mt: 2, ml: 14}} variant="contained" color="primary" type='submit' onClick={handleGuardar}>
+            Guardar
+        </Button>
       </Box>
+      </Grid>
     );
   }
 
@@ -307,8 +334,13 @@ const Resumen = () => {
       } else{
         var aux = data[i-1].estancia / data[i-1].pcSuperior;
         $.extend( data[i-1], {outline:aux});
+        var aux = data[i-1].estancia - data[i-1].emNorma;
+        $.extend( data[i-1], {criterioView:aux});
+        var aux = data[i-1].estancia - data[i-1].pcSuperior;
+        $.extend( data[i-1], {outlineView:aux});
         ret.push(data[i-1]);
       }
+
     }
     return ret;
   }
@@ -335,7 +367,7 @@ const Resumen = () => {
         let listPendienteString = ''
         for (var j = 0; j < data[i].pendientesJson.length; j++) {
           if (j < data[i].pendientesJson.length - 1) {
-            listPendienteString = data[i].pendientesJson[j].nombre + ', '
+            listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre + ', '
           }
           else{
             listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
@@ -343,7 +375,6 @@ const Resumen = () => {
         }
         data[i].pendiente = listPendienteString
       }
-      
       if(storedRol.flagJ){
         let resumenFiltrado = []
         for (let i = 0; i < data.length; i++) {
@@ -378,7 +409,7 @@ const Resumen = () => {
       let listPendienteString = ''
       for (var j = 0; j < data[i].pendientesJson.length; j++) {
         if (j < data[i].pendientesJson.length - 1) {
-          listPendienteString = data[i].pendientesJson[j].nombre + ', '
+          listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre + ', '
         }
         else{
           listPendienteString = listPendienteString + data[i].pendientesJson[j].nombre
@@ -387,7 +418,7 @@ const Resumen = () => {
       data[i].pendiente = listPendienteString
     }
     let resumenFiltrado = []
-    if(event.target.value==1){
+    if(event==1){
       resumenFiltrado = data
     }
     else{
@@ -399,7 +430,7 @@ const Resumen = () => {
       }
     }
     const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
-    setListResumen(resumenFiltrado)
+    setListResumen(addOutline(resumenFiltrado))
 
   };
 
@@ -476,11 +507,11 @@ const Resumen = () => {
     >
       <DataGrid
         getCellClassName={(params) => {
-          if (params.field == 'criterio' && params.value !== null) {
-            return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));
+          if (params.field == 'criterioView' && params.row.emNorma > 0 && params.row.outline !== "") {
+            return params.row.criterio >= 1 ? 'hot' : (params.row.criterio >= 0.75 ? "mediumhot" : (params.row.criterio >= 0.5 ? "mediumcold" : "cold"));
           }
-          if (params.field == 'outline' && params.value !== "" && params.row.criterio >= 1) {
-            return params.value >= 1 ? 'hot' : (params.value >= 0.6 ? "mediumhot" : "amarillo");
+          if (params.field == 'outlineView' && params.value !== "" && params.row.criterio >= 1) {
+            return params.row.outline >= 1 ? 'hot' : (params.row.outline >= 0.6 ? "mediumhot" : "amarillo");
           }
           if (params.row.flag_diag == true) {
             return 'edited'
