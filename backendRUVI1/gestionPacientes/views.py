@@ -40,12 +40,21 @@ def subir(request,carga):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            if handle_uploaded_file(request.FILES['file'],carga):
+            valor,retorno=handle_uploaded_file(request.FILES['file'],carga)
+            if valor:
                 return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
             else:
-                return JsonResponse(respuesta3, safe=False)
+                if len(retorno)==0:
+                    return JsonResponse(respuesta3, safe=False)
+                else:
+                    print('Entro')
+                    respuesta4=[{"ErrorDiagnostico": "Archivo no cargado. El archivo tiene un diagnostico que no se encuentra en la base de datos.\n"+
+                    "Paciente: "+retorno[0]+" "+retorno[2] +
+                    "\nDiagnostico: " + retorno[1]+
+                    "\nBAD REQUEST", "cargado": False}]
+                    print(respuesta4)
+                    return JsonResponse(respuesta4, safe=False)
     else:
-
         form = UploadFileForm()
     return JsonResponse(respuesta2, safe=False)
 
@@ -76,12 +85,12 @@ def handle_uploaded_file(f,carga):
     if carga=="CIE10GRD" and f.name=='CIE10-GRD.xlsm':
         print("cie10-norma")
         load_CIE10_GRD(path)
-        return True
+        return True,[]
     if carga=='pendientes' and f.name=='PRESTACIONES_CAUSAS.xlsx':
         print("pendientes")
         load_prestaciones(path)
-        return True
-    return False
+        return True, []
+    return False, []
 # Create your views here.
 @api_view(['POST'])
 def comprobar(request):

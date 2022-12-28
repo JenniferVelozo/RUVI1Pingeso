@@ -96,7 +96,12 @@ const Update = () => {
             alert("Archivo archivo seleccionado no cumple con el formato");
           }
           else{
-            alert("Ningun archivo seleccionado");
+            if(data[0].ErrorDiagnostico){
+              alert(data[0].ErrorDiagnostico);
+            }
+            else{
+              alert("Ningun archivo seleccionado");
+            }
           }
           setSuccess(false);
           setLoading(false);

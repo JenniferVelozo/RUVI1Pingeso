@@ -20,7 +20,7 @@ def leerDf():
     try:
         pacientes= pd.read_csv(archivo, sep='~',encoding='latin-1')
     except pd.errors.ParserError:
-        return False
+        return False, []
         
     
 
@@ -44,6 +44,7 @@ def leerDf():
 
     # Se recorre el dataframe de los pacientes
     jsonRes=[]
+    
     for i in range(len(pacientes)):
         
         
@@ -143,7 +144,15 @@ def leerDf():
                     grd_diagnostico2 = diagnostico2_pd['GRD'].to_frame(name='GRD')
                     sev_diagnostico2 = diagnostico2_pd['SEV'].to_frame(name = 'SEV')
                     nombre_diagnostico2 = diagnostico2_pd['DIAGNOSTICO'].to_frame(name='DIAGNOSTICO')
-                    diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
+                    try:
+                        diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
+                    except IndexError:
+                        errSinCIE10=list()
+                        
+                        errSinCIE10.append(nombre)
+                        errSinCIE10.append(diag)
+                        errSinCIE10.append(rut)
+                        return False, errSinCIE10
                     grd = str(grd_diagnostico2['GRD'].values[0])
                     sev = str(sev_diagnostico2['SEV'].values[0])
                     aux['codigo']=str(diag)
@@ -397,7 +406,7 @@ def leerDf():
     
     
     print("fin")
-    return True
+    return True,[]
     
 
 
