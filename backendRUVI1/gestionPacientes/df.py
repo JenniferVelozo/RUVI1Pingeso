@@ -1,7 +1,7 @@
 #################
 import os
 from datetime import datetime
-
+import time 
 import pandas as pd
 from gestionPacientes.repMensual import mensual
 from gestionPacientes.models import *
@@ -163,8 +163,8 @@ def leerDf():
 
                 nombres_diags2.append(diagnostico_dos)
                 diag2_final=""
-                for i in range(len(nombres_diags2)-1):
-                    diag2_final = diag2_final + nombres_diags2[i] +", "
+                for j in range(len(nombres_diags2)-1):
+                    diag2_final = diag2_final + nombres_diags2[j] +", "
                     print(diag2_final)
                 diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]
         print("Diagnóstico 2: ", diagnostico2)
@@ -209,9 +209,9 @@ def leerDf():
         # El GRD y SEV quedan como decimal por lo que se quita 
         # lo que está después del '.'
         if '.' in grd:
-            i = grd.find('.')
-            print(i)
-            grd = grd[0:i]
+            j = grd.find('.')
+            print(j)
+            grd = grd[0:j]
 
         if '.' in sev:
             i2 = sev.find('.')
@@ -259,14 +259,11 @@ def leerDf():
         print(" El peso grd es : ", peso_grd)
         print(" El EM es: ", em_norma)
 
-
         
-        if str(pacientes.iloc[i]['RUNPaciente']) == '111':
-            print("ENCONTRÓ PACIENTE RARO********************************************************************************************")
-            break
-
+        nombreServicio=None
+        id_servicios=None
         nombreServicio=pacientes.iloc[i]['ActualServicioClínico_Desc']
-        print(nombreServicio)
+        print(pacientes.iloc[i]['ActualServicioClínico_Desc'])
         id_servicios=None
         print("nombre",nombreServicio)
         if str(nombreServicio)!= 'nan':
@@ -358,10 +355,8 @@ def leerDf():
         aux["flag_pend"]=flagPend
         aux["pendientesJson"]=pendJson
         jsonRes.append(aux)
-        print(aux)
+        print(aux)   
 
-
-        
     
     
     print(len(jsonRes))
