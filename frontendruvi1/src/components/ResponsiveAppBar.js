@@ -10,35 +10,31 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Logo from "./Logo.js";
-import ModalPopup from "./ModalPopup";
 import Link from '@mui/material/Link';
-import { useEffect, useState } from 'react';
 
 
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { unSetUserToken } from '../features/authSlice';
-import { getToken, removeToken } from '../services/LocalStorageService';
-import { useGetLoggedUserQuery } from '../services/userAuthApi';
+import {removeToken } from '../services/LocalStorageService';
 import { unsetUserInfo } from '../features/userSlice';
 const pages = ['Menú', 'Añadir usuario'];
 const settings = ['Configuración', 'Cerrar sesión']
 
+//Barra superior
 const ResponsiveAppBar = ({flag, nick}) => {
 
+  
+  
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const handleLogout = () => {
     dispatch(unsetUserInfo({ name: "", nickname: "" }))
     dispatch(unSetUserToken({ access_token: null }))
     removeToken()
     navigate('/login')
   }
-  
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const { access_token } = getToken()
-  const { data, isSuccess } = useGetLoggedUserQuery(access_token)
 
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);

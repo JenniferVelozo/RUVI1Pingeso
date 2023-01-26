@@ -174,7 +174,7 @@ class Historico(models.Model):
         db_table='historico'
 
 
-#----------- INTENTO DE LOGIN --------------------
+#----------- LOGIN --------------------
 
 #  Custom User Manager
 class UserManager(BaseUserManager):

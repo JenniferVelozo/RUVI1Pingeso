@@ -10,6 +10,7 @@ import Home from './home';
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//login de usuarios.
 function Login(){
     const paperStyle={padding :20,height:'50vh',width:260, margin:"20px auto"}
     const avatarStyle={backgroundColor:'#005588', width:60,height:60}

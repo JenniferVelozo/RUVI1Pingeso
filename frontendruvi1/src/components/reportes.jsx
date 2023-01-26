@@ -1,7 +1,5 @@
 import React from 'react';
-import { Avatar, Paper, Button, Grid, Box } from '@mui/material';
-import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
-import FeedIcon from '@mui/icons-material/Feed';
+import { Avatar, Paper, Button, Grid } from '@mui/material';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeartOutlined';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import TimelineIcon from '@mui/icons-material/Timeline';
@@ -10,7 +8,7 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 
 //rol de usuario
 const KEY = "App.rol";
-
+// Menu de reportes
 const Home =()=>{
     let storedRol = JSON.parse(localStorage.getItem(KEY));
     

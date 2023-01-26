@@ -9,26 +9,29 @@ from gestionPacientes.models import *
 
 
 def leerDf():
-    # Se lee el archivo del CIE10
+    '''Se lee el archivo de los pacientes cargado en el excel de pacientes.csv y se crea el resumen para los
+    pacientes.'''
+    # Se leen los archivos de cie10, norma y pacientes.
     path = os.path.dirname(os.path.realpath(__file__))
     archivo = path+'\CIE10-GRD.xlsm'
     cie10 = pd.read_excel(archivo, sheet_name='CIE10 MOD')
     norma = pd.read_excel(archivo, sheet_name='NORMA')
-    print(norma)
-    archivo = path+'\PRESTACIONES_CAUSAS.xlsx'
     archivo = path+'\PACIENTES.csv'
+
+    print("Inicia creacion resumen de pacientes.")
+    # Se intenta leer el archivo de pacientes. Este archivo debe ser un .csv separado por el simbolo ~
     try:
         pacientes= pd.read_csv(archivo, sep='~',encoding='latin-1')
     except pd.errors.ParserError:
         return False, []
-        
-    
 
-    
+    #Se eliminan del archivo leido los pacientes que no corresponden.
+    print("Eliminando pacientes HEGC")
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='(UTI)Unidad de Tratamiento Intermedio HEGC'].index, inplace=True)
     pacientes.drop(pacientes[pacientes['ActualServicioClínico_Desc']=='Unidad de Emergencia HEGC'].index, inplace=True)
-    print(pacientes)
     pacientesEnCierre=[]
+
+    print("Eliminando pacientes en cierre")
     for i in range(len(pacientes)):
         if str(pacientes.iloc[i]['ActualHabitación_Desc']).count('Cierre de Atención')!=0:
             pacientesEnCierre.append(i)
@@ -36,53 +39,35 @@ def leerDf():
             pass
     pacientes.drop(pacientesEnCierre, inplace=True)
 
-    
-    #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
     # Se tranforma a numérico entero el IR GRD ya que lo toma con un .0 al final
     norma["IR-GRD CÓDIGO v2.3"] = pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer')
-    print(norma["IR-GRD CÓDIGO v2.3"])
-
     # Se recorre el dataframe de los pacientes
     jsonRes=[]
-    
-    for i in range(len(pacientes)):
-        
-        
+    largo=len(pacientes)
+    print("Cargando pacientes")
+    for i in range(largo):
+        print(str(i+1)+"/"+str(largo))
         # Si el paciente no tiene rut, se deja como string vacío 
         if str(pacientes.iloc[i]['RUNPaciente']) == 'nan':
-            print("EL RUT ES NAAAAN")
             rut = ""
         else:
             rut = pacientes.iloc[i]['RUNPaciente']
-
         # Se obtiene el nombre del paciente
-        nombre = ""
-        print(type(pacientes.iloc[i]['ApellidoPaterno']))
-        
+        nombre = ""        
         if str(pacientes.iloc[i]['NombrePaciente']) == 'nan':
-            print("EL nombres es NAAAAAAAAAAAAAN")
             nombreAux = ""
         else:
             nombreAux = pacientes.iloc[i]['NombrePaciente']
-
-
         if str(pacientes.iloc[i]['ApellidoPaterno']) == 'nan':
-            print("EL apellido pat  es NAAAAAAAAAAAAAN")
             apellido_pat = ""
         else:
             apellido_pat = pacientes.iloc[i]['ApellidoPaterno']
-
         if str(pacientes.iloc[i]['ApellidoMaterno']) == 'nan':
-            print("EL apellido mat  es NAAAAAAAAAAAAAN")
             apellido_mat = ""
         else:
             apellido_mat = pacientes.iloc[i]['ApellidoMaterno']
-
         nombre = nombre + nombreAux +" " +apellido_pat + " " +apellido_mat
-
-        
-        print("\n MOSTRANDO PACIENTE: ", rut)
-        print("Nombre: ", nombre)
+        #Se obtienen los datos de la ultima cama del paciente y los dias de estadia.
         if str(pacientes.iloc[i]['UltimaCama']) != 'nan':
             ult_cama = str(pacientes.iloc[i]['UltimaCama'])
             ult_cama = ult_cama[0:9]
@@ -93,22 +78,13 @@ def leerDf():
             dias_estada = str((int) (pacientes.iloc[i]['DíasEstada']))
         else:
             dias_estada = ""
-        print("La última cama es: ", ult_cama)
-        print("Los días de estada: ", dias_estada)
         
-        #grd = 0
-        #sev = 0
+        # Para encontrar el diagnositco principal
         diagnostico1Cod = pacientes.iloc[i]['DiagnosticoPrincipal'] 
-        # print(diagnostico1)
-
         diagnostico2 = pacientes.iloc[i]['ListaDiagnosticosEpisodio']  
         diag2_final = ""
-        
-        # print(diagnostico2)
         # Para considerar los diagnósticos secundarios
-
         nombres_diags2 = []
-        # print(type(nombres_diags2))
         diagnostico2Cod=diagnostico2
         diagnostico2Json=[]
         if str(diagnostico2) == 'nan':
@@ -126,7 +102,6 @@ def leerDf():
                 aux={}
 
                 if grd_diagnostico2.size != 0:
-                    print("AAAAAAAAAAAAAAAAAAAAAAAAA")
                     diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                     grd = str(grd_diagnostico2['GRD'].values[0])
                     sev = str(sev_diagnostico2['SEV'].values[0])
@@ -136,10 +111,7 @@ def leerDf():
                     diagnostico2Json.append(aux)
                 
                 else:
-                    print("No tiene GRD")
-                    print("GRD CONFLICTO...")
                     condicion = cie10.loc[:, 'CODIGO'] == diag+'.0'
-                    print(diag)
                     diagnostico2_pd = cie10.loc[condicion]
                     grd_diagnostico2 = diagnostico2_pd['GRD'].to_frame(name='GRD')
                     sev_diagnostico2 = diagnostico2_pd['SEV'].to_frame(name = 'SEV')
@@ -165,13 +137,8 @@ def leerDf():
                 diag2_final=""
                 for j in range(len(nombres_diags2)-1):
                     diag2_final = diag2_final + nombres_diags2[j] +", "
-                    print(diag2_final)
                 diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]
-        print("Diagnóstico 2: ", diagnostico2)
-        print("Nombres diag2: ", nombres_diags2)
-        #diagnostico2Json=json.dumps(diagnostico2Json)
-        
-        
+
         if str(diagnostico1Cod) != 'nan':
             # Aquí busca el código del diagnóstico en el CIE10
             condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod
@@ -186,8 +153,6 @@ def leerDf():
                 sev = str(sev_diagnostico1['SEV'].values[0])
                 
             else:
-                print("No tiene GRD")
-                print("GRD CONFLICTO...")
                 condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod+'.0'
                 diagnostico1_pd = cie10.loc[condicion]
                 grd_diagnostico1 = diagnostico1_pd['GRD'].to_frame(name='GRD')
@@ -202,21 +167,14 @@ def leerDf():
             sev = ""
             diagnostico1Cod=None
 
-        print("DIAGNÓSTICO 1: ", diagnostico_uno)
-        print("GRD ANTES: ", grd)
-        print("SEV ANTES: ", sev)
-
         # El GRD y SEV quedan como decimal por lo que se quita 
         # lo que está después del '.'
         if '.' in grd:
             j = grd.find('.')
-            print(j)
             grd = grd[0:j]
-
         if '.' in sev:
             i2 = sev.find('.')
             sev = sev[0:i2]
-
         # Si la severidad es 0 o N entonces se añade un 1 al GRD
         if sev == '0' or sev == 'N':
             codigo_norma = str(grd)+'1'
@@ -230,42 +188,23 @@ def leerDf():
         else:
             codigo_norma = str(grd)+'1'
 
-        print("GRD DESPUÉS: ", grd)
-        print("SEV DESPUÉS: ", sev)
-        print("El código norma es: ", codigo_norma)
-        print("El largo código norma es: ", len(codigo_norma))
-
         # Ahora se busca el código IR-GRD en la norma
         norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
-        # print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
-        # print(type(norma.loc[:,'IR-GRD CÓDIGO v2.3']))
         condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma
-        # print("condicion 2: ",condicion2)
         fila_norma = norma.loc[condicion2]
-        # print(fila_norma)
-        #print(fila_norma)
         pc_corte = 0
         peso_grd = 0
         em_norma = 0
         if fila_norma.size == 0:
             print("No tiene NORMA")
         else:
-            print("TIENE NORMA -------------------------------------------------------------------------")
             pc_corte = fila_norma['PC superior'].values[0]
             peso_grd = fila_norma['Peso GRD'].values[0]
-            em_norma = fila_norma['EM \n(inlier)'].values[0]
-
-        print(" El puntaje de corte es: ",pc_corte)
-        print(" El peso grd es : ", peso_grd)
-        print(" El EM es: ", em_norma)
-
-        
+            em_norma = fila_norma['EM \n(inlier)'].values[0]        
         nombreServicio=None
         id_servicios=None
         nombreServicio=pacientes.iloc[i]['ActualServicioClínico_Desc']
-        print(pacientes.iloc[i]['ActualServicioClínico_Desc'])
         id_servicios=None
-        print("nombre",nombreServicio)
         if str(nombreServicio)!= 'nan':
             try:
                 servicio=Servicio.objects.get(nombre=nombreServicio.strip(' '))
@@ -273,9 +212,7 @@ def leerDf():
             except Servicio.DoesNotExist:
                 id_servicios=None
             except Servicio.MultipleObjectsReturned:
-                id_servicios=None
-        print("id_Servicio", id_servicios)
-        
+                id_servicios=None        
         
         #se busca el paciente en el resumen antiguo
         try:
@@ -290,7 +227,7 @@ def leerDf():
         except Resumen.MultipleObjectsReturned:
             pAntiguo=None
         
-        #si el paciente existe en el anterior y flag=true
+        #si el paciente existe en el anterior y tiene cambios en los diagnosticos o los pendientes.
         flagCambios=False    
         flagPend=False
         pendJson= {}
@@ -309,31 +246,19 @@ def leerDf():
             if pAntiguo.flag_pend:
                 flagPend=True
                 pendJson=pAntiguo.pendientesJson
-            print(flagPend)
         if dias_estada == '':
             dias_estada = 0
         #calculo de critero
         criterio = None
         if pc_corte!=0:
-            criterio=float(dias_estada)/float(pc_corte)
-        
-        print("Dias de estada: ", dias_estada)
-        print("Puntaje de corte: ", pc_corte)
-        print("Valor criterio: ", criterio)
-        
-        #se guarda en un json y se agrega a la lista.
+            criterio=float(dias_estada)/float(pc_corte)   
+
+        #se guarda en un json y se agrega a la lista de pacientes.
         aux={}
         aux["rut"]= rut
         aux["nombrePaciente"]= nombre 
-        
-            
-
-        
         if id_servicios == 0:
-            print("ENTRAAAAAAAAAAAAAAAAAAAA...................................................")
             id_servicios = None
-            print(id_servicios)
-           
         aux["servicio_id"]=id_servicios 
         aux["nombreServicio"]=nombreServicio
         aux["cama"] = ult_cama
@@ -354,27 +279,22 @@ def leerDf():
         aux["flag_diag"]=flagCambios
         aux["flag_pend"]=flagPend
         aux["pendientesJson"]=pendJson
-        jsonRes.append(aux)
-        print(aux)   
+        jsonRes.append(aux)  
 
-    
-    
-    print(len(jsonRes))
     #Borra el resumen anterior
     try:
         Resumen.objects.all().delete()
     except Resumen.DoesNotExist:
         pass
     #guarda el resumen actual.
-    #print(jsonRes)
     now = datetime.now()
     fecha=now
+    #Cuando se agrega un resumen se crea su historico, si se sube mas de un resumen en un dia el historico de ese dia se borra
+    #Cuando existe un cambio de fecha en mes/año del resumen en comparacion al ultimo historico, se crea un reporte mensual.
     try:
         hist= Historico.objects.all().latest('fecha')
-        print(hist.fecha)
         indicador=(fecha.month-hist.fecha.month)+(fecha.year-hist.fecha.year)+(fecha.day-hist.fecha.day)
         if indicador==0:
-            print("entra al delete")
             Historico.objects.filter(fecha=fecha).delete()
         else:
             if fecha.month-hist.fecha.month!=0:
@@ -383,24 +303,14 @@ def leerDf():
     except Historico.DoesNotExist:
         print("No hay historico")
         hist=None
-    
-    #print(fecha)
+    #Se guarda en la BD el resumen y el historico.
     for paciente in jsonRes:
-        
-        #fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-        #print("----------------------------------------------------------------")
         a = Resumen.objects.create(updated_at=fecha,rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"], diagnostico2Json=paciente["diagnostico2Json"])
-        #print("\n")
-        #print(paciente)
         a.save()
-        #print(created)
         #guarda en tabla de historicos
         b= Historico.objects.create(fecha=fecha, rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"])
         b.save()
-    
-    
-    
-    print("fin")
+    print("Resumen de pacientes finalizado.")
     return True,[]
     
 

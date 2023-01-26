@@ -1,18 +1,18 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, Avatar, List, ListItem, ListItemAvatar, ListItemText, Button} from '@mui/material';
-import TouchAppIcon from '@mui/icons-material/TouchApp';
+import { Paper, Grid, Box, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
+
 import { useState, useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
-import PersonIcon from '@mui/icons-material/Person';
-import { blue } from '@mui/material/colors';
 import { styled } from '@mui/material/styles';
 
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
+
+//vista de reporte mensual.
 
 //tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
@@ -57,11 +57,10 @@ function ShowTable() {
     const getMensual = async(year, mes) => {
         const { data } = await axios.get(baseURL+year+"/"+mes)
         setListMensual(data)
-        const data2 = await axios.post(direccion+'/exportarM/', data)
+        await axios.post(direccion+'/exportarM/', data)
 
     }
   
-  const [evento, setEvento] = React.useState('');
   const handleChange = async(event) => {
     let fechas=listMeses[event.target.value].fecha.split("-")
     getMensual(fechas[0],fechas[1])

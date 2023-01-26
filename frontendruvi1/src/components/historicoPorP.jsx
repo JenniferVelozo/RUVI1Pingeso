@@ -21,6 +21,8 @@ const direccion = process.env.REACT_APP_DIRECCION_IP
 //rol de usuario
 const KEY = "App.rol";
 
+//historico por pendientes.
+
 //tematizacion paper
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',

@@ -6,10 +6,12 @@ import os
 
 import pandas as pd
 from gestionPacientes.models import *
-#from backendRUVI1.gestionPacientes.models import Servicio
 
-#ESTE ARCHIVO ES PARA PROBAR CODIGO 
+
 def mensual(mes, year):
+    '''Funcion genera un reporte mensual. El reporte mensual contempla estadisticas de los resumenes de pacientes
+    del mes y año indicado de entrada'''
+    #obtiene los historicos del mes y año.
     historicos=Historico.objects.filter(fecha__year=year, fecha__month=mes)
     servicios=Servicio.objects.all()
     mensual=[]
@@ -24,12 +26,16 @@ def mensual(mes, year):
         peso=0 #promedio peso
         count=0 #contador
         countP=0 # contador para los porcentajes de pendientes
+
+        #pendientes
         internas=0
         externas=0
         condicion=0
-        print("--------------INICO---------------")
+        print("--------------INICIO---------------")
+        #Para cada paciente se suman los contadores segun corresponde
         for paciente in historicos:
             if paciente.servicio_id==servicio.id:
+                #si el paciente tiene norma y grupo grd
                 if paciente.emNorma!=0 and paciente.ir_grd!='0' and paciente.ir_grd!=NULL and paciente.ir_grd!= 'R':
         
                     peso=peso+paciente.pesoGRD
@@ -45,15 +51,15 @@ def mensual(mes, year):
                             iemainliersMenor=iemainliersMenor+1
                     
                     count=count+1
+                #si el paciente tiene pendientes
                 if paciente.pendientesJson!=0:
-                    print("ENTREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
                     internas=paciente.pendientes.filter(causa='INTERNAS').count() + internas
                     externas=paciente.pendientes.filter(causa='EXTERNAS').count() + externas
                     condicion=paciente.pendientes.filter(causa='CONDICIÓN CLÍNICA').count() + condicion
                     countP=internas+externas+condicion
             
             
-                
+        #si existen datos a considerar
         if count!=0:
             peso=peso/count
             em=em/count
@@ -66,12 +72,14 @@ def mensual(mes, year):
             iemainliersMenor=(iemainliersMenor*100)/count
             iemainliersMayor=(iemainliersMayor*100)/count
 
+        #si existen datos de pendientes
         if countP!=0:
             internas=(internas*100)/countP
             externas=(externas*100)/countP
             condicion=(condicion*100)/countP
        
         print("-------------FIN----------------")
+        #crea reporte mensual.
         now = datetime.now()
         fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day) 
         a, created= ReporteMensual.objects.get_or_create(fecha=fecha,servicio=Servicio.objects.get(id=servicio.id), servicioNombre=servicio.nombre, peso=peso,
@@ -85,7 +93,7 @@ def mensual(mes, year):
         pExt=externas,
         condP=condicion)
     
-    print("fin")
+    print("Reporte mensual creado.")
     
 
 

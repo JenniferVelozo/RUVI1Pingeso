@@ -4,19 +4,17 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 import { Avatar, Paper } from '@mui/material';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import {  useNavigate } from 'react-router-dom';
 
 const KEY = "App.rol";
 
+//vista del area de configuracion
 const Config =()=>{
     const avatarStyle={backgroundColor:'#005588'}
     const paperStyle={padding :20,height:'20vh',width:260, margin:"20px auto"}
     const storedRol = JSON.parse(localStorage.getItem(KEY));
     
 
-    const navigateResumen = () => {
-        window.location.href = '/config';
-    }
+    
 
     return(
         <div classname="config">
@@ -27,8 +25,8 @@ const Config =()=>{
         position: 'absolute', left: '30%', top: '30%',
         transform: 'translate(-20%, -20%)'
       }}>
-        <Grid container spacing={8}>
-            <Grid item xs>
+            <Grid container spacing={8}>
+                <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
@@ -37,7 +35,7 @@ const Config =()=>{
                         </Grid>
                     </Paper>
                 </Grid>
-            <Grid item xs>
+                <Grid item xs>
                     <Paper elevation={10} style={paperStyle}>
                         <Grid align='center'>
                             <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
@@ -46,45 +44,28 @@ const Config =()=>{
                         </Grid>
                     </Paper>
                 </Grid>
-              <Grid item xs>
-                  <Paper elevation={10} style={paperStyle}>
-                      <Grid align='center'>
-                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
-                          <h5>Configuración del Sistema</h5>
-                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
-                      </Grid>
-                  </Paper>
-              </Grid>
-              </Grid>
+                
+            </Grid>
             <Grid container spacing={8}>
-            <Grid item xs>
-                  <Paper elevation={10} style={paperStyle}>
-                      <Grid align='center'>
-                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
-                          <h5>Gestionar BD GRD</h5>
-                          <Button href = "/updateCG" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
-                      </Grid>
-                  </Paper>
-              </Grid>
-              <Grid item xs>
-                  <Paper elevation={10} style={paperStyle}>
-                      <Grid align='center'>
-                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
-                          <h5>Gestionar tabla Pendientes</h5>
-                          <Button href = "/updateP" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
-                      </Grid>
-                  </Paper>
-              </Grid>
-              <Grid item xs>
-                  <Paper elevation={10} style={paperStyle}>
-                      <Grid align='center'>
-                          <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
-                          <h5>Información del Sistema</h5>
-                          <Button href = "/resumen" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
-                      </Grid>
-                  </Paper>
-              </Grid>
-              
+                <Grid item xs>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align='center'>
+                            <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                            <h5>Gestionar BD GRD</h5>
+                            <Button href = "/updateCG" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                        </Grid>
+                    </Paper>
+                </Grid>
+                <Grid item xs>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Grid align='center'>
+                            <Avatar style={avatarStyle}><PieChartIcon/></Avatar>
+                            <h5>Gestionar tabla Pendientes</h5>
+                            <Button href = "/updateP" variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal" ></Button>
+                        </Grid>
+                    </Paper>
+                </Grid>
+                
             </Grid>
             </div>
 

@@ -9,7 +9,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 import Fab from '@mui/material/Fab';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import $ from 'jquery';
-import SaveIcon from '@mui/icons-material/Save';
 
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
@@ -129,7 +128,7 @@ const Resumen = () => {
       const { data } = await axios.get(direccion+'/pendientes/')
       for (let i = 0; i < idProp.props.pendientesJson.length; i++) {
         for (let j = 0; j < data.length; j++) {
-          if (idProp.props.pendientesJson[i].id == data[j].id) {
+          if (idProp.props.pendientesJson[i].id === data[j].id) {
             handleToggle(data[j])
           }
         }
@@ -245,7 +244,7 @@ const Resumen = () => {
     //handler intercambio de diagnostico 1 y 2
     const handleClick = (diagnostico) => async() => {
       var listaSalida = []
-      if (props.props.diagnostico1Cod != 0) {
+      if (props.props.diagnostico1Cod !== 0) {
         listaSalida = props.props.diagnostico1Cod
       }
       else{
@@ -327,17 +326,17 @@ const Resumen = () => {
   function addOutline(data){
     var ret= [];
     for (var i = 1; i <= data.length; i++){
-      if(data[i-1].estancia == 0 || data[i-1].pcSuperior == 0){
+      if(data[i-1].estancia === 0 || data[i-1].pcSuperior === 0){
         $.extend( data[i-1], {outline:""});
         ret.push(data[i-1]);
 
       } else{
         var aux = data[i-1].estancia / data[i-1].pcSuperior;
         $.extend( data[i-1], {outline:aux});
-        var aux = data[i-1].estancia - data[i-1].emNorma;
-        $.extend( data[i-1], {criterioView:aux});
-        var aux = data[i-1].estancia - data[i-1].pcSuperior;
-        $.extend( data[i-1], {outlineView:aux});
+        var aux2 = data[i-1].estancia - data[i-1].emNorma;
+        $.extend( data[i-1], {criterioView:aux2});
+        var aux3 = data[i-1].estancia - data[i-1].pcSuperior;
+        $.extend( data[i-1], {outlineView:aux3});
         ret.push(data[i-1]);
       }
 
@@ -355,7 +354,7 @@ const Resumen = () => {
   const getResumen = async() => {
     const { data } = await axios.get(direccion+'/resumen/')
     for (var i = 0; i < data.length; i++) {
-        if(data[i].nombreServicio=='nan'){
+        if(data[i].nombreServicio==='nan'){
           data[i].nombreServicio=""
         }
         if (data[i].emNorma !== 0){
@@ -378,15 +377,15 @@ const Resumen = () => {
       if(storedRol.flagJ){
         let resumenFiltrado = []
         for (let i = 0; i < data.length; i++) {
-          if (storedRol.servicio_id == data[i].servicio) {
+          if (storedRol.servicio_id === data[i].servicio) {
             resumenFiltrado.push(data[i])
           }
         }
-        const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+        await axios.post(direccion+'/exportar/', resumenFiltrado)
         setListResumen(addOutline(resumenFiltrado))
       }
       else{
-        const data2 = await axios.post(direccion+'/exportar/', data)
+        await axios.post(direccion+'/exportar/', data)
         setListResumen(addOutline(data))
       }
     }
@@ -397,7 +396,7 @@ const Resumen = () => {
     setEvento(event);
     const { data } = await axios.get(direccion+'/resumen/')
     for (var i = 0; i < data.length; i++) {
-      if(data[i].nombreServicio=='nan'){
+      if(data[i].nombreServicio==='nan'){
         data[i].nombreServicio=""
       }
       if (data[i].emNorma !== 0){
@@ -418,18 +417,18 @@ const Resumen = () => {
       data[i].pendiente = listPendienteString
     }
     let resumenFiltrado = []
-    if(event==1){
+    if(event.target.value===1){
       resumenFiltrado = data
     }
     else{
       resumenFiltrado = []
       for (let i = 0; i < data.length; i++) {
-        if (event.target.value == data[i].servicio) {
+        if (event.target.value === data[i].servicio) {
           resumenFiltrado.push(data[i])
         }
       }
     }
-    const data2 = await axios.post(direccion+'/exportar/', resumenFiltrado)
+    await axios.post(direccion+'/exportar/', resumenFiltrado)
     setListResumen(addOutline(resumenFiltrado))
 
   };
@@ -507,13 +506,13 @@ const Resumen = () => {
     >
       <DataGrid
         getCellClassName={(params) => {
-          if (params.field == 'criterioView' && params.row.emNorma > 0 && params.row.outline !== "") {
+          if (params.field === 'criterioView' && params.row.emNorma > 0 && params.row.outline !== "") {
             return params.row.criterio >= 1 ? 'hot' : (params.row.criterio >= 0.75 ? "mediumhot" : (params.row.criterio >= 0.5 ? "mediumcold" : "cold"));
           }
-          if (params.field == 'outlineView' && params.value !== "" && params.row.criterio >= 1) {
+          if (params.field === 'outlineView' && params.value !== "" && params.row.criterio >= 1) {
             return params.row.outline >= 1 ? 'hot' : (params.row.outline >= 0.6 ? "mediumhot" : "amarillo");
           }
-          if (params.row.flag_diag == true) {
+          if (params.row.flag_diag === true) {
             return 'edited'
           }
           return '';}}

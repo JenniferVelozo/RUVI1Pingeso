@@ -9,6 +9,7 @@ import ResponsiveAppBar from './ResponsiveAppBar.js';
 //rol de usuario
 const KEY = "App.rol";
 
+//Home de la app.
 const Home =()=>{
     let storedRol = JSON.parse(localStorage.getItem(KEY));
 

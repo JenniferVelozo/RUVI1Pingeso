@@ -46,7 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     
-#---------------- INTENTO DE LOGIN -------------------
+#---------------- LOGIN -------------------
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
   # We are writing this becoz we need confirm password field in our Registratin Request

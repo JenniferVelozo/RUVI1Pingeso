@@ -9,6 +9,7 @@ import axios from 'axios';
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
 
+//vista de registro de usuarios.
 function Register(){
     //tematizacion paper
     const paperStyle={padding :20,height:'80vh',width:260, margin:"20px auto"}

@@ -34,12 +34,16 @@ class UploadFileForm(forms.Form):
 
 @api_view(['POST'])
 def subir(request,carga):
+    '''Funcion para la carga de archivos de pacientes, cie10 y prestaciones'''
+    #respuesta de retorno
     respuesta=[{"Response": "Archivo cargado correctamente. 200_OK", "cargado": True}]
     respuesta2=[{"Response": "Archivo no cargado. 400 BAD REQUEST", "cargado": False}]
     respuesta3=[{"ErrorFormato": "Archivo no cargado. El archivo no cumple el formato. BAD REQUEST", "cargado": False}]
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        #si el formato es valido
         if form.is_valid():
+            #se carga el archivo
             valor,retorno=handle_uploaded_file(request.FILES['file'],carga)
             if valor:
                 return JsonResponse(respuesta, safe=False, status=status.HTTP_200_OK)
@@ -47,7 +51,7 @@ def subir(request,carga):
                 if len(retorno)==0:
                     return JsonResponse(respuesta3, safe=False)
                 else:
-                    print('Entro')
+                    #si el archivo tiene diagnosticos no registrados avisa.
                     respuesta4=[{"ErrorDiagnostico": "Archivo no cargado. El archivo tiene un diagnostico que no se encuentra en la base de datos.\n"+
                     "Paciente: "+retorno[0]+" "+retorno[2] +
                     "\nDiagnostico: " + retorno[1]+
@@ -60,7 +64,8 @@ def subir(request,carga):
 
   
 
-def handle_uploaded_file(f,carga):  
+def handle_uploaded_file(f,carga): 
+    '''Dependiendo del archivo de entrada se cargan los datos correspondientes.'''
     path = os.path.dirname(os.path.realpath(__file__))
 
     if carga=="pacientes":
@@ -70,18 +75,16 @@ def handle_uploaded_file(f,carga):
     if carga=='pendientes':
         path=path+'\\PRESTACIONES_CAUSAS.xlsx'
     
-
+    #se sobreescribe el archivo base de la app con el archivo cargado.
     file = open(path, "w")
     file.close()
     with open(path, 'wb+') as destination:  
       for chunk in f.chunks():  
           destination.write(chunk)  
-
-    #if f.name=='PACIENTES.xlsx':
+    #dependiendo del archivo cargado se ejecutan las funciones de los archivos df.py y loadCSV.py
     if carga=="pacientes":
         print("pacientes")
         return leerDf()
-        
     if carga=="CIE10GRD" and f.name=='CIE10-GRD.xlsm':
         print("cie10-norma")
         load_CIE10_GRD(path)
@@ -91,39 +94,33 @@ def handle_uploaded_file(f,carga):
         load_prestaciones(path)
         return True, []
     return False, []
-# Create your views here.
-@api_view(['POST'])
-def comprobar(request):
-    print(request.data)
-    user=request.data
-    data = Usuarios.objects.get(nickname=user['nickname'])
-    if data.password==user['password']:
-        #return HttpResponse(data, content_type='application/json')
-        user=[{'entra': 'SI', 'rol': data.rol.nombre}]
-        return HttpResponse(user, content_type='application/json')
-    user=[{'entra': 'NO'}]
-    return HttpResponse(user, content_type='application/json')
+
+
     
 @api_view(['POST'])
 def setPendientes(request):
-    print(request.data)
+    '''Funcion para agregar pendientes a un paciente.'''
     data=request.data
     idPendientes=data["pendientes"]
     idRes=data["id"]
     pJson=[]
+    #para cada id de pendiente entregado
     for idP in idPendientes:
         r=Resumen.objects.get(id=idRes)
         p=Pendientes.objects.get(id=idP)
         flag=True
+        #se busca su historico
         try:
             h = Historico.objects.get(id = idRes)
         except Historico.DoesNotExist:
             h=None
             flag=False
+        #se guarda el pendiente.
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
         r.pendientes.add(p)
         if flag:
             h.pendientes.add(p)
+    #se actualizan la fecha de actualizacion y la flag de pendientes.
     fecha = datetime.now()
     r.flag_pend=True
     r.updated_at=fecha
@@ -133,23 +130,19 @@ def setPendientes(request):
         h.pendientesJson=pJson
         h.save()
     r.save()
-    #print(r.nombrePaciente)
-    #print(r.pendientes.all())
-    #print(r.flag_pend)
-    #print(r.pendientesJson)
     return HttpResponse(data, content_type='application/json')
 
+
 def HistoricotoDictionary(historico):
+    '''Transforma un reporte historico a dict.'''
+    #se crea un json auxiliar donde guardar los datos del historico
     aux={}
-    #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", (historico.servicio))
     if historico == None:
         return None
     if historico.servicio == None:
         aux["servicio_id"]=None
     else:
         aux["servicio_id"]=historico.servicio.id
-    
-    
     aux["id"]=historico.id
     aux["rut"]= historico.rut
     aux["nombrePaciente"]= historico.nombrePaciente
@@ -169,144 +162,90 @@ def HistoricotoDictionary(historico):
     aux["flag_diag"]=historico.flag_diag
     aux["flag_pend"]=historico.flag_pend
     aux["pendientesJson"]=historico.pendientesJson
-
-    #print(aux)
     return aux
+
 
 @api_view(['GET'])
 def filtrarServicioPendiente(request, fecha, nombreServicio, nombrePendiente):
-    #print("FILTRAR POR SERVICIO PENDIENTE...............")
+    '''Get de reportes historicos filtrados fecha, por servicio y por pendientes '''
     historico = Historico.objects.all()
-    
-    #print(type(historico))
-    #print(historico)
-
     historico = list(historico)
     # Primero filtramos por fecha
     porFecha = []
-    #print(type(historico[0]))
     for e in historico:
-        
-        #print("MOSTRANDO FECHA: ", type(fecha))
-        #print(type(e.fecha))
         if str(e.fecha) == fecha:
-            #print("entra")
             porFecha.append(e)
-    
-    #print(porFecha)
-    #print(type(porFecha[0].fecha))
+    #filtro por servicio
     porServicio = []
     for e in porFecha:
         if nombreServicio=="Unidad de gestion de pacientes":
                 porServicio.append(e)
         else:
             if e.servicio!=None:
-                #print(e.servicio.id)
                 if e.servicio.nombre == nombreServicio:
                     porServicio.append(e)
-    
-    print("Mostrando filtrado por servicio")
-    print(porServicio)
-    #print(porServicio[0])
-
+    #Filtro por pendiente
     porPendiente = []
-    for e in porServicio:
-        print("netro")
-        #print(e.pendientesJson)
+    for e in porServicio:        
         if nombrePendiente=="todos":
             porPendiente.append(e)
         else:
-            aux=json.dumps({})
-            print(e.pendientesJson)
+            aux=json.dumps({})            
             if e.pendientesJson!=aux:
-                print("entra---------------")
                 for i in e.pendientesJson:
                     if i['nombre'] == nombrePendiente:
-                        #print("entra")
-                        #print(i['id'])
                         porPendiente.append(e)
-    print(porPendiente)
-
-
-   
-    #print("Mostrando id_servicio: ", id_servicio)
-
+    #resumen final
     listaFinal = []
     for resumen in porPendiente:
-        
-        #print("RESUMEEEEEEEN", resumen)
         listaFinal.append(HistoricotoDictionary(resumen))
     
     if nombrePendiente == "":
-        print("entra")
         listaPorServicio = []
         for resumen in porServicio:
-            #print(resumen)
             listaPorServicio.append(HistoricotoDictionary(resumen))
             return JsonResponse(listaPorServicio, safe=False, json_dumps_params={'ensure_ascii':False})
-    #print(listaFinal)
     return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['GET'])
 def filtrarServicio(request, fecha, nombreServicio):
-    print("FILTRAR POR SERVICIO ...............")
+    '''Get de historicos por fecha y servicio.'''
     historico = Historico.objects.all()
-    
-    #print(type(historico))
-    #print(historico)
-
     historico = list(historico)
-    print(historico)
     # Primero filtramos por fecha
     porFecha = []
-    #print(type(historico[0]))
     for e in historico:
-        
-        #print("MOSTRANDO FECHA: ", type(fecha))
-        #print(type(e.fecha))
         if str(e.fecha) == fecha:
-            #print("entra")
             porFecha.append(e)
-    
-    #print(porFecha)
-    #print(type(porFecha[0].fecha))
+    #filtro por servicio
     porServicio = []
     for e in porFecha:
         if nombreServicio=="Unidad de gestion de pacientes":
                 porServicio.append(e)
         else:
             if e.servicio!=None:
-                #print(e.servicio.id)
                 if e.servicio.nombre == nombreServicio:
                     porServicio.append(e)
-    
-    #print("Mostrando filtrado por servicio")
-    #print(porServicio)
-    #print(porServicio[0])
-
+    #final.
     listaFinal = []
     for resumen in porServicio:
-        print(resumen.id)
         listaFinal.append(HistoricotoDictionary(resumen))
-
-    #print(listaFinal)
-    print(listaFinal)
     return JsonResponse(listaFinal, safe=False, json_dumps_params={'ensure_ascii':False})
 
 @api_view(['GET'])
 def filtrarPendientesPorPaciente(request, id_paciente):
+    '''Get del resumen de pacientes filtrado por pendientes.'''
     resumen = Resumen.objects.get(id=int(id_paciente))
-    print(resumen.pendientesJson)
-    print(resumen)
     return JsonResponse(resumen.pendientesJson, safe=False, json_dumps_params={'ensure_ascii':False})
 
 
 @api_view(['GET'])
 def reporteMensual(request, year, mes):
+    '''Get de reporte mensual por fecha.'''
     
     mensual=ReporteMensual.objects.filter(fecha__year=year, fecha__month=mes)
-
+    #se crea una lista auxiliar con json de cada servicio.
     lista=[]
     for m in mensual:
         mJson={}
@@ -329,7 +268,7 @@ def reporteMensual(request, year, mes):
 
 @api_view(['POST'])
 def deleteUser(request):
-    print(request.data)
+    '''Funcion para eliminar usuario.'''
     data=request.data
     idUser = data["id"]
     User.objects.filter(id=idUser).delete()
@@ -337,24 +276,24 @@ def deleteUser(request):
 
 @api_view(['POST'])
 def setDiagnostico(request):
+    '''Funcion para modificar diagnosticos de un paciente.'''
+    #mismo proceso de leer df
     data=request.data
-    print(data)
     diagnostico1Cod=data["principal"]
     diagnostico2=data["secundarios"]
     idPaciente=data["id"]
     dias_estada=data["dias"]
     diag2_final = ""
 
+    #lee los archivos cie10 y norma.
     path = os.path.dirname(os.path.realpath(__file__))
     archivo = path+'\CIE10-GRD.xlsm'
     cie10 = pd.read_excel(archivo, sheet_name='CIE10 MOD')
     norma = pd.read_excel(archivo, sheet_name='NORMA')
-    #print(pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer'))
+
     # Se tranforma a numérico entero el IR GRD ya que lo toma con un .0 al final
     norma["IR-GRD CÓDIGO v2.3"] = pd.to_numeric(norma["IR-GRD CÓDIGO v2.3"], downcast='integer')
-    print(norma["IR-GRD CÓDIGO v2.3"])
-
-
+    #encuentra diagnosticos secundarios
     nombres_diags2 = []
     diagnostico2Cod=diagnostico2
     diagnostico2Json=[]
@@ -372,7 +311,6 @@ def setDiagnostico(request):
             nombre_diagnostico2 = diagnostico2_pd['DIAGNOSTICO'].to_frame(name='DIAGNOSTICO')
             aux={}
             if grd_diagnostico2.size != 0:
-                print("AAAAAAAAAAAAAAAAAAAAAAAAA")
                 diagnostico_dos = nombre_diagnostico2['DIAGNOSTICO'].values[0]
                 grd = str(grd_diagnostico2['GRD'].values[0])
                 sev = str(sev_diagnostico2['SEV'].values[0])
@@ -381,10 +319,7 @@ def setDiagnostico(request):
                 
                 diagnostico2Json.append(aux)
             else:
-                print("No tiene GRD")
-                print("GRD CONFLICTO...")
                 condicion = cie10.loc[:, 'CODIGO'] == diag+'.0'
-                print(diag)
                 diagnostico2_pd = cie10.loc[condicion]
                 grd_diagnostico2 = diagnostico2_pd['GRD'].to_frame(name='GRD')
                 sev_diagnostico2 = diagnostico2_pd['SEV'].to_frame(name = 'SEV')
@@ -401,14 +336,9 @@ def setDiagnostico(request):
             nombres_diags2.append(diagnostico_dos)
             diag2_final=""
             for i in range(len(nombres_diags2)-1):
-                print("1  ",diag2_final)
                 diag2_final = diag2_final + nombres_diags2[i] +", "
-                print(diag2_final)
-            diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]
-    print("Diagnóstico 2: ", diagnostico2)
-    print("Nombres diag2: ", nombres_diags2)
-    
-    
+            diag2_final = diag2_final + nombres_diags2[len(nombres_diags2)-1]  
+    #encuentra diagnostico principal  
     if str(diagnostico1Cod) != 'nan':
         # Aquí busca el código del diagnóstico en el CIE10
         condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod
@@ -423,8 +353,6 @@ def setDiagnostico(request):
             sev = str(sev_diagnostico1['SEV'].values[0])
             
         else:
-            print("No tiene GRD")
-            print("GRD CONFLICTO...")
             condicion = cie10.loc[:, 'CODIGO'] == diagnostico1Cod+'.0'
             diagnostico1_pd = cie10.loc[condicion]
             grd_diagnostico1 = diagnostico1_pd['GRD'].to_frame(name='GRD')
@@ -438,22 +366,14 @@ def setDiagnostico(request):
         grd = ""
         sev = ""
         diagnostico1Cod=None
-
-    print("DIAGNÓSTICO 1: ", diagnostico_uno)
-    print("GRD ANTES: ", grd)
-    print("SEV ANTES: ", sev)
-
     # El GRD y SEV quedan como decimal por lo que se quita 
     # lo que está después del '.'
     if '.' in grd:
         i = grd.find('.')
-        print(i)
         grd = grd[0:i]
-
     if '.' in sev:
         i2 = sev.find('.')
         sev = sev[0:i2]
-
     # Si la severidad es 0 o N entonces se añade un 1 al GRD
     if sev == '0' or sev == 'N':
         codigo_norma = str(grd)+'1'
@@ -467,46 +387,25 @@ def setDiagnostico(request):
     else:
         codigo_norma = str(grd)+'1'
 
-    print("GRD DESPUÉS: ", grd)
-    print("SEV DESPUÉS: ", sev)
-    print("El código norma es: ", codigo_norma)
-    print("El largo código norma es: ", len(codigo_norma))
-
     # Ahora se busca el código IR-GRD en la norma
     norma["IR-GRD CÓDIGO v2.3"]=norma["IR-GRD CÓDIGO v2.3"].apply(str)
-    # print(norma.loc[:,'IR-GRD CÓDIGO v2.3'])
-    # print(type(norma.loc[:,'IR-GRD CÓDIGO v2.3']))
     condicion2 = norma.loc[:,'IR-GRD CÓDIGO v2.3'] == codigo_norma
-    # print("condicion 2: ",condicion2)
     fila_norma = norma.loc[condicion2]
-    # print(fila_norma)
-    #print(fila_norma)
     pc_corte = 0
     peso_grd = 0
     em_norma = 0
+    #si tiene norma
     if fila_norma.size == 0:
         print("No tiene NORMA")
     else:
-        print("TIENE NORMA -------------------------------------------------------------------------")
+        print("TIENE NORMA ")
         pc_corte = fila_norma['PC superior'].values[0]
         peso_grd = fila_norma['Peso GRD'].values[0]
         em_norma = fila_norma['EM \n(inlier)'].values[0]
-        
+    #actualiza los datos del paciente
     criterio = None
     if pc_corte!=0:
         criterio=float(dias_estada)/float(pc_corte)
-        
-    print(" El puntaje de corte es: ",pc_corte)
-    print(" El peso grd es : ", peso_grd)
-    print(" El EM es: ", em_norma)
-    print(" El grd es: ", grd)
-    print("codigo diag princ: ",diagnostico1Cod)
-    print("diag principal: ", diagnostico_uno)
-    print("codigo diag sec: ",diagnostico2Cod)
-    print("diag secundarios: ",diag2_final)
-    print("id paciente",idPaciente)
-    print("Dias de estada: ", dias_estada)
-    print("Valor criterio: ", criterio)
     fecha = datetime.now()
     paciente=Resumen.objects.get(id=idPaciente)
     paciente.pcSuperior=pc_corte
@@ -527,16 +426,16 @@ def setDiagnostico(request):
    
 
 
-# establece el tamaño de las celdas y los colores para que no se sobrepongan
 def estiloExcel(nombre,flag):
+    '''Funcion para cambiar el estilo de un archivo excel.'''
     informe = openpyxl.load_workbook(nombre)
-
     sheet = informe.active 
 
     def set_width_to(sheet, start, stop, width):
         for col in get_column_interval(start, stop):
             sheet.column_dimensions[col].width = width
-
+    
+    # establece el tamaño de las celdas y los colores para que no se sobrepongan
     set_width_to(sheet, "A", "A", width=5)
     set_width_to(sheet, "B", "B", width=14)
     set_width_to(sheet, "C", "C", width=52)
@@ -556,16 +455,15 @@ def estiloExcel(nombre,flag):
     else:
         set_width_to(sheet, "S", "S", width=50)
         encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1","O1","P1","Q1","R1","S1"]
-
-
+    #estilo para encabezados
     for encabezado in encabezados:
         celda = sheet[encabezado]
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
     informe.save(nombre)
 
 
-# establece el tamaño de las celdas y los colores para que no se sobrepongan
 def estiloExcelMensual(nombre,flag):
+    '''Funcion para cambiar el estilo de un archivo excel de reporte mensual.'''
     informe = openpyxl.load_workbook(nombre)
 
     sheet = informe.active 
@@ -574,12 +472,14 @@ def estiloExcelMensual(nombre,flag):
         for col in get_column_interval(start, stop):
             sheet.column_dimensions[col].width = width
 
+    # establece el tamaño de las celdas y los colores para que no se sobrepongan
     set_width_to(sheet, "A", "A", width=5)
     set_width_to(sheet, "B", "B", width=40)
     set_width_to(sheet, "C", "C", width=10)
     set_width_to(sheet, "D", "D", width=15)
     set_width_to(sheet, "E", "N", width=22)
     encabezados=["A1","B1","C1","D1","E1","F1","G1","H1","I1","J1","K1","L1","M1","N1"]
+    #estilo para encabezados
     for encabezado in encabezados:
         celda = sheet[encabezado]
         celda.fill =  PatternFill("solid", fgColor="D9D9D9")
@@ -589,6 +489,7 @@ def estiloExcelMensual(nombre,flag):
 
 @api_view(['GET'])
 def linkDescarga(request):
+    '''Retorna una ruta de descarga para el archivo de resumen de pacientes'''
     nombreArchivo='Gestion_de_Pacientes.xlsx'
     nombreArchivoR='\Gestion_de_Pacientes.xlsx'
     ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
@@ -599,6 +500,7 @@ def linkDescarga(request):
 
 @api_view(['GET'])
 def linkDescargaH(request):
+    '''Retorna una ruta de descarga para el archivo de historico de pacientes'''
     nombreArchivo='Historico_de_Pacientes.xlsx'
     nombreArchivoR='\Historico_de_Pacientes.xlsx'
     ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
@@ -610,6 +512,7 @@ def linkDescargaH(request):
 
 @api_view(['GET'])
 def linkDescargaM(request):
+    '''Retorna una ruta de descarga para el archivo de reporte mensual'''
     nombreArchivo='Reporte_mensual.xlsx'
     nombreArchivoR='\Reporte_mensual.xlsx'
     ruta=os.path.dirname(os.path.abspath(__file__)) + nombreArchivoR
@@ -621,6 +524,7 @@ def linkDescargaM(request):
     
 @api_view(['GET'])
 def usuariosG(request):
+    '''Get de los usuarios de la plataforma.'''
     users=User.objects.all()
     lista=[]
     for user in users:
@@ -637,11 +541,8 @@ def usuariosG(request):
 
 @api_view(['POST'])   
 def mensual_to_excel(request):
-    print(request.data)
-    
+    '''Funcion genera un excel para el reporte mensual de entrada.'''    
     resumenJSON=request.data
-    print(len(resumenJSON))
-
     fecha=[]
     nombreServicio=[] 
     servicio=[] 
@@ -655,6 +556,7 @@ def mensual_to_excel(request):
     pInt=[]
     pExt=[]
     condP=[]
+    #para cada servicio en el resumen mensual
     for ser in resumenJSON:
         fecha.append(ser["fecha"])
         nombreServicio.append(ser['servicioNombre']) 
@@ -669,14 +571,12 @@ def mensual_to_excel(request):
         pInt.append(ser["pInt"])
         pExt.append(ser["pExt"])
         condP.append(ser["condP"])
-    
+    #se crea un dataframe para el reporte mensual
     resumen= pd.DataFrame()
     resumen=resumen.assign(nombreServicio=nombreServicio,servicio=servicio,fecha=fecha,em=em,emaf=emaf,iema=iema,peso=peso,
     iemaInliersMenor=iemaInliersMenor,iemaInliersMayor=iemaInliersMayor,outliers=outliers,pInt=pInt,pExt=pExt,condP=condP)
-    
+    #crea el archivo y le da el estilo.
     nombreArchivo='gestionPacientes\Reporte_mensual.xlsx'
-    
-    print(resumen)
     resumen.to_excel(nombreArchivo, sheet_name='Resumen Mensual')
     estiloExcelMensual(nombreArchivo, True)
     resp={}
@@ -686,9 +586,7 @@ def mensual_to_excel(request):
 
 @api_view(['POST'])   
 def historico_to_excel(request):
-    print(request.data)
-
-    
+    '''Funcion genera un excel para el reporte historico de entrada.'''    
     resumenJSON=request.data
     cama=[]
     rut=[]
@@ -709,6 +607,7 @@ def historico_to_excel(request):
     flag_pend=[]
     pendientesJson=[]
     fecha=[]
+    #para cada paciente en el resumen
     for paciente in resumenJSON:
         cama.append(paciente['cama']) 
         rut.append(paciente['rut']) 
@@ -733,15 +632,14 @@ def historico_to_excel(request):
         pendientesJson.append(pend)
         fecha.append(paciente["fecha"])
 
+    #se crea un dataframe para el resumen
     resumen= pd.DataFrame()
     resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
     diagnostico1=diagnostico1, diagnostico1Cod=diagnostico1Cod, diagnostico2=diagnostico2, diagnostico2Cod=diagnostico2Cod, ir_grd=ir_grd, emNorma=emNorma, 
     pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
     flag_pend=flag_pend, fecha=fecha,pendientesJson=pendientesJson)
-
+    #crea el archivo y le da el estilo.
     nombreArchivo='gestionPacientes\Historico_de_Pacientes.xlsx'
-    
-    print(resumen)
     resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
     estiloExcel(nombreArchivo, True)
 
@@ -751,7 +649,7 @@ def historico_to_excel(request):
 
 @api_view(['POST'])   
 def resumen_to_excel(request):
-    print(request)
+    '''Funcion genera un excel para el resumen de pacientes de entrada.'''
     resumenJSON=request.data
     cama=[]
     rut=[]
@@ -771,7 +669,7 @@ def resumen_to_excel(request):
     flag_diag =[]
     flag_pend=[]
     pendientesJson=[]
-
+    #para cada paciente en el resumen
     for paciente in resumenJSON:
         cama.append(paciente['cama']) 
         rut.append(paciente['rut']) 
@@ -795,16 +693,14 @@ def resumen_to_excel(request):
             pend=pend+j["nombre"] + " ("+j["causa"]+"), \n"
         pendientesJson.append(pend)
 
+    #se crea un dataframe para el resumen
     resumen= pd.DataFrame()
     resumen=resumen.assign(rut=rut, nombrePaciente=nombrePaciente, cama=cama, estancia=estancia,
     diagnostico1=diagnostico1, diagnostico1Cod=diagnostico1Cod, diagnostico2=diagnostico2, diagnostico2Cod=diagnostico2Cod, ir_grd=ir_grd, emNorma=emNorma, 
     pcSuperior=pcSuperior, pesoGRD=pesoGRD, nombreServicio=nombreServicio, servicio=servicio, criterio=criterio, flag_diag=flag_diag,
     flag_pend=flag_pend,pendientesJson=pendientesJson)
-    
-
+    #crea el archivo y le da el estilo.
     nombreArchivo='gestionPacientes\Gestion_de_Pacientes.xlsx'
-    
-    print(resumen)
     resumen.to_excel(nombreArchivo, sheet_name='Resumen de pacientes')
     estiloExcel(nombreArchivo,False)
     resp={}
@@ -815,7 +711,7 @@ def resumen_to_excel(request):
 class UsuarioViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    #print(queryset)
+    
 
 class ServicioViewSet(viewsets.ModelViewSet):
     serializer_class = ServicioSerializer
@@ -863,13 +759,14 @@ class MensualDatesViewSet(viewsets.ModelViewSet):
 
 #----------------INTENTO DE LOGIN --------------------
 
-# Generate Token Manually
+
 def get_tokens_for_user(user):
-  refresh = RefreshToken.for_user(user)
-  return {
-      'refresh': str(refresh),
-      'access': str(refresh.access_token),
-  }
+    # Generate Token Manually
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+}
 
 class UserRegistrationView(APIView):
   renderer_classes = [UserRenderer]
@@ -887,7 +784,6 @@ class UserLoginView(APIView):
     serializer.is_valid(raise_exception=True)
     nickname = serializer.data.get('nickname')
     password = serializer.data.get('password')
-    #rol_id = serializer.data.get('rol__id')
     try:
         usuario=User.objects.get(nickname=nickname)
     except User.DoesNotExist:
