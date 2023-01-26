@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect,  Component} from "react";
+import React from "react";
 
 import Home from './components/home';
 import Resumen from './components/resumen';
@@ -14,17 +14,14 @@ import HistoricoP from './components/historicoPorP';
 import Mensual from './components/mensual';
 import GestionUser from './components/gestionUser';
 import Reportes from './components/reportes';
-import {Ruteo} from './Ruteo';
 
 
 
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useSelector } from "react-redux";
 import UserLogin from './pages/auth/UserLogin';
-import aux from './pages/auth/UserLogin';
 
 import Registration from './pages/auth/Registration';
-import { getToken, removeToken } from './services/LocalStorageService';
+import { getToken} from './services/LocalStorageService';
 
 const KEY = "App.rol";
 export class App extends React.Component {
@@ -33,13 +30,12 @@ export class App extends React.Component {
 
   render() {
     const { access_token } = getToken()
-    console.log(aux)
     let storedRol = JSON.parse(localStorage.getItem(KEY));
     if (storedRol){
         console.log("Rol encontrado")
     }
     else {
-      storedRol = {rol: "", servicio: "", flag: false, flagJ:false, servicio: "", servicio_id:""}
+      storedRol = {rol: "", flag: false, flagJ:false, servicio: "", servicio_id:""}
       localStorage.setItem(KEY, JSON.stringify(storedRol));
     }
     

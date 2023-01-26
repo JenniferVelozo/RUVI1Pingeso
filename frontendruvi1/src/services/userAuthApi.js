@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const direccion = process.env.REACT_APP_DIRECCION_IP
-console.log(direccion)
 
 // Define a service using a base URL and expected endpoints
 export const userAuthApi = createApi({
@@ -10,7 +9,6 @@ export const userAuthApi = createApi({
   endpoints: (builder) => ({
     registerUser: builder.mutation({
       query: (user) => {
-        console.log(user)
         return {
           url: 'register/',
           method: 'POST',

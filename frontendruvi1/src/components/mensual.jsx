@@ -76,7 +76,6 @@ function ShowTable() {
         let aux=sep[0]+"-"+sep[1]
         data[i-1].id=i-1
         data[i-1].fecha=aux
-        console.log(data)
         i=i+1
       }
       setListMeses(data)

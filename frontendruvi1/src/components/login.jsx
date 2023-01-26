@@ -21,7 +21,6 @@ function Login(){
 
     const getUsuarios = async() => {
         const { data } = await axios.get(direccion+'/login/')
-        console.log(data);
 
      } 
 

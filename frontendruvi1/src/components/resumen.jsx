@@ -84,10 +84,10 @@ const Resumen = () => {
     ];
     const columnsJ = [
       { field: 'id', headerName: 'Id', width: 40 },
-      { field: 'criterioView', headerName: 'EM - Estancia', width: 100},
-      { field: 'outlineView', headerName: 'PC - Estancia', width: 110},
+      { field: 'criterioView', headerName: 'Días restantes para EM norma', width: 240},
+      { field: 'outlineView', headerName: 'Días restantes para Outlier', width: 210},
       { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
-      { field: 'criterio', headerName: 'Índice (EM)', width: 100},
+      { field: 'criterio', headerName: 'Índice (EM)', width: 110},
       { field: 'outline', headerName: 'Outline (PC)', width: 110},
       { field: 'cama', headerName: 'Cama', width: 70},
       { field: 'rut', headerName: 'Rut', width: 100},
@@ -512,7 +512,7 @@ const Resumen = () => {
           if (params.field === 'outlineView' && params.value !== "" && params.row.criterio >= 1) {
             return params.row.outline >= 1 ? 'hot' : (params.row.outline >= 0.6 ? "mediumhot" : "amarillo");
           }
-          if (params.row.flag_diag === true) {
+          if (params.row.flag_diag === true ||params.row.flag_pend === true) {
             return 'edited'
           }
           return '';}}

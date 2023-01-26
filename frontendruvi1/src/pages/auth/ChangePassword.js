@@ -22,7 +22,6 @@ const ChangePassword = () => {
       setServerError(res.error.data.errors)
     }
     if (res.data) {
-      console.log(res.data)
       setServerError({})
       setServerMsg(res.data)
       document.getElementById("password-change-form").reset();
@@ -31,12 +30,8 @@ const ChangePassword = () => {
   };
   // Getting User Data from Redux Store
   const myData = useSelector(state => state.user)
-  // console.log("Change Password", myData)
 
   return <>
-    {/* {server_error.non_field_errors ? console.log(server_error.non_field_errors[0]) : ""}
-    {server_error.password ? console.log(server_error.password[0]) : ""}
-    {server_error.password2 ? console.log(server_error.password2[0]) : ""} */}
     <Box sx={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', maxWidth: 600, mx: 4 }}>
       <h1>Change Password</h1>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }} id="password-change-form">

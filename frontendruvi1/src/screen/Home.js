@@ -20,13 +20,11 @@ const [apellido, setApellido ] = useState('')
  const getPersonas = async() => {
     const { data } = await axios.get(baseURL)
     setListPersona(data)
-    console.log(data)
  } 
 
  const savePersona = async() => {
    const json = { nombre, apellido } 
    const res = await axios.post(baseURL, json)
-   console.log(res) 
    getPersonas() 
    clearInput()
 

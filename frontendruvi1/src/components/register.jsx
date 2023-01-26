@@ -35,14 +35,12 @@ function Register(){
     const getRoles = async() => {
         const { data } = await axios.get(direccion+'/rol/')
         setListRoles(data)
-        console.log(data)
     }
 
     //datafetch servicios
     const getServicios = async() => {
         const { data } = await axios.get(direccion+'/servicios/')
         setListServicios(data)
-        console.log(data)
     }
 
     //display formulario

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ResponsiveAppBar from './ResponsiveAppBar';
 import axios from 'axios';
-import { Typography, Dialog, DialogTitle, Avatar, Paper, Button, Grid,Box} from '@mui/material';
+import { Typography, Avatar, Paper, Button, Grid,Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState} from 'react'
-import { createTheme, ThemeProvider, darken, lighten } from '@mui/material/styles';
+import { createTheme, ThemeProvider} from '@mui/material/styles';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -54,11 +54,9 @@ const Update = () => {
   function SubirArchivo() {
 
     const [file, setFile] = useState()
-    console.log(file)
 
     //handler cambio archivo
     const handleInputChange = (event) => {
-      console.log(event.target.files[0])
       setFile(event.target.files[0]);
 
     };
@@ -69,8 +67,8 @@ const Update = () => {
         setSuccess(false);
         setLoading(true);
       }
-      if (file == undefined){
-        console.log('no hay file')
+      if (file === undefined){
+        console.log('Sin archivo valido')
       }
       else{
         event.preventDefault();
@@ -84,13 +82,7 @@ const Update = () => {
         };
 
         const {data} = await axios.post(direccion+'/subir/CIE10GRD', formData, config)
-        const respuestaAlternativo = true
-        console.log(data[0])
-
-        
-
-    
-        if (data[0].cargado != true) {
+        if (data[0].cargado !== true) {
           if(data[0].ErrorFormato){
             alert("Archivo archivo seleccionado no cumple con el formato");
           }
@@ -101,7 +93,6 @@ const Update = () => {
           setLoading(false);
         }
         else {
-          console.log("Hola Mundo");
           setSuccess(true);
           setLoading(false);
           alert("Archivo subido correctamente, redirigiendo a menu")
@@ -124,7 +115,7 @@ const Update = () => {
               <Box textAlign='center'>
                   <ThemeProvider theme={theme}>
                       <Button variant="dashed" sx={{ m: 2 }} component="label" >
-                      {file == undefined 
+                      {file === undefined 
                             ? 
                             <Typography variant="h6" component="h2">
                               {loading
@@ -156,7 +147,7 @@ const Update = () => {
             }}
           />
         )}
-                {file == undefined ? <Button disabled variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal">
+                {file === undefined ? <Button disabled variant="contained" color="primary" endIcon={<ArrowForwardIosIcon />} margin="normal">
                     Subir
                     </Button>
                     :

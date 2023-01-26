@@ -111,9 +111,12 @@ def setPendientes(request):
         flag=True
         #se busca su historico
         try:
-            h = Historico.objects.get(id = idRes)
+            h = Historico.objects.get(fecha=r.updated_at, rut=r.rut, nombrePaciente=r.nombrePaciente,
+            diagnostico1Cod=r.diagnostico1Cod, diagnostico2Cod=r.diagnostico2Cod,ir_grd=r.ir_grd,pesoGRD=r.pesoGRD,
+            nombreServicio=r.nombreServicio,cama=r.cama, estancia=r.estancia)
         except Historico.DoesNotExist:
-            h=None
+            h=None            
+            print("no encuentra historico")
             flag=False
         #se guarda el pendiente.
         pJson.append({'id': idP, 'nombre': p.nombrePendiente, 'causa':p.causa })
@@ -408,6 +411,16 @@ def setDiagnostico(request):
         criterio=float(dias_estada)/float(pc_corte)
     fecha = datetime.now()
     paciente=Resumen.objects.get(id=idPaciente)
+    flag=True
+    try:
+        h = Historico.objects.get(fecha=paciente.updated_at, rut=paciente.rut, nombrePaciente=paciente.nombrePaciente,
+        diagnostico1Cod=paciente.diagnostico1Cod, diagnostico2Cod=paciente.diagnostico2Cod,ir_grd=paciente.ir_grd,pesoGRD=paciente.pesoGRD,
+        nombreServicio=paciente.nombreServicio,cama=paciente.cama, estancia=paciente.estancia)
+    except Historico.DoesNotExist:
+        h=None            
+        print("no encuentra historico")
+        flag=False
+    #se guardan los nuevos diagnoticos y grupo grd
     paciente.pcSuperior=pc_corte
     paciente.pesoGRD=peso_grd
     paciente.emNorma=em_norma
@@ -422,6 +435,20 @@ def setDiagnostico(request):
     paciente.flag_diag=True
     paciente.updated_at=fecha
     paciente.save()
+    #se guarda en el historico correspondiente.
+    if flag:
+        h.pcSuperior=pc_corte
+        h.pesoGRD=peso_grd
+        h.emNorma=em_norma
+        h.ir_grd=grd
+        h.diagnostico1Cod=diagnostico1Cod
+        h.diagnostico1=diagnostico_uno
+        h.diagnostico2Cod=diagnostico2Cod
+        h.diagnostico2=diag2_final
+        h.estancia=dias_estada
+        h.criterio=criterio
+        h.flag_diag=True
+        h.save()
     return HttpResponse(data, content_type='application/json')
    
 

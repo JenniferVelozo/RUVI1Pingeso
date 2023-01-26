@@ -41,13 +41,11 @@ const Registration = () => {
   const getRoles = async() => {
     const { data } = await axios.get(direccion+'/rol/')
     setListRoles(data)
-    console.log(data)
   }
 
   const getServicios = async() => {
       const { data } = await axios.get(direccion+'/servicios/')
       setListServicios(data)
-      console.log(data)
   }
 
   const [server_error, setServerError] = useState({})
@@ -60,11 +58,6 @@ const Registration = () => {
 
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-
-    console.log("aaaaa1")
-    console.log(evento1)
-    console.log("aaaaa2")
-    console.log(evento2)
     const actualData = {
       nickname: data.get('nickname'),
       nombre: data.get('nombre'),
@@ -77,15 +70,11 @@ const Registration = () => {
       
     }
     const res = await registerUser(actualData)
+    console.log(isLoading)
     if (res.error) {
-      
-      // console.log(typeof (res.error.data.errors))
-      // console.log(res.error.data.errors)
       setServerError(res.error.data.errors)
     }
     if (res.data) {
-      console.log(typeof (res.data))
-      console.log(res.data)
       storeToken(res.data.token)
       navigate('/home')
     }

@@ -10,8 +10,8 @@ import { Avatar, Paper, Grid} from '@mui/material';
 import Logo from "./Logo.js";
 
 var aux = "";
+console.log(aux)
 const KEY = "App.rol";
-
 
 export function UserLogin() {
   const paperStyle={padding :20,height:'50vh',width:260, margin:"20px auto"}
@@ -23,7 +23,6 @@ export function UserLogin() {
   const [loginUser, { isLoading }] = useLoginUserMutation()
   const dispatch = useDispatch()
 
-  console.log("no termina aun ")
   let { access_token } = getToken()
   useEffect(() => {
     dispatch(setUserToken({ access_token: access_token }))
@@ -34,10 +33,10 @@ export function UserLogin() {
   const handleRolAdd = (data) => {
     let nombreRol=data.rol
     let rol={rol: nombreRol, servicio: data.servicio, servicio_id:data.servicio_id,flag: false, flagJ:false,inicial:data.inicial}
-    if(nombreRol=='Administrador'){
+    if(nombreRol==='Administrador'){
       rol.flag=true
     }
-    if(nombreRol=='Jefe de servicio'){
+    if(nombreRol==='Jefe de servicio'){
       rol.flagJ=true
     }
     localStorage.removeItem(KEY)
@@ -54,26 +53,17 @@ export function UserLogin() {
       nickname: data.get('nickname'),
       password: data.get('password'),
     }
-    console.log(actualData)
     aux = actualData;
     const res = await loginUser(actualData)
     if (res.error) {
-      // console.log(typeof (res.error.data.errors))
-      // console.log(res.error.data.errors)
       setServerError(res.error.data.errors)
     }
     if (res.data) {
-      // console.log(typeof (res.data))
-      console.log(res.data)
       storeToken(res.data.token)
       let { access_token } = getToken()
       dispatch(setUserToken({ access_token: access_token }))
-      console.log(access_token)
-      console.log("alo")
-      console.log(res.data)
       handleRolAdd(res.data)
       navigate('/home')
-      console.log("alo1")
     }
   }
  

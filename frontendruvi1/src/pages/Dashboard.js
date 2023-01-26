@@ -18,8 +18,6 @@ const Dashboard = () => {
   const dispatch = useDispatch()
   const { access_token } = getToken()
   const { data, isSuccess } = useGetLoggedUserQuery(access_token)
-  console.log(data)
-  console.log(isSuccess)
 
   const [userData, setUserData] = useState({
     nickname: "",
@@ -28,11 +26,7 @@ const Dashboard = () => {
 
   // Store User Data in Local State
   useEffect(() => {
-    console.log("entra aquí")
-    console.log(data)
-    console.log(isSuccess)
     if (data && isSuccess) {
-      console.log("entra aquí2")
       setUserData({
         nickname: data.nickname,
         name: data.name,
@@ -43,7 +37,6 @@ const Dashboard = () => {
   // Store User Data in Redux Store
   useEffect(() => {
     if (data && isSuccess) {
-      console.log("entra")
       dispatch(setUserInfo({
         nickname: data.nickname,
         name: data.name

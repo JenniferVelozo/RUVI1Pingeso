@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {es} from 'date-fns/locale';
+import $ from 'jquery';
 
 //direccionamiento
 const direccion = process.env.REACT_APP_DIRECCION_IP
@@ -35,18 +36,21 @@ const Item = styled(Paper)(({ theme }) => ({
 //definicion columnas tabla
 const columns = [
   { field: 'id', headerName: 'Id', width: 60 },
-  { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
   { field: 'fecha', headerName: 'Fecha', width: 100 },
-  { field: 'criterio', headerName: 'Criterio', width: 80},
+  { field: 'criterioView', headerName: 'Días restantes para EM norma', width: 240},
+  { field: 'outlineView', headerName: 'Días restantes para Outlier', width: 210},
+  { field: 'nombreServicio', headerName: 'Servicio', width: 100 },
+  { field: 'criterio', headerName: 'Índice (EM)', width: 110},
+  { field: 'outline', headerName: 'Outline (PC)', width: 110},
   { field: 'cama', headerName: 'Cama', width: 70},
   { field: 'rut', headerName: 'Rut', width: 100},
   { field: 'nombrePaciente', headerName: 'Nombre Paciente', width: 250 },
   { field: 'estancia', headerName: 'Estancia', width: 80 },
   { field: 'diagnostico1', headerName: 'Diagnostico 1', width: 250 },
-  { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 100 },
+  { field: 'diagnostico2', headerName: 'Diagnostico 2', width: 250 },
   { field: 'ir_grd', headerName: 'IR-GRD', width: 80 },
-  { field: 'emNorma', headerName: 'EM Norma', width: 80},
-  { field: 'pcSuperior', headerName: 'PC Sup.', width: 50 },
+  { field: 'emNorma', headerName: 'EM Norma', width: 100},
+  { field: 'pcSuperior', headerName: 'PC Sup.', width: 80 },
   { field: 'pesoGRD', headerName: 'Peso GRD', width: 100 },
   { field: 'pendiente', headerName: 'Pendiente', width: 200 },
 ];
@@ -94,7 +98,6 @@ function ShowTable() {
   const getPendientes = async() => {
       const { data } = await axios.get(direccion+'/pendientes/')
       setListPendientes(data)
-      console.log(data)
   }
 
   useEffect(() => {
@@ -107,26 +110,48 @@ function ShowTable() {
   useEffect(() => {
       getResumen(evento,value) 
   },[])
-  
+  //edicion de lineas
+  function addOutline(data){
+    var ret= [];
+    for (var i = 1; i <= data.length; i++){
+      if(data[i-1].estancia === 0 || data[i-1].pcSuperior === 0){
+        $.extend( data[i-1], {outline:""});
+        ret.push(data[i-1]);
+
+      } else{
+        var aux = data[i-1].estancia / data[i-1].pcSuperior;
+        $.extend( data[i-1], {outline:aux});
+        var aux2 = data[i-1].estancia - data[i-1].emNorma;
+        $.extend( data[i-1], {criterioView:aux2});
+        var aux3 = data[i-1].estancia - data[i-1].pcSuperior;
+        $.extend( data[i-1], {outlineView:aux3});
+        ret.push(data[i-1]);
+      }
+
+    }
+    return ret;
+  }
   //datafetch resumen
   const getResumen = async(evento,value) => {
-    console.log("evento")
-    console.log(evento)
     var dateOb = value.getDate();
-      if(dateOb < 10){
-        dateOb = "0" + dateOb;
-      }
+    if(dateOb < 10){
+      dateOb = "0" + dateOb;
+    }
+    var dateM=value.getMonth()+1;
+    if(dateM<10){
+      dateM="0"+dateM
+    }
     let baseURL = ""
-    if(evento==0){
-      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/Unidad de gestion de pacientes/todos" 
+    if(evento===0){
+      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + dateM+ "-" + dateOb + "/Unidad de gestion de pacientes/todos" 
     }
     else{
-      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + (value.getMonth()+1) + "-" + dateOb + "/Unidad de gestion de pacientes/" + listPendientes[evento-1].nombrePendiente
+      baseURL = direccion+'/historico/'+ value.getFullYear() + "-" + dateM + "-" + dateOb + "/Unidad de gestion de pacientes/" + listPendientes[evento-1].nombrePendiente
 
     }
     const { data } = await axios.get(baseURL)
     for (var i = 0; i < data.length; i++) {
-      if(data[i].nombreServicio=='nan'){
+      if(data[i].nombreServicio==='nan'){
         data[i].nombreServicio=""
       }
       if (data[i].emNorma !== 0){
@@ -152,19 +177,17 @@ function ShowTable() {
       for (let i = 0; i < data.length; i++) {
         if (storedRol.servicio_id === data[i].servicio_id) {
           resumenFiltrado.push(data[i])
-          console.log("entro")
         }
       }
-      const data2 = await axios.post(direccion+'/exportarH/', resumenFiltrado)
-      setListResumen(resumenFiltrado)
+      await axios.post(direccion+'/exportarH/', resumenFiltrado)
+      setListResumen(addOutline(resumenFiltrado))
       setEvento(evento)
     }
     else{
       
-      const data2 = await axios.post(direccion+'/exportarH/', data)
-      setListResumen(data)
+      await axios.post(direccion+'/exportarH/', data)
+      setListResumen(addOutline(data))
       setEvento(evento)
-      console.log(data)
     }
     
   }
@@ -250,15 +273,15 @@ function ShowTable() {
     >
       <DataGrid
         getCellClassName={(params) => {
-        if (params.field == 'criterio' && params.value !== null) {
-          return params.value >= 1 ? 'hot' : (params.value >= 0.75 ? "mediumhot" : (params.value >= 0.5 ? "mediumcold" : "cold"));
-        }
-        if (params.field == 'outline' && params.value !== "" && params.row.criterio >= 1) {
-          return params.value >= 1 ? 'hot' : (params.value >= 0.6 ? "mediumhot" : "amarillo");
-        }
-        if (params.row.flag_diag == true) {
-          return 'edited'
-        }
+          if (params.field === 'criterioView' && params.row.emNorma > 0 && params.row.outline !== "") {
+            return params.row.criterio >= 1 ? 'hot' : (params.row.criterio >= 0.75 ? "mediumhot" : (params.row.criterio >= 0.5 ? "mediumcold" : "cold"));
+          }
+          if (params.field === 'outlineView' && params.value !== "" && params.row.criterio >= 1) {
+            return params.row.outline >= 1 ? 'hot' : (params.row.outline >= 0.6 ? "mediumhot" : "amarillo");
+          }
+          if (params.row.flag_diag === true ||params.row.flag_pend === true) {
+            return 'edited'
+          }
         return '';}}
         autoHeight
         autoWidth
