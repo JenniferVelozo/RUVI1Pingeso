@@ -54,6 +54,7 @@ export function UserLogin() {
       password: data.get('password'),
     }
     aux = actualData;
+    console.log("aca es")
     const res = await loginUser(actualData)
     if (res.error) {
       setServerError(res.error.data.errors)

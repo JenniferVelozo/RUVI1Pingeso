@@ -785,6 +785,18 @@ class MensualDatesViewSet(viewsets.ModelViewSet):
     
 
 #----------------INTENTO DE LOGIN --------------------
+# Create your views here.
+@api_view(['POST'])
+def comprobar(request):
+    print(request.data)
+    user=request.data
+    data = Usuarios.objects.get(nickname=user['nickname'])
+    if data.password==user['password']:
+        #return HttpResponse(data, content_type='application/json')
+        user=[{'entra': 'SI', 'rol': data.rol.nombre}]
+        return HttpResponse(user, content_type='application/json')
+    user=[{'entra': 'NO'}]
+    return HttpResponse(user, content_type='application/json')
 
 
 def get_tokens_for_user(user):
