@@ -56,6 +56,19 @@ function ShowTable() {
     //datafetch mensual
     const getMensual = async(year, mes) => {
         const { data } = await axios.get(baseURL+year+"/"+mes)
+        for (var i = 0; i < data.length; i++) {
+          var aux=data[i].em;
+          data[i].em=data[i].em.toFixed(2);
+          data[i].emaf=data[i].emaf.toFixed(2);
+          data[i].iema=data[i].iema.toFixed(2);
+          data[i].peso=data[i].peso.toFixed(2);
+          data[i].iemaInliersMenor=data[i].iemaInliersMenor.toFixed(2);
+          data[i].iemaInliersMayor=data[i].iemaInliersMayor.toFixed(2);
+          data[i].outliers=data[i].outliers.toFixed(2);
+          data[i].pInt=data[i].pInt.toFixed(2);
+          data[i].pExt=data[i].pExt.toFixed(2);
+          data[i].condP=data[i].condP.toFixed(2);
+        }
         setListMensual(data)
         await axios.post(direccion+'/exportarM/', data)
 

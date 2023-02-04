@@ -334,6 +334,7 @@ const Resumen = () => {
         var aux = data[i-1].estancia / data[i-1].pcSuperior;
         $.extend( data[i-1], {outline:aux});
         var aux2 = data[i-1].estancia - data[i-1].emNorma;
+        aux2=aux2.toFixed(0);
         $.extend( data[i-1], {criterioView:aux2});
         var aux3 = data[i-1].estancia - data[i-1].pcSuperior;
         $.extend( data[i-1], {outlineView:aux3});
