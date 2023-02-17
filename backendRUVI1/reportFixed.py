@@ -15,5 +15,4 @@ if __name__=='__main__':
     # los reportes ya creados y cambios ya realizados en df.py y reMensual.py lo arreglan para futuros reportes.
     # NO VOLVER A EJECUTAR LUEGO DE SU PRIMER USO.
     reductor()
-    print("prueba exitosa")
     
