@@ -294,15 +294,29 @@ def leerDf():
     try:
         hist= Historico.objects.all().latest('fecha')
         indicador=(fecha.month-hist.fecha.month)+(fecha.year-hist.fecha.year)+(fecha.day-hist.fecha.day)
+        print("indicador: "+str(indicador))
+        print("año: "+str(fecha.year))
+        print("mes: "+str(fecha.month))
+        print("dia: "+str(fecha.day))
+        print("--------------------------")
+        print("año: "+str(hist.fecha.year))
+        print("mes: "+str(hist.fecha.month))
+        print("dia: "+str(hist.fecha.day))
         if indicador==0:
             Historico.objects.filter(fecha=fecha).delete()
         else:
-            if fecha.month-hist.fecha.month!=0:
-                mensual(hist.fecha.month,hist.fecha.year)
-        
+            men=ReporteMensual.objects.all().latest('fecha')
+            indicador=(fecha.month-men.fecha.month)+(fecha.year-men.fecha.year)
+            if indicador!=1: 
+                if str(men.fecha.month)=='12':
+                    mensual('01',men.fecha.year+1)
+                else:
+                    mensual(men.fecha.month+1,men.fecha.year)
+                    
     except Historico.DoesNotExist:
         print("No hay historico")
         hist=None
+    time.sleep(1233)
     #Se guarda en la BD el resumen y el historico.
     for paciente in jsonRes:
         a = Resumen.objects.create(updated_at=fecha,rut = paciente["rut"], nombrePaciente = paciente["nombrePaciente"], servicio_id=paciente["servicio_id"], nombreServicio=paciente["nombreServicio"], cama =  paciente["cama"], estancia = paciente["estancia"], criterio=paciente["criterio"], diagnostico1 = paciente["diagnostico1"], diagnostico1Cod=paciente["diagnostico1Cod"],diagnostico2= paciente["diagnostico2"], diagnostico2Cod=paciente["diagnostico2Cod"],ir_grd = paciente["ir_grd"], emNorma = paciente["emNorma"], pcSuperior = paciente["pcSuperior"], pesoGRD = paciente["pesoGRD"], flag_diag=paciente["flag_diag"], flag_pend= paciente["flag_pend"], pendientesJson= paciente["pendientesJson"], diagnostico2Json=paciente["diagnostico2Json"])

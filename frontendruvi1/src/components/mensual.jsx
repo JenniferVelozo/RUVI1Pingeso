@@ -30,7 +30,6 @@ const storedRol = JSON.parse(localStorage.getItem(KEY));
 //definicion columnas tabla
 const columns = [
   { field: 'servicioNombre', headerName: 'Servicio', width: 200, height:50},
-  { field: 'fecha', headerName: 'Fecha Creacion', width: 140,height:50 },
   { field: 'em', headerName: 'EM', width: 140, height:50},
   { field: 'emaf', headerName: 'EMAF', width: 140, height:50},
   { field: 'iema', headerName: 'IEMA', width: 140, height:50 },

@@ -80,8 +80,7 @@ def mensual(mes, year):
        
         print("-------------FIN----------------")
         #crea reporte mensual.
-        now = datetime.now()
-        fecha=str(now.year) +'-'+str(now.month)+'-'+str(now.day) 
+        fecha=str(year) +'-'+str(mes)+'-01' 
         a, created= ReporteMensual.objects.get_or_create(fecha=fecha,servicio=Servicio.objects.get(id=servicio.id), servicioNombre=servicio.nombre, peso=peso,
         em=em,
         emaf=emaf,
@@ -95,8 +94,24 @@ def mensual(mes, year):
     
     print("Reporte mensual creado.")
     
-
+def reductor():
+    print("Comienza el proceso.")
+    #segun lo acordado las fechas deben corresponder con las fechas de los datos utilizados, esto porque
+    #se encuentran desfasadas un mes.
+    print("Las fechas del reporte mensual seran reducidas en un mes.")
+    reportes=ReporteMensual.objects.all()
+    print(".........")
+    for reporte in reportes:
+        aux=reporte.fecha
+        if str(aux.month)=='1':
+            reporte.fecha=str(aux.year-1)+'-12-01'
+        else:
+            reporte.fecha=str(aux.year)+'-'+str(aux.month-1)+'-01'
+        reporte.save()
+    print("Cambio guardado correctamente.")
 
 if __name__=='__main__':
-    print(" ")
-    
+    print("Main ")
+
+    mensual('02','2023')
+    print("prueba exitosa")
